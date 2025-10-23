@@ -64,6 +64,14 @@ $config = config('ShopSuite')->settings ?? [];
     
     <!-- Bootstrap Table JS -->
     <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+    <script>
+    // Initialize bootstrap table defaults if not already set
+    if ($.fn.bootstrapTable && !$.fn.bootstrapTable.defaults.formatConfirmAction) {
+        $.fn.bootstrapTable.defaults.formatConfirmAction = function(action) {
+            return 'Are you sure you want to ' + action + ' the selected items?';
+        };
+    }
+    </script>
     
     <!-- Bootstrap Select JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
