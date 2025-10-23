@@ -44,85 +44,16 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- SweetAlert2 CSS (Bootstrap 5 compatible) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
-    <!-- jQuery (required for table_support) -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    
-    <!-- jQuery UI CSS -->
-    <link rel="stylesheet" href="<?= base_url('vendor/jquery-ui/jquery-ui.min.css') ?>">
-    
-    <!-- jQuery UI JS (load immediately after jQuery, before other libraries) -->
-    <script src="<?= base_url('vendor/jquery-ui/jquery-ui.min.js') ?>"></script>
-    <script>
-    // Ensure autocomplete is globally available for AJAX-loaded content
-    (function() {
-        window.jQuery = window.$ = jQuery;
-        
-        if (!$.fn.autocomplete) {
-            console.error('CRITICAL: jQuery UI autocomplete failed to load!');
-        } else {
-            console.log('✓ jQuery UI autocomplete loaded successfully');
-            
-            // Store reference to autocomplete for AJAX-loaded content
-            window.jQueryUIAutocomplete = $.fn.autocomplete;
-            
-            // Ensure it's always available even when $ is rebound
-            var originalDollar = window.$;
-            Object.defineProperty(window, '$', {
-                get: function() { return originalDollar; },
-                set: function(val) {
-                    originalDollar = val;
-                    // Re-attach autocomplete if it's missing
-                    if (val && val.fn && !val.fn.autocomplete && window.jQueryUIAutocomplete) {
-                        val.fn.autocomplete = window.jQueryUIAutocomplete;
-                    }
-                }
-            });
-        }
-    })();
-    </script>
-    
-    <!-- jQuery Validate -->
-    <script src="<?= base_url('vendor/jquery-validate/jquery.validate.min.js') ?>"></script>
-    
-    <!-- jQuery Form -->
-    <script src="<?= base_url('vendor/jquery-form/jquery.form.min.js') ?>"></script>
-    
-    <script>
-    // Preserve jQuery plugins globally for AJAX content
-    (function() {
-        if ($.fn.validate) {
-            window.jQueryValidate = $.fn.validate;
-            console.log('✓ jQuery Validate loaded');
-        }
-        if ($.fn.ajaxSubmit) {
-            window.jQueryFormSubmit = $.fn.ajaxSubmit;
-            console.log('✓ jQuery Form loaded');
-        }
-        
-        // Extend the $ property setter to restore plugins
-        var originalDescriptor = Object.getOwnPropertyDescriptor(window, '$');
-        if (originalDescriptor && originalDescriptor.set) {
-            var originalSetter = originalDescriptor.set;
-            Object.defineProperty(window, '$', {
-                get: originalDescriptor.get,
-                set: function(val) {
-                    originalSetter.call(this, val);
-                    if (val && val.fn) {
-                        if (!val.fn.validate && window.jQueryValidate) {
-                            val.fn.validate = window.jQueryValidate;
-                        }
-                        if (!val.fn.ajaxSubmit && window.jQueryFormSubmit) {
-                            val.fn.ajaxSubmit = window.jQueryFormSubmit;
-                        }
-                        if (!val.fn.autocomplete && window.jQueryUIAutocomplete) {
-                            val.fn.autocomplete = window.jQueryUIAutocomplete;
-                        }
-                    }
-                }
-            });
-        }
-    })();
-    </script>
+    <!-- Load jQuery and plugins from gulp-generated bundles -->
+    <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getUri()->getQuery()): ?>
+        <!-- inject:debug:js -->
+        <!-- endinject -->
+    <?php else: ?>
+        <!-- inject:prod:js -->
+        <script src="resources/jquery-2c872dbe60.min.js"></script>
+        <script src="resources/shopsuite-a71baa0f6b.min.js"></script>
+        <!-- endinject -->
+    <?php endif; ?>
     
     <!-- Moment.js (for date picker) -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>

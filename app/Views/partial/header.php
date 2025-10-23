@@ -35,6 +35,8 @@ $request = Services::request();
             <link rel="stylesheet" href="<?= 'css/' . esc($config['theme']) . '.css' ?>">
         <?php } ?>
         <!-- inject:prod:js -->
+        <script src="resources/jquery-2c872dbe60.min.js"></script>
+        <script src="resources/shopsuite-a71baa0f6b.min.js"></script>
         <!-- endinject -->
     <?php endif; ?>
 
