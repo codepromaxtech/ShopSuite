@@ -347,7 +347,8 @@ class Customers extends Persons
      */
     public function postDelete(): void
     {
-        $customers_to_delete = $this->request->getPost('ids');
+        // Accept both 'ids' and 'ids[]' parameter names
+        $customers_to_delete = $this->request->getPost('ids') ?? $this->request->getPost('ids[]');
         $customers_info = $this->customer->get_multiple_info($customers_to_delete);
 
         $count = 0;

@@ -174,7 +174,8 @@ class Giftcards extends Secure_Controller
      */
     public function postDelete(): void
     {
-        $giftcards_to_delete = $this->request->getPost('ids', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        // Accept both 'ids' and 'ids[]' parameter names
+        $giftcards_to_delete = $this->request->getPost('ids', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? $this->request->getPost('ids[]', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         if ($this->giftcard->delete_list($giftcards_to_delete)) {
             echo json_encode([
