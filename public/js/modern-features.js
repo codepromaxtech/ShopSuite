@@ -306,6 +306,32 @@ function clearAutoSave(formId) {
     localStorage.removeItem('form_' + formId);
 }
 
+// Live Clock - Updates every second
+function updateLiveClock() {
+    const clockElement = document.getElementById('clock-time');
+    if (!clockElement) return;
+    
+    const now = new Date();
+    const options = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    };
+    
+    const formatted = now.toLocaleString('en-US', options);
+    clockElement.textContent = formatted;
+}
+
+// Initialize live clock
+if (document.getElementById('liveclock')) {
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
+}
+
 // Register Service Worker for offline support
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

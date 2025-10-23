@@ -63,6 +63,9 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- File Upload with Drag & Drop -->
     <script src="<?= base_url('js/file-upload.js') ?>"></script>
     
+    <!-- Modern Table Manager (Enhanced table_support) -->
+    <script src="<?= base_url('js/table-manager.js') ?>"></script>
+    
     <!-- BootstrapDialog compatibility shim for Bootstrap 5 -->
     <script>
     // Create BootstrapDialog wrapper using Bootstrap 5 modals
@@ -699,10 +702,19 @@ $config = config('ShopSuite')->settings ?? [];
                     <button class="mobile-toggle" onclick="toggleSidebar()">
                         <i class="bi bi-list"></i>
                     </button>
-                    <h1 class="page-title"><?= $page_title ?? 'Dashboard' ?></h1>
+                    <div>
+                        <h1 class="page-title mb-0"><?= $page_title ?? 'Dashboard' ?></h1>
+                        <small class="text-muted d-none d-lg-block"><?= esc($config['company'] ?? 'ShopSuite') ?></small>
+                    </div>
                 </div>
                 
                 <div class="navbar-actions">
+                    <!-- Live Clock -->
+                    <div id="liveclock" class="text-muted d-none d-md-block fw-medium" style="font-size: 0.875rem;">
+                        <i class="bi bi-clock me-1"></i>
+                        <span id="clock-time">Loading...</span>
+                    </div>
+                    
                     <button class="btn btn-light" title="Notifications">
                         <i class="bi bi-bell"></i>
                     </button>
