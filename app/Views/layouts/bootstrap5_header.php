@@ -44,33 +44,17 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- SweetAlert2 CSS (Bootstrap 5 compatible) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
-    <!-- jQuery UI CSS -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.min.css">
-    
     <!-- jQuery (required for table_support) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
     <!-- Moment.js (for date picker) -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     
-    <!-- jQuery UI JS (full version with all widgets) -->
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-    <script>
-    // Ensure jQuery UI autocomplete is available
-    (function($) {
-        // Wait for jQuery UI to be fully loaded
-        if (typeof $.ui === 'undefined' || typeof $.ui.autocomplete === 'undefined') {
-            console.warn('jQuery UI not fully loaded, attempting reload...');
-            // Fallback: create a basic stub to prevent errors
-            $.fn.autocomplete = function(options) {
-                console.warn('Autocomplete called but jQuery UI not loaded:', options);
-                return this;
-            };
-        } else {
-            console.log('jQuery UI autocomplete loaded successfully');
-        }
-    })(jQuery);
-    </script>
+    <!-- jQuery UI CSS (from node_modules) -->
+    <link rel="stylesheet" href="<?= base_url('node_modules/jquery-ui-dist/jquery-ui.min.css') ?>">
+    
+    <!-- jQuery UI JS (from node_modules) -->
+    <script src="<?= base_url('node_modules/jquery-ui-dist/jquery-ui.min.js') ?>"></script>
     
     <!-- Nominatim Autocomplete -->
     <script src="<?= base_url('js/nominatim.autocomplete.js') ?>" type="text/javascript"></script>
