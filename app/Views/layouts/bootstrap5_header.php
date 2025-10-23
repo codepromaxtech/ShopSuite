@@ -26,8 +26,8 @@ $config = config('ShopSuite')->settings ?? [];
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5.3.3 (Latest) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -48,11 +48,14 @@ $config = config('ShopSuite')->settings ?? [];
     <script src="<?= base_url('resources/jquery-2c872dbe60.min.js') ?>"></script>
     <script src="<?= base_url('resources/shopsuite-a71baa0f6b.min.js') ?>"></script>
     
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap 5.3.3 JS (Latest) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- SweetAlert2 JS (Bootstrap 5 compatible) -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Modern Features (Dark Mode, Animations, Export, etc.) -->
+    <script src="<?= base_url('js/modern-features.js') ?>"></script>
     
     <!-- BootstrapDialog compatibility shim for Bootstrap 5 -->
     <script>
@@ -168,9 +171,10 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- Header JS (depends on jQuery, Moment, etc - load last) -->
     <?= view('partial/header_js') ?>
     
-    <!-- Custom CSS -->
+    <!-- Custom CSS - Modern Enhanced -->
     <style>
         :root {
+            /* Brand Colors */
             --primary-color: #4f46e5;
             --secondary-color: #6366f1;
             --success-color: #10b981;
@@ -180,6 +184,39 @@ $config = config('ShopSuite')->settings ?? [];
             --dark-color: #1f2937;
             --light-color: #f9fafb;
             --sidebar-width: 260px;
+            
+            /* Light Mode (Default) */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #f3f4f6;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            
+            /* Animation Variables */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Dark Mode */
+        [data-bs-theme="dark"] {
+            --bg-primary: #1f2937;
+            --bg-secondary: #111827;
+            --bg-tertiary: #0f172a;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --text-muted: #9ca3af;
+            --border-color: #374151;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
         }
         
         * {
@@ -415,6 +452,213 @@ $config = config('ShopSuite')->settings ?? [];
             font-size: 1.5rem;
             cursor: pointer;
         }
+        
+        /* Modern Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        .fade-in {
+            animation: fadeIn var(--transition-base) ease-in;
+        }
+        
+        .slide-up {
+            animation: slideUp var(--transition-base) ease-out;
+        }
+        
+        .slide-down {
+            animation: slideDown var(--transition-base) ease-out;
+        }
+        
+        /* Loading States */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 2000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 4px;
+        }
+        
+        [data-bs-theme="dark"] .skeleton {
+            background: linear-gradient(90deg, #2d2d2d 25%, #3d3d3d 50%, #2d2d2d 75%);
+            background-size: 2000px 100%;
+        }
+        
+        .skeleton-text {
+            height: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .skeleton-title {
+            height: 24px;
+            width: 60%;
+            margin-bottom: 16px;
+        }
+        
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+            border-width: 0.15rem;
+        }
+        
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Enhanced Table Styles */
+        .table {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition-base);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: var(--bg-tertiary);
+            transform: scale(1.001);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .table thead th {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        /* Enhanced Buttons */
+        .btn-group .btn:hover {
+            z-index: 2;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #dc2626);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, var(--info-color), #2563eb);
+        }
+        
+        /* Export Buttons */
+        .btn-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all var(--transition-base);
+        }
+        
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-export i {
+            font-size: 1.125rem;
+        }
+        
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-base);
+            z-index: 1000;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        /* Notification Badge */
+        .badge-notification {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            background: var(--danger-color);
+            color: white;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Progress Bar Enhanced */
+        .progress {
+            height: 0.5rem;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: var(--bg-tertiary);
+        }
+        
+        .progress-bar {
+            transition: width 0.6s ease;
+        }
     </style>
 </head>
 <body>
@@ -481,6 +725,11 @@ $config = config('ShopSuite')->settings ?? [];
                 </div>
             </div>
         </nav>
+        
+        <!-- Dark Mode Toggle -->
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+            <i class="bi bi-moon-stars" id="theme-icon"></i>
+        </button>
         
         <!-- Content Area -->
         <div class="content-area">
