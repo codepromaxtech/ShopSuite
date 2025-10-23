@@ -24,7 +24,7 @@ script:
   - docker build . --target shopsuite -t shopsuite
   - docker build . --target shopsuite_test -t shopsuite_test
   - docker run --rm shopsuite_test /app/vendor/bin/phpunit --testdox
-  - docker build app/Database/ -t "jekkos/shopsuite:sql-$TAG"
+  - docker build app/Database/ -t "codepromaxtech/shopsuite:sql-$TAG"
 env:
   global:
   - BRANCH=$(echo ${TRAVIS_BRANCH} | sed s/feature\\///)
@@ -32,7 +32,7 @@ env:
   - date=`date +%Y%m%d%H%M%S` && branch=${TRAVIS_BRANCH} && rev=`git rev-parse --short=6 HEAD`
 after_success:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" && docker tag "shopsuite:latest"
-    "jekkos/shopsuite:$TAG" && docker push "jekkos/shopsuite:$TAG" && docker push "jekkos/shopsuite:sql-$TAG"
+    "codepromaxtech/shopsuite:$TAG" && docker push "codepromaxtech/shopsuite:$TAG" && docker push "codepromaxtech/shopsuite:sql-$TAG"
   - gulp compress
   - mv dist/shopsuite.tar.gz "dist/shopsuite.$version.$rev.tgz"
   - mv dist/shopsuite.zip "dist/shopsuite.$version.$rev.zip"
@@ -45,7 +45,7 @@ deploy:
     release_notes: "This is a build of the latest master which might contain bugs. Use at your own risk. Check releases section for the latest official release"
     prerelease: true
     tag_name: unstable
-    user: jekkos
+    user: codepromaxtech
 
     api_key:
       secure: "KOukL8IFf/uL/BjMyCSKjf2vylydjcWqgEx0eMqFCg3nZ4ybMaOwPORRthIfyT72/FvGX/aoxxEn0uR/AEtb+hYQXHmNS+kZdX72JCe8LpGuZ7FJ5X+Eo9mhJcsmS+smd1sC95DySSc/GolKPo+0WtJYONY/xGCLxm+9Ay4HREg="

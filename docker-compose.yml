@@ -3,10 +3,10 @@ include:
 
 services:
     sqlscript:
-        image: jekkos/shopsuite:sql-master
+        image: codepromaxtech/shopsuite:sql-master
         command: /bin/sh -c 'exit 0'
     shopsuite:
-        image: jekkos/shopsuite:master
+        image: codepromaxtech/shopsuite:master
         restart: always
         depends_on:
             - mysql
