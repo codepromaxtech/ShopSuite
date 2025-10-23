@@ -16,6 +16,9 @@
     'config' => $config ?? []
 ]) ?>
 
+<!-- MODERN BOOTSTRAP 5 VERSION - Updated <?= date('Y-m-d H:i:s') ?> -->
+<script>console.log('✅ MODERN SALES PAGE LOADED - Bootstrap 5 Version');</script>
+
 <script type="text/javascript">
     $(document).ready(function() {
         console.log('🚀 Sales - Initializing Modern Table...');
