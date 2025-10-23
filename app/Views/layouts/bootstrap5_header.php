@@ -32,19 +32,19 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <!-- Bootstrap Table CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
-    
-    <!-- Bootstrap Select CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
-    
-    <!-- Date Range Picker CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
-    
     <!-- SweetAlert2 CSS (Bootstrap 5 compatible) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
-    <!-- Load jQuery and plugins from gulp-generated bundles -->
+    <!-- Load CSS from gulp bundles -->
+    <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getUri()->getQuery()): ?>
+        <!-- inject:debug:css -->
+        <!-- endinject -->
+    <?php else: ?>
+        <!-- inject:prod:css -->
+        <!-- endinject -->
+    <?php endif; ?>
+    
+    <!-- Load jQuery and plugins from gulp-generated bundles FIRST -->
     <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getUri()->getQuery()): ?>
         <!-- inject:debug:js -->
         <!-- endinject -->
@@ -55,34 +55,8 @@ $config = config('ShopSuite')->settings ?? [];
         <!-- endinject -->
     <?php endif; ?>
     
-    <!-- Moment.js (for date picker) -->
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-    
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Nominatim Autocomplete (load after jQuery UI) -->
-    <script src="<?= base_url('js/nominatim.autocomplete.js') ?>" type="text/javascript"></script>
-    
-    <!-- Bootstrap Table JS -->
-    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
-    <script>
-    // Initialize bootstrap table defaults if not already set
-    if ($.fn.bootstrapTable && !$.fn.bootstrapTable.defaults.formatConfirmAction) {
-        $.fn.bootstrapTable.defaults.formatConfirmAction = function(action) {
-            return 'Are you sure you want to ' + action + ' the selected items?';
-        };
-    }
-    </script>
-    
-    <!-- Bootstrap Select JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
-    
-    <!-- Date Range Picker JS -->
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    
-    <!-- Bootstrap Notify JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-notify@3.1.3/bootstrap-notify.min.js"></script>
     
     <!-- SweetAlert2 JS (Bootstrap 5 compatible) -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -194,24 +168,6 @@ $config = config('ShopSuite')->settings ?? [];
     };
     </script>
     
-    <!-- JS Cookie -->
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-    
-    <!-- Include old resources for compatibility -->
-    <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getUri()->getQuery()): ?>
-        <!-- inject:debug:css -->
-        <!-- endinject -->
-        <!-- inject:debug:js -->
-        <!-- endinject -->
-    <?php else: ?>
-        <!--inject:prod:css -->
-        <!-- endinject -->
-        <!-- inject:prod:js -->
-        <!-- endinject -->
-    <?php endif; ?>
-    
-    <!-- ShopSuite Core JavaScript (load after inject) -->
-    <script src="<?= base_url('js/manage_tables.js') ?>" type="text/javascript"></script>
     
     <!-- Lang Lines (no dependencies) -->
     <?= view('partial/lang_lines') ?>
