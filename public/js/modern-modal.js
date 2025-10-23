@@ -30,10 +30,17 @@ class ModernModal {
         
         try {
             // Load content via AJAX
+            console.log('🔄 Loading modal content from:', url);
             const content = await $.get(url);
+            console.log('✅ Content loaded, length:', content.length);
             
             if (typeof hideLoading === 'function') {
                 hideLoading();
+            }
+            
+            // Check if content is empty
+            if (!content || content.trim().length === 0) {
+                throw new Error('Empty content received from server');
             }
             
             // Create modal HTML
@@ -72,6 +79,18 @@ class ModernModal {
             
             // Find form in modal
             this.currentForm = this.modalElement.querySelector('form');
+            console.log('📋 Form found:', this.currentForm ? 'Yes' : 'No');
+            
+            if (this.currentForm) {
+                const inputs = this.currentForm.querySelectorAll('input, textarea, select');
+                console.log('📝 Form fields found:', inputs.length);
+                inputs.forEach((input, i) => {
+                    console.log(`  Field ${i + 1}: ${input.type || input.tagName} - ${input.name || input.id}`);
+                });
+            }
+            
+            // Execute any scripts in the loaded content
+            this.executeScripts(this.modalElement);
             
             // Set up event listeners
             this.setupEventListeners(onShow, onHide, onSubmit);
@@ -84,6 +103,8 @@ class ModernModal {
             // Show modal
             this.modalInstance.show();
             
+            console.log('✅ Modal opened successfully');
+            
         } catch (error) {
             if (typeof hideLoading === 'function') {
                 hideLoading();
@@ -93,6 +114,31 @@ class ModernModal {
                 showNotification('Failed to load form', 'error');
             }
         }
+    }
+    
+    /**
+     * Execute scripts in loaded content
+     */
+    executeScripts(container) {
+        const scripts = container.querySelectorAll('script');
+        console.log('📦 Found', scripts.length, 'scripts to execute');
+        
+        scripts.forEach((oldScript, index) => {
+            const newScript = document.createElement('script');
+            
+            // Copy attributes
+            Array.from(oldScript.attributes).forEach(attr => {
+                newScript.setAttribute(attr.name, attr.value);
+            });
+            
+            // Copy content
+            newScript.textContent = oldScript.textContent;
+            
+            // Replace old script with new one (this executes it)
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+            
+            console.log('✅ Executed script', index + 1);
+        });
     }
     
     /**
