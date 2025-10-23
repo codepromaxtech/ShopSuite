@@ -1,0 +1,50 @@
+================================================================================
+SHOPSUITE - LOGIN CREDENTIALS
+================================================================================
+
+🌐 Application URL: http://localhost/
+
+🔐 Admin Login:
+   Username: admin
+   Password: admin123
+
+⚠️  IMPORTANT: Change this password immediately after first login!
+
+================================================================================
+DATABASE ACCESS
+================================================================================
+
+Database: shopsuite
+Username: shopsuite
+Password: shopsuite@2024
+Host: localhost
+Port: 3306
+
+Direct MySQL Access:
+mysql -u shopsuite -p shopsuite
+(Enter password: shopsuite@2024)
+
+================================================================================
+FIRST TIME SETUP
+================================================================================
+
+1. Open browser: http://localhost/
+2. Login with credentials above
+3. Go to Configuration → Employees
+4. Change admin password
+5. Create additional users as needed
+6. Configure company settings
+
+================================================================================
+ADMINLTE 4 MIGRATION
+================================================================================
+
+📖 Read: MIGRATION_GUIDE.md
+
+Start with Home module:
+1. Edit app/Controllers/Home.php
+2. Change: return view('home/home_adminlte', $data);
+3. Test at http://localhost/
+4. Follow guide for other modules
+
+================================================================================

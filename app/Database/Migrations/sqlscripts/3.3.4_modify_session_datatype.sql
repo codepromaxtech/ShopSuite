@@ -1,0 +1,2 @@
+ALTER TABLE `shopsuite_sessions`
+  MODIFY COLUMN `data` MEDIUMBLOB NOT NULL;

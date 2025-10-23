@@ -1,0 +1,294 @@
+================================================================================
+SHOPSUITE - SERVER SETUP DOCUMENTATION
+================================================================================
+
+Installation completed on: 2025-10-23
+Server Environment: Ubuntu 24.04 (Noble)
+
+================================================================================
+1. INSTALLED SOFTWARE
+================================================================================
+
+✅ Nginx 1.24.0
+   - Web server
+   - Status: Running
+   - Config: /etc/nginx/sites-available/shopsuite
+
+✅ MariaDB 10.11.13
+   - Database server
+   - Status: Running
+   - Database: shopsuite
+   - User: shopsuite
+   - Password: shopsuite@2024
+
+✅ PHP 8.3.6
+   - PHP-FPM for Nginx
+   - Status: Running
+   - Extensions installed:
+     * php8.3-fpm
+     * php8.3-cli
+     * php8.3-mysql
+     * php8.3-intl
+     * php8.3-gd
+     * php8.3-bcmath
+     * php8.3-mbstring
+     * php8.3-xml
+     * php8.3-curl
+     * php8.3-zip
+     * php8.3-opcache
+
+================================================================================
+2. DATABASE CONFIGURATION
+================================================================================
+
+Database Name: shopsuite
+Database User: shopsuite
+Database Password: shopsuite@2024
+Database Host: localhost
+Database Port: 3306
+Table Prefix: shopsuite_
+
+Database Schema: Imported from app/Database/tables.sql
+Constraints: Imported from app/Database/constraints.sql
+
+================================================================================
+3. NGINX CONFIGURATION
+================================================================================
+
+Server Name: localhost, shopsuite.local
+Document Root: /home/erp/ShopSuite/public
+PHP Socket: /var/run/php/php8.3-fpm.sock
+
+Config File: /etc/nginx/sites-available/shopsuite
+Symlink: /etc/nginx/sites-enabled/shopsuite
+
+Access Log: /var/log/nginx/shopsuite_access.log
+Error Log: /var/log/nginx/shopsuite_error.log
+
+Max Upload Size: 100M
+PHP Timeout: 300 seconds
+
+================================================================================
+4. FILE PERMISSIONS
+================================================================================
+
+Writable Directory: /home/erp/ShopSuite/writable
+Owner: www-data:www-data
+Permissions: 775
+
+Uploads Directory: /home/erp/ShopSuite/public/uploads
+Owner: www-data:www-data
+Permissions: 775
+
+================================================================================
+5. ENVIRONMENT CONFIGURATION
+================================================================================
+
+Environment: development
+Debug Mode: enabled
+Timezone: Asia/Dhaka
+Base URL: http://localhost/
+
+Database Connection:
+- Hostname: localhost
+- Database: shopsuite
+- Username: shopsuite
+- Password: shopsuite@2024
+- Prefix: shopsuite_
+
+================================================================================
+6. ACCESS INFORMATION
+================================================================================
+
+🌐 Application URL: http://localhost/
+
+Default Admin Credentials (if exists in database):
+- Check database table: shopsuite_employees
+- Or create new user via database
+
+================================================================================
+7. SERVICE MANAGEMENT COMMANDS
+================================================================================
+
+Start Services:
+---------------
+sudo systemctl start nginx
+sudo systemctl start php8.3-fpm
+sudo systemctl start mariadb
+
+Stop Services:
+--------------
+sudo systemctl stop nginx
+sudo systemctl stop php8.3-fpm
+sudo systemctl stop mariadb
+
+Restart Services:
+-----------------
+sudo systemctl restart nginx
+sudo systemctl restart php8.3-fpm
+sudo systemctl restart mariadb
+
+Check Status:
+-------------
+sudo systemctl status nginx
+sudo systemctl status php8.3-fpm
+sudo systemctl status mariadb
+
+Enable Auto-start on Boot:
+---------------------------
+sudo systemctl enable nginx
+sudo systemctl enable php8.3-fpm
+sudo systemctl enable mariadb
+
+================================================================================
+8. LOG FILES
+================================================================================
+
+Nginx Access Log:
+/var/log/nginx/shopsuite_access.log
+
+Nginx Error Log:
+/var/log/nginx/shopsuite_error.log
+
+PHP-FPM Log:
+/var/log/php8.3-fpm.log
+
+MariaDB Log:
+/var/log/mysql/error.log
+
+Application Logs:
+/home/erp/ShopSuite/writable/logs/
+
+================================================================================
+9. TROUBLESHOOTING
+================================================================================
+
+Issue: 502 Bad Gateway
+Solution: Check PHP-FPM status
+  sudo systemctl status php8.3-fpm
+  sudo systemctl restart php8.3-fpm
+
+Issue: 403 Forbidden
+Solution: Check file permissions
+  sudo chown -R www-data:www-data /home/erp/ShopSuite/writable
+  sudo chmod -R 775 /home/erp/ShopSuite/writable
+
+Issue: Database Connection Error
+Solution: Verify database credentials in .env file
+  Check MariaDB is running: sudo systemctl status mariadb
+  Test connection: mysql -u shopsuite -p shopsuite
+
+Issue: White screen / No output
+Solution: Check PHP error logs
+  tail -f /var/log/php8.3-fpm.log
+  Check writable/logs/ directory
+
+Issue: Nginx won't start
+Solution: Test configuration
+  sudo nginx -t
+  Check error log: tail -f /var/log/nginx/error.log
+
+================================================================================
+10. TESTING THE INSTALLATION
+================================================================================
+
+1. Check Nginx is running:
+   curl -I http://localhost/
+
+2. Check PHP is working:
+   Create test file: /home/erp/ShopSuite/public/info.php
+   Content: <?php phpinfo(); ?>
+   Visit: http://localhost/info.php
+   Delete after testing!
+
+3. Check database connection:
+   mysql -u shopsuite -p shopsuite
+   (Password: shopsuite@2024)
+
+4. Access ShopSuite:
+   Open browser: http://localhost/
+   Should see ShopSuite login page
+
+================================================================================
+11. SECURITY RECOMMENDATIONS
+================================================================================
+
+⚠️ IMPORTANT - Before going to production:
+
+1. Change database password:
+   ALTER USER 'shopsuite'@'localhost' IDENTIFIED BY 'new_strong_password';
+   Update .env file with new password
+
+2. Set CI_ENVIRONMENT to 'production' in .env
+
+3. Disable CI_DEBUG in .env
+
+4. Set proper encryption key in .env
+
+5. Configure firewall:
+   sudo ufw allow 80/tcp
+   sudo ufw allow 443/tcp
+   sudo ufw enable
+
+6. Install SSL certificate (Let's Encrypt):
+   sudo apt install certbot python3-certbot-nginx
+   sudo certbot --nginx -d yourdomain.com
+
+7. Secure MariaDB:
+   sudo mysql_secure_installation
+
+8. Regular backups:
+   Database: mysqldump -u shopsuite -p shopsuite > backup.sql
+   Files: tar -czf shopsuite_backup.tar.gz /home/erp/ShopSuite
+
+================================================================================
+12. NEXT STEPS
+================================================================================
+
+1. ✅ Access http://localhost/ in your browser
+2. ✅ Complete initial setup wizard (if available)
+3. ✅ Create admin user account
+4. ✅ Configure company settings
+5. ✅ Test all modules (Sales, Items, Customers, etc.)
+6. ✅ Import initial data if needed
+7. ✅ Configure receipt/invoice templates
+8. ✅ Set up backup schedule
+
+================================================================================
+13. USEFUL COMMANDS
+================================================================================
+
+View Nginx configuration:
+cat /etc/nginx/sites-available/shopsuite
+
+View environment file:
+cat /home/erp/ShopSuite/.env
+
+View database tables:
+mysql -u shopsuite -p shopsuite -e "SHOW TABLES;"
+
+Clear application cache:
+rm -rf /home/erp/ShopSuite/writable/cache/*
+
+View recent error logs:
+tail -f /home/erp/ShopSuite/writable/logs/log-*.log
+
+Check disk space:
+df -h
+
+Check memory usage:
+free -h
+
+================================================================================
+14. SUPPORT & RESOURCES
+================================================================================
+
+ShopSuite GitHub: https://github.com/codepromaxtech/ShopSuite
+CodeIgniter 4 Docs: https://codeigniter.com/user_guide/
+Nginx Docs: https://nginx.org/en/docs/
+MariaDB Docs: https://mariadb.org/documentation/
+PHP Docs: https://www.php.net/docs.php
+
+================================================================================
+END OF SETUP DOCUMENTATION
+================================================================================
