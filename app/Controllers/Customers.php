@@ -231,7 +231,11 @@ class Customers extends Persons
             }
         }
 
-        echo view("customers/form", $data);
+        // Add missing data for Bootstrap 5 form
+        $data['controller_name'] = 'customers';
+        $data['config'] = $this->config;
+        
+        echo view("customers/form_bootstrap5", $data);
     }
 
     /**

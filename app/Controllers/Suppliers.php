@@ -105,8 +105,12 @@ class Suppliers extends Persons
         }
         $data['person_info'] = $info;
         $data['categories'] = $this->supplier->get_categories();
+        
+        // Add missing data for Bootstrap 5 form
+        $data['controller_name'] = 'suppliers';
+        $data['config'] = $this->config;
 
-        echo view("suppliers/form", $data);
+        echo view("suppliers/form_bootstrap5", $data);
     }
 
     /**

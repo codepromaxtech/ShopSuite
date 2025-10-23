@@ -109,8 +109,12 @@ class Giftcards extends Secure_Controller
         }
         $data['giftcard_id'] = $giftcard_id;
         $data['giftcard_value'] = $giftcard_info->value;
+        
+        // Add missing data for Bootstrap 5 form
+        $data['controller_name'] = 'giftcards';
+        $data['config'] = $config;
 
-        echo view("giftcards/form", $data);
+        echo view("giftcards/form_bootstrap5", $data);
     }
 
     /**
