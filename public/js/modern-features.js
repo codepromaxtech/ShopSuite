@@ -306,4 +306,24 @@ function clearAutoSave(formId) {
     localStorage.removeItem('form_' + formId);
 }
 
+// Register Service Worker for offline support
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+                console.log('✅ Service Worker registered:', registration.scope);
+            })
+            .catch(error => {
+                console.log('❌ Service Worker registration failed:', error);
+            });
+    });
+}
+
+// Check for updates
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        showNotification('App updated! Refresh for new features.', 'info', 5000);
+    });
+}
+
 console.log('✨ Modern Features Loaded');
