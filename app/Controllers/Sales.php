@@ -106,6 +106,7 @@ class Sales extends Secure_Controller
                 $selected_filters = [];
             }
             $data['selected_filters'] = $selected_filters;
+            $data['controller_name'] = 'sales';
             $data['allowed_modules'] = $this->module->get_allowed_modules($this->session->get('person_id'));
             $data['user_info'] = $this->employee->get_info($this->session->get('person_id'));
             $data['config'] = $this->config;

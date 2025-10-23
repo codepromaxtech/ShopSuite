@@ -1,6 +1,11 @@
 <?php
 /**
- * Modern Bootstrap 5 Sales Management View
+ * Modern Bootstrap 5 Sales Management View with Full Functionality
+ * @var string $controller_name
+ * @var string $table_headers
+ * @var array $filters
+ * @var array $selected_filters
+ * @var array $config
  */
 ?>
 
@@ -11,203 +16,103 @@
     'config' => $config ?? []
 ]) ?>
 
-<!-- Page Header -->
-<?= view('components/page_header', [
-    'title' => lang('Module.sales'),
-    'subtitle' => 'Manage sales transactions and orders',
-    'icon' => 'bi-cart-check',
-    'actions' => [
-        [
-            'label' => 'New Sale',
-            'url' => base_url('sales/register'),
-            'color' => 'success',
-            'icon' => 'bi-plus-circle',
-            'size' => 'btn-lg'
-        ]
-    ]
-]) ?>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // When any filter is clicked and the dropdown window is closed
+        $('#filters').on('hidden.bs.select', function(e) {
+            table_support.refresh();
+        });
 
-<!-- Sales Stats -->
-<div class="row g-4 mb-4">
-    <div class="col-md-3 col-sm-6">
-        <div class="card border-0 bg-success bg-opacity-10">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <p class="text-muted mb-1 small">Today's Sales</p>
-                        <h4 class="mb-0 fw-bold text-success">$0.00</h4>
-                    </div>
-                    <i class="bi bi-currency-dollar fs-1 text-success opacity-50"></i>
-                </div>
-            </div>
-        </div>
+        // Load the preset datarange picker
+        <?= view('partial/daterangepicker') ?>
+
+        $("#daterangepicker").on('apply.daterangepicker', function(ev, picker) {
+            table_support.refresh();
+        });
+
+        <?= view('partial/bootstrap_tables_locale') ?>
+
+        table_support.query_params = function() {
+            return {
+                "start_date": start_date,
+                "end_date": end_date,
+                "filters": $("#filters").val()
+            }
+        };
+
+        table_support.init({
+            resource: '<?= esc($controller_name) ?>',
+            headers: <?= $table_headers ?>,
+            pageSize: <?= $config['lines_per_page'] ?>,
+            uniqueId: 'sale_id',
+            onLoadSuccess: function(response) {
+                if ($("#table tbody tr").length > 1) {
+                    $("#payment_summary").html(response.payment_summary);
+                    $("#table tbody tr:last td:first").html("");
+                    $("#table tbody tr:last").css('font-weight', 'bold');
+                }
+            },
+            queryParams: function() {
+                return $.extend(arguments[0], table_support.query_params());
+            },
+            columns: {
+                'invoice': {
+                    align: 'center'
+                }
+            }
+        });
+    });
+</script>
+
+<?= view('partial/print_receipt', ['print_after_sale' => false, 'selected_printer' => 'takings_printer']) ?>
+
+<!-- Title Bar -->
+<div id="title_bar" class="mb-3 d-flex justify-content-between align-items-center print_hide">
+    <h2 class="mb-0 fw-bold">
+        <i class="bi bi-cart-check"></i>
+        <?= lang('Module.sales') ?>
+    </h2>
+    <div>
+        <button onclick="javascript:printdoc()" class="btn btn-info me-2">
+            <i class="bi bi-printer me-2"></i><?= lang('Common.print') ?>
+        </button>
+        <?= anchor("sales", '<i class="bi bi-cart-plus me-2"></i>' . lang('Sales.register'), ['class' => 'btn btn-success', 'id' => 'show_sales_button']) ?>
     </div>
-    
-    <div class="col-md-3 col-sm-6">
-        <div class="card border-0 bg-primary bg-opacity-10">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <p class="text-muted mb-1 small">Total Orders</p>
-                        <h4 class="mb-0 fw-bold text-primary">0</h4>
-                    </div>
-                    <i class="bi bi-receipt fs-1 text-primary opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 col-sm-6">
-        <div class="card border-0 bg-warning bg-opacity-10">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <p class="text-muted mb-1 small">Avg. Order Value</p>
-                        <h4 class="mb-0 fw-bold text-warning">$0.00</h4>
-                    </div>
-                    <i class="bi bi-graph-up fs-1 text-warning opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 col-sm-6">
-        <div class="card border-0 bg-info bg-opacity-10">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <p class="text-muted mb-1 small">Pending</p>
-                        <h4 class="mb-0 fw-bold text-info">0</h4>
-                    </div>
-                    <i class="bi bi-clock-history fs-1 text-info opacity-50"></i>
-                </div>
-            </div>
+</div>
+
+<!-- Toolbar with Filters -->
+<div id="toolbar" class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <button id="delete" class="btn btn-danger print_hide">
+                <i class="bi bi-trash me-2"></i><?= lang('Common.delete') ?>
+            </button>
+            
+            <?= form_input(['name' => 'daterangepicker', 'class' => 'form-control', 'id' => 'daterangepicker', 'style' => 'max-width: 250px']) ?>
+            
+            <?= form_multiselect('filters[]', $filters, $selected_filters, [
+                'id'                        => 'filters',
+                'data-none-selected-text'   => lang('Common.none_selected_text'),
+                'class'                     => 'selectpicker show-menu-arrow',
+                'data-selected-text-format' => 'count > 1',
+                'data-style'                => 'btn-default',
+                'data-width'                => 'fit'
+            ]) ?>
         </div>
     </div>
 </div>
 
 <!-- Sales Table -->
 <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white border-bottom">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h5 class="mb-0 fw-bold">
-                    <i class="bi bi-list-ul"></i>
-                    Sales Transactions
-                </h5>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group">
-                    <span class="input-group-text bg-white">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input type="text" 
-                           class="form-control" 
-                           id="search" 
-                           placeholder="Search sales...">
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0" 
-                   id="sales-table"
-                   data-toggle="table"
-                   data-search="true"
-                   data-pagination="true"
-                   data-page-size="25"
-                   data-show-refresh="true"
-                   data-show-columns="true"
-                   data-show-export="true">
-                <thead class="table-light">
-                    <tr>
-                        <th data-field="sale_id" data-sortable="true">Sale ID</th>
-                        <th data-field="date" data-sortable="true">Date</th>
-                        <th data-field="customer" data-sortable="true">Customer</th>
-                        <th data-field="items">Items</th>
-                        <th data-field="total" data-sortable="true">Total</th>
-                        <th data-field="payment">Payment</th>
-                        <th data-field="status">Status</th>
-                        <th data-field="actions">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="8" class="text-center py-5">
-                            <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
-                            <p class="text-muted mb-0">No sales transactions yet</p>
-                            <a href="<?= base_url('sales/register') ?>" class="btn btn-success mt-3">
-                                <i class="bi bi-plus-circle me-2"></i>
-                                Make First Sale
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div id="table_holder" class="table-responsive">
+            <table id="table"></table>
         </div>
     </div>
 </div>
 
-<!-- Quick Actions Modal Trigger (Hidden buttons for keyboard shortcuts) -->
-<div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1000;">
-    <div class="btn-group-vertical shadow-lg" role="group">
-        <a href="<?= base_url('sales/register') ?>" 
-           class="btn btn-success btn-lg rounded-circle mb-2" 
-           style="width: 60px; height: 60px;"
-           data-bs-toggle="tooltip" 
-           title="New Sale (F2)">
-            <i class="bi bi-plus-lg fs-4"></i>
-        </a>
-        <button type="button" 
-                class="btn btn-primary btn-lg rounded-circle" 
-                style="width: 60px; height: 60px;"
-                data-bs-toggle="tooltip" 
-                title="Quick Search (F3)">
-            <i class="bi bi-search fs-4"></i>
-        </button>
-    </div>
-</div>
+<!-- Payment Summary -->
+<div id="payment_summary" class="mt-3"></div>
 
-<style>
-.table-hover tbody tr:hover {
-    background-color: rgba(79, 70, 229, 0.05);
-    cursor: pointer;
-}
-
-.card {
-    transition: all 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-}
-</style>
-
-<script>
-// Initialize Bootstrap Table
-$(document).ready(function() {
-    $('#sales-table').bootstrapTable();
-    
-    // Initialize tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-    
-    // Keyboard shortcuts
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'F2') {
-            e.preventDefault();
-            window.location.href = '<?= base_url('sales/register') ?>';
-        }
-        if (e.key === 'F3') {
-            e.preventDefault();
-            document.getElementById('search').focus();
-        }
-    });
-});
-</script>
 
 <?= view('layouts/bootstrap5_footer') ?>
