@@ -41,6 +41,9 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- Date Range Picker CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     
+    <!-- Bootstrap Dialog CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap3-dialog@1.35.4/dist/css/bootstrap-dialog.min.css">
+    
     <!-- jQuery (required for table_support) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
@@ -61,6 +64,9 @@ $config = config('ShopSuite')->settings ?? [];
     
     <!-- Bootstrap Notify JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-notify@3.1.3/bootstrap-notify.min.js"></script>
+    
+    <!-- Bootstrap Dialog JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap3-dialog@1.35.4/dist/js/bootstrap-dialog.min.js"></script>
     
     <!-- JS Cookie -->
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
