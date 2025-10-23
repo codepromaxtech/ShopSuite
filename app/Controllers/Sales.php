@@ -1220,7 +1220,8 @@ class Sales extends Secure_Controller
             $data['customer_required'] = lang('Sales.customer_optional');
         }
 
-        echo view("sales/register", $data);
+        // Use Bootstrap 5 modern POS
+        echo view("sales/register_bootstrap5", $data);
     }
 
     /**
