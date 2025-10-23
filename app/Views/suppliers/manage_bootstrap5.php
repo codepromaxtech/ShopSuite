@@ -1,6 +1,9 @@
 <?php
 /**
- * Modern Bootstrap 5 Suppliers Management View
+ * Modern Bootstrap 5 Suppliers Management View with Full Functionality
+ * @var string $controller_name
+ * @var string $table_headers
+ * @var array $config
  */
 ?>
 
@@ -11,145 +14,46 @@
     'config' => $config ?? []
 ]) ?>
 
-<!-- Page Header -->
-<?= view('components/page_header', [
-    'title' => lang('Module.suppliers'),
-    'subtitle' => 'Manage supplier database',
-    'icon' => 'bi-truck',
-    'actions' => [
-        [
-            'label' => 'Add Supplier',
-            'url' => base_url('suppliers/view/-1'),
-            'color' => 'primary',
-            'icon' => 'bi-plus-circle',
-            'size' => 'btn-lg'
-        ]
-    ]
-]) ?>
+<script type="text/javascript">
+    $(document).ready(function() {
+        <?= view('partial/bootstrap_tables_locale') ?>
 
-<!-- Supplier Stats -->
-<div class="row g-4 mb-4">
-    <div class="col-md-3 col-sm-6">
-        <div class="card border-0 bg-primary bg-opacity-10">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <p class="text-muted mb-1 small">Total Suppliers</p>
-                        <h4 class="mb-0 fw-bold text-primary">0</h4>
-                    </div>
-                    <i class="bi bi-truck fs-1 text-primary opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 col-sm-6">
-        <div class="card border-0 bg-success bg-opacity-10">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <p class="text-muted mb-1 small">Active</p>
-                        <h4 class="mb-0 fw-bold text-success">0</h4>
-                    </div>
-                    <i class="bi bi-check-circle fs-1 text-success opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 col-sm-6">
-        <div class="card border-0 bg-warning bg-opacity-10">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <p class="text-muted mb-1 small">Total Purchases</p>
-                        <h4 class="mb-0 fw-bold text-warning">$0.00</h4>
-                    </div>
-                    <i class="bi bi-cart fs-1 text-warning opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 col-sm-6">
-        <div class="card border-0 bg-info bg-opacity-10">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <p class="text-muted mb-1 small">Pending Orders</p>
-                        <h4 class="mb-0 fw-bold text-info">0</h4>
-                    </div>
-                    <i class="bi bi-hourglass fs-1 text-info opacity-50"></i>
-                </div>
-            </div>
+        table_support.init({
+            resource: '<?= esc($controller_name) ?>',
+            headers: <?= $table_headers ?>,
+            pageSize: <?= $config['lines_per_page'] ?>,
+            uniqueId: 'person_id'
+        });
+    });
+</script>
+
+<!-- Title Bar -->
+<div id="title_bar" class="mb-3 d-flex justify-content-end gap-2 print_hide">
+    <button class="btn btn-primary modal-dlg" data-btn-new="<?= lang('Common.new') ?>" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "$controller_name/view" ?>" title="<?= lang(ucfirst($controller_name) . '.new') ?>">
+        <i class="bi bi-plus-circle me-2"></i><?= lang(ucfirst($controller_name) . '.new') ?>
+    </button>
+</div>
+
+<!-- Toolbar -->
+<div id="toolbar" class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <button id="delete" class="btn btn-danger print_hide">
+                <i class="bi bi-trash me-2"></i><?= lang('Common.delete') ?>
+            </button>
         </div>
     </div>
 </div>
+
 
 <!-- Suppliers Table -->
 <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white border-bottom">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h5 class="mb-0 fw-bold">
-                    <i class="bi bi-list-ul"></i>
-                    Supplier List
-                </h5>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group">
-                    <span class="input-group-text bg-white">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input type="text" 
-                           class="form-control" 
-                           id="search" 
-                           placeholder="Search suppliers...">
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0" 
-                   id="suppliers-table"
-                   data-toggle="table"
-                   data-search="true"
-                   data-pagination="true"
-                   data-page-size="25">
-                <thead class="table-light">
-                    <tr>
-                        <th data-field="name" data-sortable="true">Supplier Name</th>
-                        <th data-field="contact">Contact Person</th>
-                        <th data-field="email">Email</th>
-                        <th data-field="phone">Phone</th>
-                        <th data-field="total_purchases" data-sortable="true">Total Purchases</th>
-                        <th data-field="last_order">Last Order</th>
-                        <th data-field="actions">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="7" class="text-center py-5">
-                            <i class="bi bi-truck fs-1 text-muted d-block mb-3"></i>
-                            <p class="text-muted mb-0">No suppliers in database</p>
-                            <a href="<?= base_url('suppliers/view/-1') ?>" class="btn btn-primary mt-3">
-                                <i class="bi bi-plus-circle me-2"></i>
-                                Add First Supplier
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div id="table_holder" class="table-responsive">
+            <table id="table"></table>
         </div>
     </div>
 </div>
 
-<script>
-$(document).ready(function() {
-    $('#suppliers-table').bootstrapTable();
-});
-</script>
-
 <?= view('layouts/bootstrap5_footer') ?>
+
