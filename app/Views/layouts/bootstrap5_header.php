@@ -41,8 +41,8 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- Date Range Picker CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     
-    <!-- Bootstrap Dialog CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap3-dialog@1.35.4/dist/css/bootstrap-dialog.min.css">
+    <!-- SweetAlert2 CSS (Bootstrap 5 compatible) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
     <!-- jQuery (required for table_support) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -65,8 +65,77 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- Bootstrap Notify JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-notify@3.1.3/bootstrap-notify.min.js"></script>
     
-    <!-- Bootstrap Dialog JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap3-dialog@1.35.4/dist/js/bootstrap-dialog.min.js"></script>
+    <!-- SweetAlert2 JS (Bootstrap 5 compatible) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- BootstrapDialog compatibility shim for Bootstrap 5 -->
+    <script>
+    // Create BootstrapDialog wrapper using Bootstrap 5 modals
+    window.BootstrapDialog = {
+        TYPE_DEFAULT: 'default',
+        TYPE_INFO: 'info',
+        TYPE_PRIMARY: 'primary',
+        TYPE_SUCCESS: 'success',
+        TYPE_WARNING: 'warning',
+        TYPE_DANGER: 'danger',
+        
+        show: function(options) {
+            var modalId = 'modal-' + Date.now();
+            var title = options.title || '';
+            var message = options.message || '';
+            var buttons = options.buttons || [];
+            
+            // Create modal HTML
+            var modalHtml = '<div class="modal fade" id="' + modalId + '" tabindex="-1">' +
+                '<div class="modal-dialog modal-lg">' +
+                '<div class="modal-content">' +
+                '<div class="modal-header">' +
+                '<h5 class="modal-title">' + title + '</h5>' +
+                '<button type="button" class="btn-close" data-bs-dismiss="modal"></button>' +
+                '</div>' +
+                '<div class="modal-body">' + message + '</div>' +
+                '<div class="modal-footer">';
+            
+            // Add buttons
+            buttons.forEach(function(btn) {
+                var btnClass = 'btn btn-' + (btn.cssClass || 'secondary');
+                modalHtml += '<button type="button" class="' + btnClass + '" data-action="' + (btn.id || '') + '">' + btn.label + '</button>';
+            });
+            
+            modalHtml += '</div></div></div></div>';
+            
+            // Append to body
+            $('body').append(modalHtml);
+            
+            // Get modal element
+            var modalEl = document.getElementById(modalId);
+            var modal = new bootstrap.Modal(modalEl);
+            
+            // Attach button handlers
+            $(modalEl).find('[data-action]').on('click', function() {
+                var action = $(this).data('action');
+                var button = buttons.find(function(b) { return b.id === action; });
+                if (button && button.action) {
+                    button.action();
+                }
+                modal.hide();
+            });
+            
+            // Show modal
+            modal.show();
+            
+            // Remove modal from DOM after hiding
+            $(modalEl).on('hidden.bs.modal', function() {
+                $(this).remove();
+            });
+            
+            return {
+                open: function() { modal.show(); },
+                close: function() { modal.hide(); }
+            };
+        }
+    };
+    </script>
     
     <!-- JS Cookie -->
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
