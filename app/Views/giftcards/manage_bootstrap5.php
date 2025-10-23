@@ -16,25 +16,28 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        console.log('🚀 Giftcards - Document ready');
+        console.log('🚀 Giftcards - Initializing Modern Table...');
         <?= view('partial/bootstrap_tables_locale') ?>
 
-        table_support.init({
+        // Initialize Modern Table Manager
+        window.tableManager = new ModernTableManager({
+            selector: '#table',
+            toolbarSelector: '#toolbar',
             resource: '<?= esc($controller_name) ?>',
             headers: <?= $table_headers ?>,
             pageSize: <?= $config['lines_per_page'] ?>,
             uniqueId: 'giftcard_id',
-            onLoadSuccess: function(response) {
-                console.log('✅ Giftcards table loaded');
-                setTimeout(function() {
-                    dialog_support.init("button.modal-dlg, a.modal-dlg");
-                    console.log('✅ Dialog support re-initialized');
-                }, 100);
+            employeeId: '<?= $user_info->person_id ?? '' ?>',
+            onLoadSuccess: function(data) {
+                console.log('✅ Giftcards table loaded:', data.total, 'items');
+                setTimeout(() => initializeModalTriggers(), 100);
             }
         });
         
-        dialog_support.init("button.modal-dlg, a.modal-dlg");
-        console.log('✅ Initial dialog support initialized');
+        window.tableManager.init();
+        initializeModalTriggers();
+        
+        console.log('✅ Giftcards initialized successfully');
     });
     
     // Filter Functions

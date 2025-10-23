@@ -16,36 +16,31 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        console.log('🚀 Document ready - Initializing...');
+        console.log('🚀 Customers - Initializing Modern Table...');
         <?= view('partial/bootstrap_tables_locale') ?>
 
-        // Initialize table support
-        table_support.init({
+        // Initialize Modern Table Manager
+        window.tableManager = new ModernTableManager({
+            selector: '#table',
+            toolbarSelector: '#toolbar',
             resource: '<?= esc($controller_name) ?>',
             headers: <?= $table_headers ?>,
             pageSize: <?= $config['lines_per_page'] ?>,
             uniqueId: 'person_id',
-            onLoadSuccess: function(response) {
-                console.log('✅ Table loaded successfully');
-                // Reinitialize dialog support after table loads
-                setTimeout(function() {
-                    dialog_support.init("button.modal-dlg, a.modal-dlg");
-                    console.log('✅ Dialog support initialized');
-                }, 100);
+            employeeId: '<?= $user_info->person_id ?? '' ?>',
+            onLoadSuccess: function(data) {
+                console.log('✅ Table loaded:', data.total, 'items');
+                // Reinitialize modal triggers after table loads
+                setTimeout(() => initializeModalTriggers(), 100);
             }
         });
         
-        // Initialize modal dialog support for buttons immediately
-        dialog_support.init("button.modal-dlg, a.modal-dlg");
-        console.log('✅ Initial dialog support initialized');
+        window.tableManager.init();
         
-        // Verify functions exist
-        console.log('🔍 Checking functions:');
-        console.log('  - table_support:', typeof table_support);
-        console.log('  - dialog_support:', typeof dialog_support);
-        console.log('  - form_support:', typeof form_support);
-        console.log('  - showNotification:', typeof showNotification);
-        console.log('  - exportToExcel:', typeof exportToExcel);
+        // Initialize modal triggers for buttons
+        initializeModalTriggers();
+        
+        console.log('✅ Modern systems initialized successfully');
     });
     
     // Filter Functions

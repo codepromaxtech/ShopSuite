@@ -16,25 +16,28 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        console.log('🚀 Suppliers - Document ready');
+        console.log('🚀 Suppliers - Initializing Modern Table...');
         <?= view('partial/bootstrap_tables_locale') ?>
 
-        table_support.init({
+        // Initialize Modern Table Manager
+        window.tableManager = new ModernTableManager({
+            selector: '#table',
+            toolbarSelector: '#toolbar',
             resource: '<?= esc($controller_name) ?>',
             headers: <?= $table_headers ?>,
             pageSize: <?= $config['lines_per_page'] ?>,
             uniqueId: 'person_id',
-            onLoadSuccess: function(response) {
-                console.log('✅ Suppliers table loaded');
-                setTimeout(function() {
-                    dialog_support.init("button.modal-dlg, a.modal-dlg");
-                    console.log('✅ Dialog support re-initialized');
-                }, 100);
+            employeeId: '<?= $user_info->person_id ?? '' ?>',
+            onLoadSuccess: function(data) {
+                console.log('✅ Suppliers table loaded:', data.total, 'items');
+                setTimeout(() => initializeModalTriggers(), 100);
             }
         });
         
-        dialog_support.init("button.modal-dlg, a.modal-dlg");
-        console.log('✅ Initial dialog support initialized');
+        window.tableManager.init();
+        initializeModalTriggers();
+        
+        console.log('✅ Suppliers initialized successfully');
     });
     
     // Filter Functions

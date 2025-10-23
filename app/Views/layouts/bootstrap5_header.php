@@ -32,6 +32,9 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
+    <!-- Bootstrap Table CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.3/dist/bootstrap-table.min.css">
+    
     <!-- SweetAlert2 CSS (Bootstrap 5 compatible) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
@@ -47,18 +50,25 @@ $config = config('ShopSuite')->settings ?? [];
         <!-- endinject -->
     <?php endif; ?>
     
-    <!-- Load jQuery and plugins from gulp-generated bundles FIRST -->
-    <script src="<?= base_url('resources/jquery-2c872dbe60.min.js') ?>"></script>
-    <script src="<?= base_url('resources/shopsuite-a71baa0f6b.min.js') ?>"></script>
-    
-    <!-- Legacy Support - dialog_support & form_support compatibility -->
-    <script src="<?= base_url('js/legacy-support.js') ?>"></script>
+    <!-- jQuery 3.x (Latest) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     
     <!-- Bootstrap 5.3.3 JS (Latest) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- SweetAlert2 JS (Bootstrap 5 compatible) -->
+    <!-- SweetAlert2 JS (Modern alerts) -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Bootstrap Table (Latest) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.3/dist/extensions/export/bootstrap-table-export.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.28.0/tableExport.min.js"></script>
+    
+    <!-- jQuery Validation (for forms) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    
+    <!-- jQuery Form Plugin (for AJAX forms) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-form@4.3.0/dist/jquery.form.min.js"></script>
     
     <!-- Modern Features (Dark Mode, Animations, Export, etc.) -->
     <script src="<?= base_url('js/modern-features.js') ?>"></script>
@@ -66,115 +76,11 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- File Upload with Drag & Drop -->
     <script src="<?= base_url('js/file-upload.js') ?>"></script>
     
-    <!-- Modern Table Manager (Enhanced table_support) -->
-    <script src="<?= base_url('js/table-manager.js') ?>"></script>
+    <!-- Modern Table System (NEW) -->
+    <script src="<?= base_url('js/modern-table.js') ?>"></script>
     
-    <!-- BootstrapDialog compatibility shim for Bootstrap 5 -->
-    <script>
-    // Create BootstrapDialog wrapper using Bootstrap 5 modals
-    window.BootstrapDialog = {
-        TYPE_DEFAULT: 'default',
-        TYPE_INFO: 'info',
-        TYPE_PRIMARY: 'primary',
-        TYPE_SUCCESS: 'success',
-        TYPE_WARNING: 'warning',
-        TYPE_DANGER: 'danger',
-        
-        show: function(options) {
-            var modalId = 'modal-' + Date.now();
-            var title = options.title || '';
-            var message = options.message || '';
-            var buttons = options.buttons || [];
-            var cssClass = options.cssClass || 'modal-lg';
-            
-            // Handle dialog size from cssClass
-            var dialogSize = 'modal-lg';
-            if (cssClass.includes('modal-dlg-wide')) dialogSize = 'modal-xl';
-            else if (cssClass.includes('modal-dlg-small')) dialogSize = 'modal-sm';
-            
-            // Create modal HTML
-            var modalHtml = '<div class="modal fade" id="' + modalId + '" tabindex="-1">' +
-                '<div class="modal-dialog ' + dialogSize + '">' +
-                '<div class="modal-content">' +
-                '<div class="modal-header">' +
-                '<h5 class="modal-title">' + title + '</h5>' +
-                '<button type="button" class="btn-close" data-bs-dismiss="modal"></button>' +
-                '</div>' +
-                '<div class="modal-body"></div>' +
-                '<div class="modal-footer">';
-            
-            // Add buttons
-            buttons.forEach(function(btn) {
-                var btnClass = 'btn btn-' + (btn.cssClass || 'secondary');
-                modalHtml += '<button type="button" id="' + btn.id + '" class="' + btnClass + '" data-action="' + (btn.id || '') + '">' + btn.label + '</button>';
-            });
-            
-            modalHtml += '</div></div></div></div>';
-            
-            // Append to body
-            $('body').append(modalHtml);
-            
-            // Get modal elements
-            var $modalEl = $('#' + modalId);
-            var modalEl = $modalEl[0];
-            var $modalBody = $modalEl.find('.modal-body');
-            var modal = new bootstrap.Modal(modalEl);
-            
-            // Set message content (can be jQuery object or string)
-            if (typeof message === 'object' && message.jquery) {
-                $modalBody.append(message);
-            } else {
-                $modalBody.html(message);
-            }
-            
-            // Create dialog reference object
-            var dialogRef = {
-                $modal: $modalEl,
-                $modalBody: $modalBody,
-                $modalHeader: $modalEl.find('.modal-header'),
-                $modalFooter: $modalEl.find('.modal-footer'),
-                open: function() { modal.show(); },
-                close: function() { modal.hide(); }
-            };
-            
-            // Attach button handlers
-            $modalEl.find('[data-action]').on('click', function(e) {
-                var action = $(this).data('action');
-                var button = buttons.find(function(b) { return b.id === action; });
-                if (button && button.action) {
-                    var result = button.action(dialogRef);
-                    // Don't close if action returns false
-                    if (result === false) {
-                        e.preventDefault();
-                        return false;
-                    }
-                }
-                modal.hide();
-            });
-            
-            // Attach hotkey handlers (Enter key)
-            $modalEl.on('keydown', function(e) {
-                if (e.which === 13) { // Enter key
-                    var hotkeyBtn = buttons.find(function(b) { return b.hotkey === 13; });
-                    if (hotkeyBtn) {
-                        e.preventDefault();
-                        $('#' + hotkeyBtn.id).click();
-                    }
-                }
-            });
-            
-            // Show modal
-            modal.show();
-            
-            // Remove modal from DOM after hiding
-            $modalEl.on('hidden.bs.modal', function() {
-                $(this).remove();
-            });
-            
-            return dialogRef;
-        }
-    };
-    </script>
+    <!-- Modern Modal System (NEW - replaces BootstrapDialog) -->
+    <script src="<?= base_url('js/modern-modal.js') ?>"></script>
     
     
     <!-- Lang Lines (no dependencies) -->
