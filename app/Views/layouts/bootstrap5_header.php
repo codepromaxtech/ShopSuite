@@ -53,8 +53,14 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- Moment.js (for date picker) -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     
-    <!-- jQuery UI JS -->
+    <!-- jQuery UI JS (full version with all widgets) -->
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script>
+    // Verify jQuery UI autocomplete is loaded
+    if (!$.fn.autocomplete) {
+        console.error('jQuery UI autocomplete not loaded!');
+    }
+    </script>
     
     <!-- Nominatim Autocomplete -->
     <script src="<?= base_url('js/nominatim.autocomplete.js') ?>" type="text/javascript"></script>
