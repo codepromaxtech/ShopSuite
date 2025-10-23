@@ -180,8 +180,8 @@ class Suppliers extends Persons
      */
     public function postDelete(): void
     {
-        // Accept both 'ids' and 'ids[]' parameter names
-        $suppliers_to_delete = $this->request->getPost('ids', FILTER_SANITIZE_NUMBER_INT) ?? $this->request->getPost('ids[]', FILTER_SANITIZE_NUMBER_INT);
+        // Get POST data - CodeIgniter handles ids[] as 'ids'
+        $suppliers_to_delete = $this->request->getVar('ids');
 
         if ($this->supplier->delete_list($suppliers_to_delete)) {
             echo json_encode([

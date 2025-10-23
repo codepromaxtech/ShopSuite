@@ -347,8 +347,15 @@ class Customers extends Persons
      */
     public function postDelete(): void
     {
-        // Accept both 'ids' and 'ids[]' parameter names
-        $customers_to_delete = $this->request->getPost('ids') ?? $this->request->getPost('ids[]');
+        // Get POST data - CodeIgniter handles ids[] as 'ids'
+        $customers_to_delete = $this->request->getVar('ids');
+        
+        // Validate we have IDs to delete
+        if (empty($customers_to_delete) || !is_array($customers_to_delete)) {
+            echo json_encode(['success' => false, 'message' => 'No customer IDs provided']);
+            return;
+        }
+        
         $customers_info = $this->customer->get_multiple_info($customers_to_delete);
 
         $count = 0;

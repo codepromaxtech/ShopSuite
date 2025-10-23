@@ -174,8 +174,8 @@ class Giftcards extends Secure_Controller
      */
     public function postDelete(): void
     {
-        // Accept both 'ids' and 'ids[]' parameter names
-        $giftcards_to_delete = $this->request->getPost('ids', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? $this->request->getPost('ids[]', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        // Get POST data - CodeIgniter handles ids[] as 'ids'
+        $giftcards_to_delete = $this->request->getVar('ids');
 
         if ($this->giftcard->delete_list($giftcards_to_delete)) {
             echo json_encode([
