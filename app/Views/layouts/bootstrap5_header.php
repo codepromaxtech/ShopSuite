@@ -75,9 +75,11 @@ $config = config('ShopSuite')->settings ?? [];
         <!-- endinject -->
     <?php endif; ?>
     
-    <!-- Header JS and Lang Lines -->
-    <?= view('partial/header_js') ?>
+    <!-- Lang Lines (no dependencies) -->
     <?= view('partial/lang_lines') ?>
+    
+    <!-- Header JS (depends on jQuery, Moment, etc - load last) -->
+    <?= view('partial/header_js') ?>
     
     <!-- Custom CSS -->
     <style>

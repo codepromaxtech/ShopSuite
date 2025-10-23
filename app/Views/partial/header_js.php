@@ -10,11 +10,25 @@
         setInterval('update_clock();', 1000);
     }
 
-    // Start the clock immediately
-    clock_tick();
-
     var update_clock = function update_clock() {
-        document.getElementById('liveclock').innerHTML = moment().format("<?= dateformat_momentjs($config['dateformat'] . ' ' . $config['timeformat']) ?>");
+        var clockElement = document.getElementById('liveclock');
+        if (!clockElement) return;
+        
+        // Check if moment.js is loaded
+        if (typeof moment !== 'undefined') {
+            clockElement.innerHTML = moment().format("<?= dateformat_momentjs($config['dateformat'] . ' ' . $config['timeformat']) ?>");
+        } else {
+            // Fallback to regular Date if moment.js not loaded
+            var now = new Date();
+            clockElement.innerHTML = now.toLocaleString();
+        }
+    }
+
+    // Start the clock after ensuring libraries are loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', clock_tick);
+    } else {
+        clock_tick();
     }
 
     $.notifyDefaults({
