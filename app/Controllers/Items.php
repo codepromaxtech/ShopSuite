@@ -86,6 +86,7 @@ class Items extends Secure_Controller
             'temporary'      => lang('Items.temp')
         ];
         
+        $data['controller_name'] = 'items';
         $data['allowed_modules'] = $this->module->get_allowed_modules($this->session->get('person_id'));
         $data['user_info'] = $this->employee->get_info($this->session->get('person_id'));
         $data['config'] = $this->config;
