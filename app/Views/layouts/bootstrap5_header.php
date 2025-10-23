@@ -53,13 +53,32 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- jQuery UI JS (load immediately after jQuery, before other libraries) -->
     <script src="<?= base_url('vendor/jquery-ui/jquery-ui.min.js') ?>"></script>
     <script>
-    // Ensure autocomplete is globally available
-    window.jQuery = window.$ = jQuery;
-    if (!$.fn.autocomplete) {
-        console.error('CRITICAL: jQuery UI autocomplete failed to load!');
-    } else {
-        console.log('✓ jQuery UI autocomplete loaded successfully');
-    }
+    // Ensure autocomplete is globally available for AJAX-loaded content
+    (function() {
+        window.jQuery = window.$ = jQuery;
+        
+        if (!$.fn.autocomplete) {
+            console.error('CRITICAL: jQuery UI autocomplete failed to load!');
+        } else {
+            console.log('✓ jQuery UI autocomplete loaded successfully');
+            
+            // Store reference to autocomplete for AJAX-loaded content
+            window.jQueryUIAutocomplete = $.fn.autocomplete;
+            
+            // Ensure it's always available even when $ is rebound
+            var originalDollar = window.$;
+            Object.defineProperty(window, '$', {
+                get: function() { return originalDollar; },
+                set: function(val) {
+                    originalDollar = val;
+                    // Re-attach autocomplete if it's missing
+                    if (val && val.fn && !val.fn.autocomplete && window.jQueryUIAutocomplete) {
+                        val.fn.autocomplete = window.jQueryUIAutocomplete;
+                    }
+                }
+            });
+        }
+    })();
     </script>
     
     <!-- Moment.js (for date picker) -->
