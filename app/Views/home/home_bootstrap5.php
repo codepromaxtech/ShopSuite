@@ -16,17 +16,19 @@ $config = $config ?? [];
     'config' => $config
 ]) ?>
 
-<!-- Welcome Section -->
+<!-- Business Overview Header -->
 <div class="row mb-4">
-    <div class="col-12">
-        <div class="card border-0 bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-            <div class="card-body p-4 text-white">
-                <h2 class="mb-2">
-                    <i class="bi bi-hand-wave"></i>
-                    Welcome back, <?= esc($user_info->first_name ?? 'User') ?>!
-                </h2>
-                <p class="mb-0 opacity-75">Here's what's happening with your store today.</p>
-            </div>
+    <div class="col-md-8">
+        <h2 class="mb-1 fw-bold">Business Overview</h2>
+        <p class="text-muted mb-0">
+            <i class="bi bi-calendar-check"></i> <?= date('l, F j, Y') ?>
+        </p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-sm btn-outline-primary active">Today</button>
+            <button type="button" class="btn btn-sm btn-outline-primary">Week</button>
+            <button type="button" class="btn btn-sm btn-outline-primary">Month</button>
         </div>
     </div>
 </div>
@@ -110,85 +112,193 @@ $config = $config ?? [];
     </div>
 </div>
 
-<!-- Modules Grid -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card border-0">
+<!-- Sales Chart & Top Products -->
+<div class="row g-4 mb-4">
+    <!-- Sales Trend Chart -->
+    <div class="col-md-8">
+        <div class="card border-0 h-100">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-graph-up"></i>
+                    Sales Trend
+                </h5>
+                <span class="badge bg-success">Live</span>
+            </div>
+            <div class="card-body">
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-bar-chart fs-1 mb-3 d-block"></i>
+                    <p>Sales chart will be displayed here</p>
+                    <small>Connect your sales data to see trends</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Selling Products -->
+    <div class="col-md-4">
+        <div class="card border-0 h-100">
             <div class="card-header bg-white">
                 <h5 class="mb-0 fw-bold">
-                    <i class="bi bi-grid-3x3-gap"></i>
-                    Quick Access
+                    <i class="bi bi-trophy"></i>
+                    Top Products
                 </h5>
             </div>
-            <div class="card-body p-4">
-                <div class="row g-3">
-                    <?php foreach ($allowed_modules as $module): ?>
-                        <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                            <a href="<?= base_url($module->module_id) ?>" 
-                               class="text-decoration-none">
-                                <div class="card border-0 h-100 module-card" 
-                                     style="background: linear-gradient(135deg, <?= getModuleGradient($module->module_id) ?>);">
-                                    <div class="card-body text-center text-white p-3">
-                                        <i class="<?= getModuleIcon($module->module_id) ?> fs-1 mb-2"></i>
-                                        <h6 class="mb-0 fw-semibold">
-                                            <?= lang('Module.' . $module->module_id) ?>
-                                        </h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    <?php endforeach; ?>
+            <div class="card-body">
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-box-seam fs-1 mb-3 d-block"></i>
+                    <p class="mb-0">No sales data yet</p>
+                    <small>Start selling to see top products</small>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Recent Activity -->
-<div class="row">
-    <div class="col-md-8">
+<!-- Quick Actions & Alerts -->
+<div class="row g-4 mb-4">
+    <!-- Quick Actions -->
+    <div class="col-md-6">
         <div class="card border-0">
             <div class="card-header bg-white">
                 <h5 class="mb-0 fw-bold">
-                    <i class="bi bi-clock-history"></i>
-                    Recent Activity
+                    <i class="bi bi-lightning"></i>
+                    Quick Actions
                 </h5>
             </div>
             <div class="card-body">
-                <div class="text-center text-muted py-5">
-                    <i class="bi bi-inbox fs-1 mb-3 d-block"></i>
-                    <p>No recent activity</p>
+                <div class="d-grid gap-2">
+                    <a href="<?= base_url('sales') ?>" class="btn btn-lg btn-success text-start">
+                        <i class="bi bi-cart-plus me-2"></i>
+                        New Sale
+                    </a>
+                    <a href="<?= base_url('items') ?>" class="btn btn-lg btn-primary text-start">
+                        <i class="bi bi-box-seam me-2"></i>
+                        Add Product
+                    </a>
+                    <a href="<?= base_url('customers') ?>" class="btn btn-lg btn-warning text-start">
+                        <i class="bi bi-person-plus me-2"></i>
+                        New Customer
+                    </a>
+                    <a href="<?= base_url('reports') ?>" class="btn btn-lg btn-info text-start">
+                        <i class="bi bi-file-earmark-bar-graph me-2"></i>
+                        View Reports
+                    </a>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="col-md-4">
+    <!-- Alerts & Notifications -->
+    <div class="col-md-6">
         <div class="card border-0">
             <div class="card-header bg-white">
                 <h5 class="mb-0 fw-bold">
-                    <i class="bi bi-info-circle"></i>
-                    System Info
+                    <i class="bi bi-bell"></i>
+                    Alerts & Notifications
                 </h5>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <small class="text-muted d-block">Company</small>
-                    <strong><?= esc($config['company'] ?? 'ShopSuite') ?></strong>
+                <div class="alert alert-warning border-0 mb-3">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-exclamation-triangle fs-4 me-3"></i>
+                        <div>
+                            <strong>Low Stock Alert</strong>
+                            <p class="mb-0 small">0 products are running low on stock</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <small class="text-muted d-block">Version</small>
-                    <strong><?= esc(config('App')->application_version) ?></strong>
+                
+                <div class="alert alert-info border-0 mb-3">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-info-circle fs-4 me-3"></i>
+                        <div>
+                            <strong>Pending Orders</strong>
+                            <p class="mb-0 small">0 orders waiting for processing</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <small class="text-muted d-block">Environment</small>
-                    <span class="badge bg-<?= ENVIRONMENT === 'production' ? 'success' : 'warning' ?>">
-                        <?= strtoupper(ENVIRONMENT) ?>
-                    </span>
+                
+                <div class="alert alert-success border-0 mb-0">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-check-circle fs-4 me-3"></i>
+                        <div>
+                            <strong>System Status</strong>
+                            <p class="mb-0 small">All systems operational</p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <small class="text-muted d-block">PHP Version</small>
-                    <strong><?= PHP_VERSION ?></strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Transactions & Performance -->
+<div class="row g-4">
+    <!-- Recent Transactions -->
+    <div class="col-md-6">
+        <div class="card border-0">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-receipt"></i>
+                    Recent Transactions
+                </h5>
+                <a href="<?= base_url('sales') ?>" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-receipt fs-1 mb-3 d-block"></i>
+                    <p class="mb-0">No transactions yet</p>
+                    <small>Start making sales to see recent transactions</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Performance Metrics -->
+    <div class="col-md-6">
+        <div class="card border-0">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-speedometer2"></i>
+                    Performance Metrics
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Average Transaction Value -->
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <small class="text-muted d-block">Avg. Transaction Value</small>
+                        <h5 class="mb-0 fw-bold">$0.00</h5>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-success">0%</span>
+                    </div>
+                </div>
+                
+                <!-- Conversion Rate -->
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <small class="text-muted d-block">Conversion Rate</small>
+                        <h5 class="mb-0 fw-bold">0%</h5>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-info">0%</span>
+                    </div>
+                </div>
+                
+                <!-- Customer Satisfaction -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted d-block">Customer Satisfaction</small>
+                        <h5 class="mb-0 fw-bold">N/A</h5>
+                    </div>
+                    <div class="text-end">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star text-warning"></i>
+                    </div>
                 </div>
             </div>
         </div>
