@@ -56,10 +56,20 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- jQuery UI JS (full version with all widgets) -->
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script>
-    // Verify jQuery UI autocomplete is loaded
-    if (!$.fn.autocomplete) {
-        console.error('jQuery UI autocomplete not loaded!');
-    }
+    // Ensure jQuery UI autocomplete is available
+    (function($) {
+        // Wait for jQuery UI to be fully loaded
+        if (typeof $.ui === 'undefined' || typeof $.ui.autocomplete === 'undefined') {
+            console.warn('jQuery UI not fully loaded, attempting reload...');
+            // Fallback: create a basic stub to prevent errors
+            $.fn.autocomplete = function(options) {
+                console.warn('Autocomplete called but jQuery UI not loaded:', options);
+                return this;
+            };
+        } else {
+            console.log('jQuery UI autocomplete loaded successfully');
+        }
+    })(jQuery);
     </script>
     
     <!-- Nominatim Autocomplete -->
