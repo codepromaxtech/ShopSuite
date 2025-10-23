@@ -271,8 +271,11 @@ class Config extends Secure_Controller
         }
 
         $data['mailchimp']['lists'] = $this->_mailchimp();
+        $data['allowed_modules'] = $this->module->get_allowed_modules($this->session->get('person_id'));
+        $data['user_info'] = $this->employee->get_info($this->session->get('person_id'));
+        $data['config'] = $this->config;
 
-        echo view('configs/manage', $data);
+        echo view('config/manage_bootstrap5', $data);
     }
 
     /**
