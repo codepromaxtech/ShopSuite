@@ -13,6 +13,7 @@ $config = config('ShopSuite')->settings ?? [];
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <base href="<?= base_url() ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="ShopSuite - Modern Point of Sale System">
     <title><?= esc($config['company'] ?? 'ShopSuite') ?> | <?= $page_title ?? 'Dashboard' ?></title>
@@ -30,6 +31,53 @@ $config = config('ShopSuite')->settings ?? [];
     
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Bootstrap Table CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
+    
+    <!-- Bootstrap Select CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+    
+    <!-- Date Range Picker CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+    
+    <!-- jQuery (required for table_support) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Moment.js (for date picker) -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Bootstrap Table JS -->
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+    
+    <!-- Bootstrap Select JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
+    
+    <!-- Date Range Picker JS -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    
+    <!-- JS Cookie -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    
+    <!-- Include old resources for compatibility -->
+    <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getUri()->getQuery()): ?>
+        <!-- inject:debug:css -->
+        <!-- endinject -->
+        <!-- inject:debug:js -->
+        <!-- endinject -->
+    <?php else: ?>
+        <!--inject:prod:css -->
+        <!-- endinject -->
+        <!-- inject:prod:js -->
+        <!-- endinject -->
+    <?php endif; ?>
+    
+    <!-- Header JS and Lang Lines -->
+    <?= view('partial/header_js') ?>
+    <?= view('partial/lang_lines') ?>
     
     <!-- Custom CSS -->
     <style>

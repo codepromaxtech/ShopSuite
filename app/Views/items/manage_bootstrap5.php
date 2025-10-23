@@ -1,7 +1,15 @@
 <?php
 /**
- * Modern Bootstrap 5 Items Management View
+ * Modern Bootstrap 5 Items Management View with Full Functionality
+ * @var string $controller_name
+ * @var string $table_headers
+ * @var array $filters
+ * @var array $stock_locations
+ * @var int $stock_location
+ * @var array $config
  */
+
+use App\Models\Employee;
 ?>
 
 <?= view('layouts/bootstrap5_header', [
@@ -10,6 +18,68 @@
     'user_info' => $user_info ?? null,
     'config' => $config ?? []
 ]) ?>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#generate_barcodes').click(function() {
+            window.open(
+                'index.php/items/generateBarcodes/' + table_support.selected_ids().join(':'),
+                '_blank'
+            );
+        });
+
+        // When any filter is clicked and the dropdown window is closed
+        $('#filters').on('hidden.bs.select', function(e) {
+            table_support.refresh();
+        });
+
+        // Load the preset daterange picker
+        <?= view('partial/daterangepicker') ?>
+        // Set the beginning of time as starting date
+        $('#daterangepicker').data('daterangepicker').setStartDate("<?= date($config['dateformat'], mktime(0, 0, 0, 01, 01, 2010)) ?>");
+        // Update the hidden inputs with the selected dates before submitting the search data
+        var start_date = "<?= date('Y-m-d', mktime(0, 0, 0, 01, 01, 2010)) ?>";
+        $("#daterangepicker").on('apply.daterangepicker', function(ev, picker) {
+            table_support.refresh();
+        });
+
+        $("#stock_location").change(function() {
+            table_support.refresh();
+        });
+
+        <?php
+        echo view('partial/bootstrap_tables_locale');
+        $employee = model(Employee::class);
+        ?>
+
+        table_support.init({
+            employee_id: <?= $employee->get_logged_in_employee_info()->person_id ?>,
+            resource: '<?= esc($controller_name) ?>',
+            headers: <?= $table_headers ?>,
+            pageSize: <?= $config['lines_per_page'] ?>,
+            uniqueId: 'items.item_id',
+            queryParams: function() {
+                return $.extend(arguments[0], {
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "stock_location": $("#stock_location").val(),
+                    "filters": $("#filters").val()
+                });
+            },
+            onLoadSuccess: function(response) {
+                $('a.rollover').imgPreview({
+                    imgCSS: {
+                        width: 200
+                    },
+                    distanceFromCursor: {
+                        top: 10,
+                        left: -210
+                    }
+                })
+            }
+        });
+    });
+</script>
 
 <!-- Page Header -->
 <?= view('components/page_header', [
