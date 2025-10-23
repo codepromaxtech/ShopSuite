@@ -81,6 +81,12 @@ $config = config('ShopSuite')->settings ?? [];
     })();
     </script>
     
+    <!-- jQuery Validate -->
+    <script src="<?= base_url('vendor/jquery-validate/jquery.validate.min.js') ?>"></script>
+    
+    <!-- jQuery Form -->
+    <script src="<?= base_url('vendor/jquery-form/jquery.form.min.js') ?>"></script>
+    
     <!-- Moment.js (for date picker) -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     
