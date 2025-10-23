@@ -84,22 +84,28 @@ $config = config('ShopSuite')->settings ?? [];
             var title = options.title || '';
             var message = options.message || '';
             var buttons = options.buttons || [];
+            var cssClass = options.cssClass || 'modal-lg';
+            
+            // Handle dialog size from cssClass
+            var dialogSize = 'modal-lg';
+            if (cssClass.includes('modal-dlg-wide')) dialogSize = 'modal-xl';
+            else if (cssClass.includes('modal-dlg-small')) dialogSize = 'modal-sm';
             
             // Create modal HTML
             var modalHtml = '<div class="modal fade" id="' + modalId + '" tabindex="-1">' +
-                '<div class="modal-dialog modal-lg">' +
+                '<div class="modal-dialog ' + dialogSize + '">' +
                 '<div class="modal-content">' +
                 '<div class="modal-header">' +
                 '<h5 class="modal-title">' + title + '</h5>' +
                 '<button type="button" class="btn-close" data-bs-dismiss="modal"></button>' +
                 '</div>' +
-                '<div class="modal-body">' + message + '</div>' +
+                '<div class="modal-body"></div>' +
                 '<div class="modal-footer">';
             
             // Add buttons
             buttons.forEach(function(btn) {
                 var btnClass = 'btn btn-' + (btn.cssClass || 'secondary');
-                modalHtml += '<button type="button" class="' + btnClass + '" data-action="' + (btn.id || '') + '">' + btn.label + '</button>';
+                modalHtml += '<button type="button" id="' + btn.id + '" class="' + btnClass + '" data-action="' + (btn.id || '') + '">' + btn.label + '</button>';
             });
             
             modalHtml += '</div></div></div></div>';
@@ -107,32 +113,64 @@ $config = config('ShopSuite')->settings ?? [];
             // Append to body
             $('body').append(modalHtml);
             
-            // Get modal element
-            var modalEl = document.getElementById(modalId);
+            // Get modal elements
+            var $modalEl = $('#' + modalId);
+            var modalEl = $modalEl[0];
+            var $modalBody = $modalEl.find('.modal-body');
             var modal = new bootstrap.Modal(modalEl);
             
+            // Set message content (can be jQuery object or string)
+            if (typeof message === 'object' && message.jquery) {
+                $modalBody.append(message);
+            } else {
+                $modalBody.html(message);
+            }
+            
+            // Create dialog reference object
+            var dialogRef = {
+                $modal: $modalEl,
+                $modalBody: $modalBody,
+                $modalHeader: $modalEl.find('.modal-header'),
+                $modalFooter: $modalEl.find('.modal-footer'),
+                open: function() { modal.show(); },
+                close: function() { modal.hide(); }
+            };
+            
             // Attach button handlers
-            $(modalEl).find('[data-action]').on('click', function() {
+            $modalEl.find('[data-action]').on('click', function(e) {
                 var action = $(this).data('action');
                 var button = buttons.find(function(b) { return b.id === action; });
                 if (button && button.action) {
-                    button.action();
+                    var result = button.action(dialogRef);
+                    // Don't close if action returns false
+                    if (result === false) {
+                        e.preventDefault();
+                        return false;
+                    }
                 }
                 modal.hide();
+            });
+            
+            // Attach hotkey handlers (Enter key)
+            $modalEl.on('keydown', function(e) {
+                if (e.which === 13) { // Enter key
+                    var hotkeyBtn = buttons.find(function(b) { return b.hotkey === 13; });
+                    if (hotkeyBtn) {
+                        e.preventDefault();
+                        $('#' + hotkeyBtn.id).click();
+                    }
+                }
             });
             
             // Show modal
             modal.show();
             
             // Remove modal from DOM after hiding
-            $(modalEl).on('hidden.bs.modal', function() {
+            $modalEl.on('hidden.bs.modal', function() {
                 $(this).remove();
             });
             
-            return {
-                open: function() { modal.show(); },
-                close: function() { modal.hide(); }
-            };
+            return dialogRef;
         }
     };
     </script>
