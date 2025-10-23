@@ -112,9 +112,9 @@ class Reports extends Secure_Controller
             'person_id'      => $person_id,
             'grants'         => $grants,
             'permission_ids' => $permissions_ids,
-            'allowed_modules' => $this->module->get_allowed_modules($person_id),
-            'user_info' => $this->employee->get_info($person_id),
-            'config' => $this->config
+            'allowed_modules' => $this->global_view_data['allowed_modules'],
+            'user_info' => $this->global_view_data['user_info'],
+            'config' => $this->global_view_data['config']
         ];
 
         echo view('reports/manage_bootstrap5', $data);
