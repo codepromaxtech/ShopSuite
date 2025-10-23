@@ -35,6 +35,9 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- SweetAlert2 CSS (Bootstrap 5 compatible) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
+    <!-- File Upload CSS -->
+    <link rel="stylesheet" href="<?= base_url('css/file-upload.css') ?>">
+    
     <!-- Load CSS from gulp bundles -->
     <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getUri()->getQuery()): ?>
         <!-- inject:debug:css -->
@@ -56,6 +59,9 @@ $config = config('ShopSuite')->settings ?? [];
     
     <!-- Modern Features (Dark Mode, Animations, Export, etc.) -->
     <script src="<?= base_url('js/modern-features.js') ?>"></script>
+    
+    <!-- File Upload with Drag & Drop -->
+    <script src="<?= base_url('js/file-upload.js') ?>"></script>
     
     <!-- BootstrapDialog compatibility shim for Bootstrap 5 -->
     <script>
