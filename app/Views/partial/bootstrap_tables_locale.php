@@ -7,6 +7,17 @@
 (function($) {
     'use strict';
 
+    // Check if bootstrap-table is loaded
+    if (typeof $.fn.bootstrapTable === 'undefined') {
+        console.warn('Bootstrap Table not loaded yet, skipping locale setup');
+        return;
+    }
+
+    // Initialize locales object if it doesn't exist
+    if (!$.fn.bootstrapTable.locales) {
+        $.fn.bootstrapTable.locales = {};
+    }
+
     $.fn.bootstrapTable.locales['<?= current_language_code() ?>'] = {
         formatLoadingMessage: function() {
             return "<?= lang('Bootstrap_tables.loading') ?>";

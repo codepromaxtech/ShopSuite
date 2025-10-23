@@ -65,6 +65,9 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- JS Cookie -->
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     
+    <!-- ShopSuite Core JavaScript -->
+    <script src="<?= base_url('js/manage_tables.js') ?>" type="text/javascript"></script>
+    
     <!-- Include old resources for compatibility -->
     <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getUri()->getQuery()): ?>
         <!-- inject:debug:css -->
