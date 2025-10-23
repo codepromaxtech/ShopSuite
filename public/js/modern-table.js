@@ -27,7 +27,16 @@ class ModernTableManager {
      * Initialize the table
      */
     init() {
+        // Wait for Bootstrap Table to be loaded
+        if (typeof $.fn.bootstrapTable === 'undefined') {
+            console.warn('⏳ Bootstrap Table not ready, waiting...');
+            setTimeout(() => this.init(), 100);
+            return;
+        }
+        
         const exportSuffix = new Date().toISOString().slice(0, 16).replace(/[-T:]/g, '');
+        
+        console.log('✅ Bootstrap Table loaded, initializing...');
         
         // Initialize Bootstrap Table
         this.$table.bootstrapTable({

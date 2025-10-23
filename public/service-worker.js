@@ -6,13 +6,12 @@
 const CACHE_NAME = 'shopsuite-v1';
 const RUNTIME_CACHE = 'shopsuite-runtime';
 
-// Assets to cache on install
+// Assets to cache on install (only valid local files)
 const PRECACHE_ASSETS = [
-    '/',
-    '/css/bootstrap.min.css',
     '/js/modern-features.js',
-    '/js/modern-utils.js',
-    '/images/favicon.ico'
+    '/js/modern-table.js',
+    '/js/modern-modal.js',
+    '/css/modern-pos.css'
 ];
 
 // Install event - cache core assets
@@ -23,7 +22,15 @@ self.addEventListener('install', (event) => {
         caches.open(CACHE_NAME)
             .then(cache => {
                 console.log('Service Worker: Caching core assets');
-                return cache.addAll(PRECACHE_ASSETS);
+                // Try to cache each asset individually to avoid failing the entire cache
+                return Promise.allSettled(
+                    PRECACHE_ASSETS.map(url => 
+                        cache.add(url).catch(err => {
+                            console.warn(`Failed to cache ${url}:`, err.message);
+                            return null;
+                        })
+                    )
+                );
             })
             .then(() => self.skipWaiting())
     );
