@@ -87,6 +87,43 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- jQuery Form -->
     <script src="<?= base_url('vendor/jquery-form/jquery.form.min.js') ?>"></script>
     
+    <script>
+    // Preserve jQuery plugins globally for AJAX content
+    (function() {
+        if ($.fn.validate) {
+            window.jQueryValidate = $.fn.validate;
+            console.log('✓ jQuery Validate loaded');
+        }
+        if ($.fn.ajaxSubmit) {
+            window.jQueryFormSubmit = $.fn.ajaxSubmit;
+            console.log('✓ jQuery Form loaded');
+        }
+        
+        // Extend the $ property setter to restore plugins
+        var originalDescriptor = Object.getOwnPropertyDescriptor(window, '$');
+        if (originalDescriptor && originalDescriptor.set) {
+            var originalSetter = originalDescriptor.set;
+            Object.defineProperty(window, '$', {
+                get: originalDescriptor.get,
+                set: function(val) {
+                    originalSetter.call(this, val);
+                    if (val && val.fn) {
+                        if (!val.fn.validate && window.jQueryValidate) {
+                            val.fn.validate = window.jQueryValidate;
+                        }
+                        if (!val.fn.ajaxSubmit && window.jQueryFormSubmit) {
+                            val.fn.ajaxSubmit = window.jQueryFormSubmit;
+                        }
+                        if (!val.fn.autocomplete && window.jQueryUIAutocomplete) {
+                            val.fn.autocomplete = window.jQueryUIAutocomplete;
+                        }
+                    }
+                }
+            });
+        }
+    })();
+    </script>
+    
     <!-- Moment.js (for date picker) -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     
