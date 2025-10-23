@@ -120,7 +120,7 @@ function initializeKeyboardShortcuts() {
  */
 async function searchProducts(query) {
     try {
-        const response = await $.get(BASE_URL + 'sales/search', { q: query });
+        const response = await $.get(BASE_URL + 'sales/item_search', { term: query });
         displaySearchResults(response);
     } catch (error) {
         console.error('Search error:', error);
@@ -168,18 +168,12 @@ async function addProductByCode(code) {
         
         hideLoading();
         
-        if (response.success) {
-            // Clear scanner and hide results
-            $('#barcode_scanner').val('');
-            $('#search_results').hide();
-            
-            // Reload cart
-            await loadCart();
-            
-            showNotification('Product added to cart', 'success');
-        } else {
-            showNotification(response.message || 'Product not found', 'error');
-        }
+        // Clear scanner and hide results
+        $('#barcode_scanner').val('');
+        $('#search_results').hide();
+        
+        // Reload page to refresh cart (controller returns full page)
+        window.location.reload();
     } catch (error) {
         hideLoading();
         console.error('Add product error:', error);
@@ -196,19 +190,13 @@ async function addProduct(itemId) {
 
 /**
  * Load cart from server
+ * Note: Cart is managed server-side in session
  */
 async function loadCart() {
-    try {
-        const response = await $.get(BASE_URL + 'sales/cart');
-        
-        if (response.success) {
-            cart = response.cart || [];
-            updateCartDisplay();
-            updateTotals(response.totals);
-        }
-    } catch (error) {
-        console.error('Load cart error:', error);
-    }
+    // Cart data is embedded in the page on load
+    // This function will be called after AJAX operations
+    // For now, just refresh the page to get updated cart
+    console.log('Cart managed server-side');
 }
 
 /**
@@ -357,7 +345,7 @@ async function updateQuantity(index, value) {
 /**
  * Remove item from cart
  */
-async function removeItem(index) {
+async function removeItem(itemId) {
     const confirmed = await Swal.fire({
         title: 'Remove Item?',
         text: 'Remove this item from cart?',
@@ -370,11 +358,11 @@ async function removeItem(index) {
     
     if (confirmed.isConfirmed) {
         try {
-            const item = cart[index];
-            await $.post(BASE_URL + 'sales/remove', { line: index });
-            await loadCart();
-            showNotification('Item removed', 'success');
+            showLoading('Removing item...');
+            await $.get(BASE_URL + 'sales/delete_item/' + itemId);
+            window.location.reload();
         } catch (error) {
+            hideLoading();
             console.error('Remove error:', error);
             showNotification('Failed to remove item', 'error');
         }
@@ -385,11 +373,6 @@ async function removeItem(index) {
  * Clear entire cart
  */
 async function clearCart() {
-    if (cart.length === 0) {
-        showNotification('Cart is already empty', 'info');
-        return;
-    }
-    
     const confirmed = await Swal.fire({
         title: 'Clear Cart?',
         text: 'Remove all items from cart?',
@@ -402,10 +385,11 @@ async function clearCart() {
     
     if (confirmed.isConfirmed) {
         try {
-            await $.post(BASE_URL + 'sales/clear');
-            await loadCart();
-            showNotification('Cart cleared', 'success');
+            showLoading('Clearing cart...');
+            await $.post(BASE_URL + 'sales/cancel');
+            window.location.reload();
         } catch (error) {
+            hideLoading();
             console.error('Clear cart error:', error);
             showNotification('Failed to clear cart', 'error');
         }
@@ -606,13 +590,20 @@ async function completeSale(paymentType, amount, reference = null) {
     showLoading('Processing sale...');
     
     try {
-        const response = await $.post(BASE_URL + 'sales/complete', {
+        // Add payment first
+        const paymentData = {
             payment_type: paymentType,
-            payment_amount: amount,
-            payment_reference: reference,
-            customer_id: $('#customer_id').val(),
-            print_receipt: $('#print_receipt').is(':checked'),
-            email_receipt: $('#email_receipt').is(':checked'),
+            payment_amount: amount
+        };
+        
+        if (reference) {
+            paymentData.payment_reference = reference;
+        }
+        
+        await $.post(BASE_URL + 'sales/add_payment', paymentData);
+        
+        // Then complete the sale
+        const response = await $.post(BASE_URL + 'sales/complete', {
             comment: $('#sale_comment').val()
         });
         
@@ -660,11 +651,6 @@ async function completeSale(paymentType, amount, reference = null) {
  * Suspend current sale
  */
 async function suspendSale() {
-    if (cart.length === 0) {
-        showNotification('Cart is empty', 'warning');
-        return;
-    }
-    
     const { value: comment } = await Swal.fire({
         title: 'Suspend Sale',
         input: 'textarea',
@@ -679,16 +665,15 @@ async function suspendSale() {
         try {
             showLoading('Suspending sale...');
             
-            const response = await $.post(BASE_URL + 'sales/suspend', { comment: comment });
+            if (comment) {
+                await $.post(BASE_URL + 'sales/set_comment', { comment: comment });
+            }
+            
+            await $.post(BASE_URL + 'sales/suspend_sale');
             
             hideLoading();
-            
-            if (response.success) {
-                showNotification('Sale suspended', 'success');
-                await loadCart();
-            } else {
-                showNotification(response.message || 'Failed to suspend', 'error');
-            }
+            showNotification('Sale suspended', 'success');
+            window.location.reload();
         } catch (error) {
             hideLoading();
             console.error('Suspend error:', error);

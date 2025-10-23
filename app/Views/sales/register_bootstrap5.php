@@ -23,10 +23,10 @@
     <div class="pos-left">
         <!-- Scanner Section -->
         <div class="scanner-section">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0 fw-bold">
-                    <i class="bi bi-upc-scan me-2"></i>Scan or Search Product
-                </h4>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">
+                    <i class="bi bi-upc-scan me-1"></i>Scan or Search Product
+                </h6>
                 <div class="text-end">
                     <span class="mode-badge"><?= esc($mode_label ?? 'Sale') ?></span>
                 </div>
@@ -70,12 +70,12 @@
         <div class="card border-0 shadow-sm flex-fill">
             <div class="card-header bg-white border-bottom">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold">
-                        <i class="bi bi-cart3 me-2 text-primary"></i>Shopping Cart
-                        <span class="badge bg-primary ms-2" id="cart_count">0</span>
-                    </h5>
-                    <div>
-                        <span class="text-muted small">Items: </span>
+                    <h6 class="mb-0 fw-bold" style="font-size: 0.85rem;">
+                        <i class="bi bi-cart3 me-1 text-primary"></i>Cart
+                        <span class="badge bg-primary ms-1" style="font-size: 0.7rem;" id="cart_count">0</span>
+                    </h6>
+                    <div style="font-size: 0.8rem;">
+                        <span class="text-muted">Items: </span>
                         <span class="fw-bold text-primary" id="total_items">0</span>
                     </div>
                 </div>
@@ -97,8 +97,8 @@
     <div class="pos-right">
         <!-- Customer Section -->
         <div class="customer-section">
-            <h6 class="fw-bold mb-3">
-                <i class="bi bi-person-circle me-2 text-primary"></i>Customer
+            <h6 class="fw-bold mb-2" style="font-size: 0.85rem;">
+                <i class="bi bi-person-circle me-1 text-primary"></i>Customer
             </h6>
             <div class="input-group mb-2">
                 <input type="text" 
@@ -131,8 +131,8 @@
         
         <!-- Totals Section -->
         <div class="totals-section">
-            <h6 class="fw-bold mb-3">
-                <i class="bi bi-calculator me-2 text-primary"></i>Order Summary
+            <h6 class="fw-bold mb-2" style="font-size: 0.85rem;">
+                <i class="bi bi-calculator me-1 text-primary"></i>Order Summary
             </h6>
             
             <div class="total-line">
@@ -190,8 +190,8 @@
         <!-- Payment Buttons -->
         <div class="card border-0 shadow-sm">
             <div class="card-body">
-                <h6 class="fw-bold mb-3">
-                    <i class="bi bi-credit-card me-2 text-primary"></i>Complete Payment
+                <h6 class="fw-bold mb-2" style="font-size: 0.85rem;">
+                    <i class="bi bi-credit-card me-1 text-primary"></i>Complete Payment
                 </h6>
                 
                 <div class="payment-grid">

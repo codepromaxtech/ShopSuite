@@ -74,18 +74,65 @@ $config = config('ShopSuite')->settings ?? [];
     <script src="<?= base_url('js/modern-features.js') ?>"></script>
     
     <!-- File Upload with Drag & Drop -->
-    <script src="<?= base_url('js/file-upload.js') ?>"></script>
     
     <!-- Modern Table System (NEW) -->
     <script src="<?= base_url('js/modern-table.js') ?>"></script>
     
     <!-- Modern Modal System (NEW - replaces BootstrapDialog) -->
-    <script src="<?= base_url('js/modern-modal.js') ?>"></script>
+<script src="<?= base_url('js/modern-modal.js') ?>"></script>
+
+<!-- Global Configuration -->
+<script>
+// Base URL for AJAX calls
+const BASE_URL = '<?= base_url() ?>';
+
+// Loading indicator
+function showLoading(message = 'Loading...') {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: message,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    }
+}
+
+function hideLoading() {
+    if (typeof Swal !== 'undefined') {
+        Swal.close();
+    }
+}
+
+// Notification helper
+function showNotification(message, type = 'info') {
+    if (typeof Swal !== 'undefined') {
+        const iconMap = {
+            'success': 'success',
+            'error': 'error',
+            'warning': 'warning',
+            'info': 'info'
+        };
+        
+        Swal.fire({
+            icon: iconMap[type] || 'info',
+            title: message,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    } else {
+        console.log(`[${type.toUpperCase()}] ${message}`);
+    }
+}
+</script>
     
     
     <!-- Lang Lines (no dependencies) -->
     <?= view('partial/lang_lines') ?>
-    
     <!-- Header JS (depends on jQuery, Moment, etc - load last) -->
     <?= view('partial/header_js') ?>
     
