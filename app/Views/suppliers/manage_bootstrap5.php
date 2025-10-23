@@ -24,6 +24,9 @@
             pageSize: <?= $config['lines_per_page'] ?>,
             uniqueId: 'person_id'
         });
+        
+        // Initialize modal dialog support for buttons
+        dialog_support.init("button.modal-dlg");
     });
 </script>
 
