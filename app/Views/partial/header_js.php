@@ -31,12 +31,15 @@
         clock_tick();
     }
 
-    $.notifyDefaults({
-        placement: {
-            align: "<?= esc($config['notify_horizontal_position'], 'js') ?>",
-            from: "<?= esc($config['notify_vertical_position'], 'js') ?>"
-        }
-    });
+    // Configure Bootstrap Notify if available
+    if (typeof $.notifyDefaults === 'function') {
+        $.notifyDefaults({
+            placement: {
+                align: "<?= esc($config['notify_horizontal_position'], 'js') ?>",
+                from: "<?= esc($config['notify_vertical_position'], 'js') ?>"
+            }
+        });
+    }
 
     var cookie_name = "<?= esc(config('Cookie')->prefix, 'js') . esc(config('Security')->cookieName, 'js') ?>";
 
