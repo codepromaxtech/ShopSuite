@@ -45,15 +45,8 @@ $config = config('ShopSuite')->settings ?? [];
     <?php endif; ?>
     
     <!-- Load jQuery and plugins from gulp-generated bundles FIRST -->
-    <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getUri()->getQuery()): ?>
-        <!-- inject:debug:js -->
-        <!-- endinject -->
-    <?php else: ?>
-        <!-- inject:prod:js -->
-        <script src="resources/jquery-2c872dbe60.min.js"></script>
-        <script src="resources/shopsuite-a71baa0f6b.min.js"></script>
-        <!-- endinject -->
-    <?php endif; ?>
+    <script src="<?= base_url('resources/jquery-2c872dbe60.min.js') ?>"></script>
+    <script src="<?= base_url('resources/shopsuite-a71baa0f6b.min.js') ?>"></script>
     
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
