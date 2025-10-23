@@ -47,20 +47,29 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- jQuery (required for table_support) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
-    <!-- Moment.js (for date picker) -->
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-    
     <!-- jQuery UI CSS -->
     <link rel="stylesheet" href="<?= base_url('vendor/jquery-ui/jquery-ui.min.css') ?>">
     
-    <!-- jQuery UI JS -->
+    <!-- jQuery UI JS (load immediately after jQuery, before other libraries) -->
     <script src="<?= base_url('vendor/jquery-ui/jquery-ui.min.js') ?>"></script>
+    <script>
+    // Ensure autocomplete is globally available
+    window.jQuery = window.$ = jQuery;
+    if (!$.fn.autocomplete) {
+        console.error('CRITICAL: jQuery UI autocomplete failed to load!');
+    } else {
+        console.log('✓ jQuery UI autocomplete loaded successfully');
+    }
+    </script>
     
-    <!-- Nominatim Autocomplete -->
-    <script src="<?= base_url('js/nominatim.autocomplete.js') ?>" type="text/javascript"></script>
+    <!-- Moment.js (for date picker) -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Nominatim Autocomplete (load after jQuery UI) -->
+    <script src="<?= base_url('js/nominatim.autocomplete.js') ?>" type="text/javascript"></script>
     
     <!-- Bootstrap Table JS -->
     <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
