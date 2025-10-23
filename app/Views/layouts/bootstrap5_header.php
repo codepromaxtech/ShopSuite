@@ -51,6 +51,9 @@ $config = config('ShopSuite')->settings ?? [];
     <script src="<?= base_url('resources/jquery-2c872dbe60.min.js') ?>"></script>
     <script src="<?= base_url('resources/shopsuite-a71baa0f6b.min.js') ?>"></script>
     
+    <!-- Legacy Support - dialog_support & form_support compatibility -->
+    <script src="<?= base_url('js/legacy-support.js') ?>"></script>
+    
     <!-- Bootstrap 5.3.3 JS (Latest) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     

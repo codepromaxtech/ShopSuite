@@ -16,17 +16,25 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        console.log('🚀 Suppliers - Document ready');
         <?= view('partial/bootstrap_tables_locale') ?>
 
         table_support.init({
             resource: '<?= esc($controller_name) ?>',
             headers: <?= $table_headers ?>,
             pageSize: <?= $config['lines_per_page'] ?>,
-            uniqueId: 'person_id'
+            uniqueId: 'person_id',
+            onLoadSuccess: function(response) {
+                console.log('✅ Suppliers table loaded');
+                setTimeout(function() {
+                    dialog_support.init("button.modal-dlg, a.modal-dlg");
+                    console.log('✅ Dialog support re-initialized');
+                }, 100);
+            }
         });
         
-        // Initialize modal dialog support for buttons
-        dialog_support.init("button.modal-dlg");
+        dialog_support.init("button.modal-dlg, a.modal-dlg");
+        console.log('✅ Initial dialog support initialized');
     });
     
     // Filter Functions
@@ -121,7 +129,7 @@
 </div>
 
 <!-- Enhanced Toolbar -->
-<div class="card border-0 shadow-sm mb-3 slide-up">
+<div id="toolbar" class="card border-0 shadow-sm mb-3 slide-up">
     <div class="card-body">
         <div class="row g-3">
             <!-- Bulk Actions -->

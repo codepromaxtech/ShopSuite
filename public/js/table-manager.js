@@ -354,12 +354,18 @@ class TableManager {
 // BACKWARD COMPATIBILITY - Maintain old API
 // ===================================================================
 
+// Forcefully override the old table_support from gulp bundle
+(function($) {
+    'use strict';
+    
 window.table_support = {
     _manager: null,
     
     init: function(options) {
+        console.log('✅ table_support.init() called with options:', options);
         this._manager = new TableManager(options);
         this._manager.init();
+        console.log('✅ TableManager initialized successfully');
     },
     
     refresh: function() {
@@ -395,5 +401,7 @@ window.number_sorter = function(a, b) {
     b = +b.replace(/[^\-0-9]+/g, '');
     return a - b;
 };
+
+})(jQuery); // Close IIFE
 
 console.log('✨ Modern Table Manager Loaded');

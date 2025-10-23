@@ -16,17 +16,36 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        console.log('🚀 Document ready - Initializing...');
         <?= view('partial/bootstrap_tables_locale') ?>
 
+        // Initialize table support
         table_support.init({
             resource: '<?= esc($controller_name) ?>',
             headers: <?= $table_headers ?>,
             pageSize: <?= $config['lines_per_page'] ?>,
-            uniqueId: 'person_id'
+            uniqueId: 'person_id',
+            onLoadSuccess: function(response) {
+                console.log('✅ Table loaded successfully');
+                // Reinitialize dialog support after table loads
+                setTimeout(function() {
+                    dialog_support.init("button.modal-dlg, a.modal-dlg");
+                    console.log('✅ Dialog support initialized');
+                }, 100);
+            }
         });
         
-        // Initialize modal dialog support for buttons
-        dialog_support.init("button.modal-dlg");
+        // Initialize modal dialog support for buttons immediately
+        dialog_support.init("button.modal-dlg, a.modal-dlg");
+        console.log('✅ Initial dialog support initialized');
+        
+        // Verify functions exist
+        console.log('🔍 Checking functions:');
+        console.log('  - table_support:', typeof table_support);
+        console.log('  - dialog_support:', typeof dialog_support);
+        console.log('  - form_support:', typeof form_support);
+        console.log('  - showNotification:', typeof showNotification);
+        console.log('  - exportToExcel:', typeof exportToExcel);
     });
     
     // Filter Functions
@@ -140,7 +159,7 @@
 </div>
 
 <!-- Enhanced Toolbar with Filters and Export -->
-<div class="card border-0 shadow-sm mb-3 slide-up">
+<div id="toolbar" class="card border-0 shadow-sm mb-3 slide-up">
     <div class="card-body">
         <div class="row g-3">
             <!-- Bulk Actions -->
