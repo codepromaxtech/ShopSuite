@@ -23,8 +23,11 @@ class Giftcards extends Secure_Controller
     public function getIndex(): void
     {
         $data['table_headers'] = get_giftcards_manage_table_headers();
+        $data['allowed_modules'] = $this->module->get_allowed_modules($this->session->get('person_id'));
+        $data['user_info'] = $this->employee->get_info($this->session->get('person_id'));
+        $data['config'] = $this->config;
 
-        echo view('giftcards/manage', $data);
+        echo view('giftcards/manage_bootstrap5', $data);
     }
 
     /**

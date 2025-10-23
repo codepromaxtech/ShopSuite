@@ -85,8 +85,12 @@ class Items extends Secure_Controller
             'is_deleted'     => lang('Items.is_deleted'),
             'temporary'      => lang('Items.temp')
         ];
+        
+        $data['allowed_modules'] = $this->module->get_allowed_modules($this->session->get('person_id'));
+        $data['user_info'] = $this->employee->get_info($this->session->get('person_id'));
+        $data['config'] = $this->config;
 
-        echo view('items/manage', $data);
+        echo view('items/manage_bootstrap5', $data);
     }
 
     /**

@@ -45,8 +45,11 @@ class Customers extends Persons
     public function getIndex(): void
     {
         $data['table_headers'] = get_customer_manage_table_headers();
+        $data['allowed_modules'] = $this->module->get_allowed_modules($this->session->get('person_id'));
+        $data['user_info'] = $this->employee->get_info($this->session->get('person_id'));
+        $data['config'] = $this->config;
 
-        echo view('people/manage', $data);
+        echo view('customers/manage_bootstrap5', $data);
     }
 
     /**
