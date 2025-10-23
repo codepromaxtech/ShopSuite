@@ -50,11 +50,11 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- Moment.js (for date picker) -->
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     
-    <!-- jQuery UI CSS (from node_modules) -->
-    <link rel="stylesheet" href="<?= base_url('node_modules/jquery-ui-dist/jquery-ui.min.css') ?>">
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="<?= base_url('vendor/jquery-ui/jquery-ui.min.css') ?>">
     
-    <!-- jQuery UI JS (from node_modules) -->
-    <script src="<?= base_url('node_modules/jquery-ui-dist/jquery-ui.min.js') ?>"></script>
+    <!-- jQuery UI JS -->
+    <script src="<?= base_url('vendor/jquery-ui/jquery-ui.min.js') ?>"></script>
     
     <!-- Nominatim Autocomplete -->
     <script src="<?= base_url('js/nominatim.autocomplete.js') ?>" type="text/javascript"></script>
