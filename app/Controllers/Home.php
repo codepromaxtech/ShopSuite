@@ -6,9 +6,12 @@ use CodeIgniter\HTTP\RedirectResponse;
 
 class Home extends Secure_Controller
 {
+    protected $db;
+    
     public function __construct()
     {
         parent::__construct('home', null, 'home');
+        $this->db = \Config\Database::connect();
     }
 
     /**
@@ -39,10 +42,11 @@ class Home extends Secure_Controller
             ->where('DATE(sale_time)', date('Y-m-d'))
             ->countAllResults();
         
-        // Today's revenue
-        $today_revenue = $this->db->table($prefix . 'sales')
-            ->selectSum('payment_amount', 'total')
-            ->where('DATE(sale_time)', date('Y-m-d'))
+        // Today's revenue - join sales with sales_payments
+        $today_revenue = $this->db->table($prefix . 'sales_payments sp')
+            ->select('SUM(sp.payment_amount) as total', false)
+            ->join($prefix . 'sales s', 's.sale_id = sp.sale_id')
+            ->where('DATE(s.sale_time)', date('Y-m-d'))
             ->get()
             ->getRow()
             ->total ?? 0;
@@ -51,8 +55,8 @@ class Home extends Secure_Controller
         $total_customers = $this->db->table($prefix . 'customers')
             ->countAllResults();
         
-        // Total items in stock
-        $total_items = $this->db->table($prefix . 'items')
+        // Total items in stock - get from item_quantities
+        $total_items = $this->db->table($prefix . 'item_quantities')
             ->selectSum('quantity', 'total')
             ->get()
             ->getRow()
