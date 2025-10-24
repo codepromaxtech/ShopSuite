@@ -44,6 +44,9 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- Modern Responsive Framework (Mobile-First) -->
     <link rel="stylesheet" href="<?= base_url('css/modern-responsive.css') ?>">
     
+    <!-- Modern Page Components (Reusable) -->
+    <link rel="stylesheet" href="<?= base_url('css/modern-pages.css') ?>">
+    
     <!-- Load CSS from gulp bundles -->
     <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getUri()->getQuery()): ?>
         <!-- inject:debug:css -->
