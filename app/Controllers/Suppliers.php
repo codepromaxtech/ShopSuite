@@ -111,18 +111,26 @@ class Suppliers extends Persons
      */
     public function getView(int $supplier_id = NEW_ENTRY): void
     {
-        $info = $this->supplier->get_info($supplier_id);
-        foreach (get_object_vars($info) as $property => $value) {
-            $info->$property = $value;
-        }
-        $data['person_info'] = $info;
-        $data['categories'] = $this->supplier->get_categories();
-        
-        // Add missing data for Bootstrap 5 form
-        $data['controller_name'] = 'suppliers';
-        $data['config'] = $this->config;
+        try {
+            $info = $this->supplier->get_info($supplier_id);
+            foreach (get_object_vars($info) as $property => $value) {
+                $info->$property = $value;
+            }
+            $data['person_info'] = $info;
+            $data['categories'] = $this->supplier->get_categories();
+            
+            // Add all required data for Bootstrap 5 form
+            $data['controller_name'] = 'suppliers';
+            $data['config'] = $this->global_view_data['config'] ?? $this->config ?? [];
 
-        echo view("suppliers/form_bootstrap5", $data);
+            echo view("suppliers/form_bootstrap5", $data);
+        } catch (\Exception $e) {
+            log_message('error', 'Supplier view error: ' . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error loading supplier form: ' . $e->getMessage()
+            ]);
+        }
     }
 
     /**
