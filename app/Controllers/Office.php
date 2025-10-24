@@ -21,7 +21,11 @@ class Office extends Secure_Controller
      */
     public function getIndex(): void
     {
-        echo view('home/office');
+        $data['allowed_modules'] = $this->global_view_data['allowed_modules'];
+        $data['user_info'] = $this->global_view_data['user_info'];
+        $data['config'] = $this->global_view_data['config'];
+        
+        echo view('home/office_modern', $data);
     }
 
     /**
