@@ -518,7 +518,8 @@
         }, "<?= lang('Attributes.attribute_value_invalid_chars') ?>");
 
         var init_validation = function() {
-            $('#item_form').validate($.extend({
+            if (typeof $.fn.validate === 'function') {
+        $('#item_form').validate($.extend({
                 submitHandler: function(form, event) { // Event is not used as a parameter here
                     $(form).ajaxSubmit({
                         success: function(response) {
@@ -615,7 +616,8 @@
                         number: "<?= lang('Items.tax_percent_number') ?>"
                     }
                 }
-            }, form_support.error))
+            }, form_support.error));
+            }
         };
 
         init_validation();

@@ -252,44 +252,9 @@
             focus: fill_value
         });
 
-        $('#item_kit_form').validate($.extend({
-            submitHandler: function(form) {
-                $(form).ajaxSubmit({
-                    success: function(response) {
-                        dialog_support.hide();
-                        table_support.handle_submit("<?= esc($controller_name) ?>", response);
-                    },
-                    dataType: 'json'
-                });
-            },
-
-            errorLabelContainer: '#error_message_box',
-
-            rules: {
-                name: 'required',
-                category: 'required',
-                item_kit_number: {
-                    required: false,
-                    remote: {
-                        url: '<?= esc("$controller_name/checkItemNumber") ?>',
-                        type: 'POST',
-                        data: {
-                            'item_kit_id': "<?= $item_kit_info->item_kit_id ?>",
-                            'item_kit_number': function() {
-                                return $('#item_kit_number').val();
-                            }
-                        }
-                    }
-                }
-            },
-
-            messages: {
-                name: "<?= lang('Items.name_required') ?>",
-                category: "<?= lang('Items.category_required') ?>",
-                item_kit_number: "<?= lang('Item_kits.item_number_duplicate') ?>"
-            }
-        }, form_support.error));
+        if (typeof $.fn.validate === 'function') {
     });
+        }
 
     function delete_item_kit_row(link) {
         $(link).parent().parent().remove();

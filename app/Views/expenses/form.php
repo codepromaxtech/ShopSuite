@@ -200,52 +200,7 @@
             $('#remove_supplier_button').css('display', 'inline-block');
         <?php } ?>
 
-        $('#expenses_edit_form').validate($.extend({
-            submitHandler: function(form) {
-                $(form).ajaxSubmit({
-                    success: function(response) {
-                        dialog_support.hide();
-                        table_support.handle_submit("<?= esc($controller_name) ?>", response);
-                    },
-                    dataType: 'json'
-                });
-            },
-
-            errorLabelContainer: '#error_message_box',
-
-            ignore: '',
-
-            rules: {
-                supplier_name: 'required',
-                category: 'required',
-                expense_category_id: 'required',
-                date: {
-                    required: true
-                },
-                amount: {
-                    required: true,
-                    remote: "<?= "$controller_name/checkNumeric" ?>"
-                },
-                tax_amount: {
-                    remote: "<?= "$controller_name/checkNumeric" ?>"
-                }
-            },
-
-            messages: {
-                category: "<?= lang('Expenses.category_required') ?>",
-                expense_category_id: "<?= lang('Expenses_categories.category_name_required') ?>",
-                date: {
-                    required: "<?= lang('Expenses.date_required') ?>"
-
-                },
-                amount: {
-                    required: "<?= lang('Expenses.amount_required') ?>",
-                    remote: "<?= lang('Expenses.amount_number') ?>"
-                },
-                tax_amount: {
-                    remote: "<?= lang('Expenses.tax_amount_number') ?>"
-                }
-            }
-        }, form_support.error));
+        if (typeof $.fn.validate === 'function') {
     });
+        }
 </script>

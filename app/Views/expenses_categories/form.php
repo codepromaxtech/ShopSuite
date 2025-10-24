@@ -41,26 +41,7 @@
 <script type="text/javascript">
     // Validation and submit handling
     $(document).ready(function() {
-        $('#expense_category_edit_form').validate($.extend({
-            submitHandler: function(form) {
-                $(form).ajaxSubmit({
-                    success: function(response) {
-                        dialog_support.hide();
-                        table_support.handle_submit("<?= esc($controller_name) ?>", response);
-                    },
-                    dataType: 'json'
-                });
-            },
-
-            errorLabelContainer: '#error_message_box',
-
-            rules: {
-                category_name: 'required'
-            },
-
-            messages: {
-                category_name: "<?= lang('Expenses_categories.category_name_required') ?>"
-            }
-        }, form_support.error));
+        if (typeof $.fn.validate === 'function') {
     });
+        }
 </script>

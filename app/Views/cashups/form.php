@@ -318,27 +318,7 @@
             });
         };
 
-        $('#cashups_edit_form').validate($.extend({
-            submitHandler: function(form) {
-                submit_form.call(form);
-            },
-            rules: {
-
-            },
-            messages: {
-                open_date: {
-                    required: '<?= lang('Cashups.date_required') ?>'
-
-                },
-                close_date: {
-                    required: '<?= lang('Cashups.date_required') ?>'
-
-                },
-                amount: {
-                    required: '<?= lang('Cashups.amount_required') ?>',
-                    number: '<?= lang('Cashups.amount_number') ?>'
-                }
-            }
-        }, form_support.error));
+        if (typeof $.fn.validate === 'function') {
     });
+        }
 </script>

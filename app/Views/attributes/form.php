@@ -219,33 +219,7 @@
             $(this).find(':input').prop('disabled', false);
         });
 
-        $('#attribute_form').validate($.extend({
-            submitHandler: function(form) {
-                $(form).ajaxSubmit({
-                    beforeSerialize: function($form, options) {
-                        is_new && $('<input>').attr({
-                            id: 'definition_values',
-                            type: 'hidden',
-                            name: 'definition_values',
-                            value: JSON.stringify(values)
-                        }).appendTo($form);
-                    },
-                    success: function(response) {
-                        dialog_support.hide();
-                        table_support.handle_submit('<?= esc($controller_name) ?>', response);
-                    },
-                    dataType: 'json'
-                });
-            },
-            rules: {
-                definition_name: 'required',
-                definition_value: 'valid_chars',
-                definition_type: 'required'
-            },
-            messages: {
-                definition_name: "<?= lang('Attributes.definition_name_required') ?>",
-                definition_type: "<?= lang('Attributes.definition_type_required') ?>"
-            }
-        }, form_support.error));
+        if (typeof $.fn.validate === 'function') {
     });
+        }
 </script>

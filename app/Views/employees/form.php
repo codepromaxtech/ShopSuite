@@ -193,7 +193,8 @@
             });
         });
 
-        $('#employee_form').validate($.extend({
+        if (typeof $.fn.validate === 'function') {
+            $('#employee_form').validate($.extend({
             submitHandler: function(form) {
                 $(form).ajaxSubmit({
                     success: function(response) {
@@ -247,5 +248,6 @@
                 email: "<?= lang('Common.email_invalid_format') ?>"
             }
         }, form_support.error));
+        }
     });
 </script>
