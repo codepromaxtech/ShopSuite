@@ -298,6 +298,19 @@ function showNotification(message, type = 'info') {
             font-size: 0.9rem;
         }
         
+        .submenu-group {
+            margin-top: 0.75rem;
+        }
+        
+        .submenu-group-title {
+            padding: 0.5rem 1rem 0.25rem 2.5rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.4);
+        }
+        
         .menu-link {
             display: flex;
             align-items: center;
@@ -663,21 +676,50 @@ function showNotification(message, type = 'info') {
         <div class="sidebar-menu">
             <?php 
             // Categorize modules
-            $main_modules = ['home', 'office', 'sales', 'items', 'customers', 'suppliers', 'receivings', 'reports'];
-            $settings_modules = ['config', 'roles', 'employees', 'taxes', 'giftcards', 'item_kits', 'expenses', 'expenses_categories', 'cashups', 'messages', 'migrate'];
+            $main_modules = ['home', 'sales', 'items', 'customers', 'suppliers', 'receivings', 'reports'];
+            
+            // Settings grouped by category
+            $settings_groups = [
+                'system' => ['config', 'roles', 'employees'],
+                'business' => ['taxes', 'giftcards', 'item_kits'],
+                'financial' => ['expenses', 'expenses_categories', 'cashups'],
+                'tools' => ['messages', 'migrate']
+            ];
+            
+            // Flatten settings for categorization
+            $all_settings = [];
+            foreach ($settings_groups as $group => $modules) {
+                $all_settings = array_merge($all_settings, $modules);
+            }
             
             $categorized = [
                 'main' => [],
-                'settings' => [],
+                'settings' => [
+                    'system' => [],
+                    'business' => [],
+                    'financial' => [],
+                    'tools' => []
+                ],
                 'other' => []
             ];
             
             if (isset($allowed_modules) && is_array($allowed_modules)) {
                 foreach ($allowed_modules as $module) {
+                    // Skip office module
+                    if ($module->module_id === 'office') {
+                        continue;
+                    }
+                    
                     if (in_array($module->module_id, $main_modules)) {
                         $categorized['main'][] = $module;
-                    } elseif (in_array($module->module_id, $settings_modules)) {
-                        $categorized['settings'][] = $module;
+                    } elseif (in_array($module->module_id, $all_settings)) {
+                        // Find which group this module belongs to
+                        foreach ($settings_groups as $group => $group_modules) {
+                            if (in_array($module->module_id, $group_modules)) {
+                                $categorized['settings'][$group][] = $module;
+                                break;
+                            }
+                        }
                     } else {
                         $categorized['other'][] = $module;
                     }
@@ -685,6 +727,9 @@ function showNotification(message, type = 'info') {
             }
             
             $current_module = $request->getUri()->getSegment(1);
+            
+            // Check if we're on a settings page to auto-expand
+            $is_settings_active = in_array($current_module, $all_settings);
             ?>
             
             <!-- Main Modules -->
@@ -704,24 +749,93 @@ function showNotification(message, type = 'info') {
             <?php endif; ?>
             
             <!-- Settings Section (Collapsible) -->
-            <?php if (!empty($categorized['settings'])): ?>
+            <?php 
+            $has_settings = false;
+            foreach ($categorized['settings'] as $group => $modules) {
+                if (!empty($modules)) {
+                    $has_settings = true;
+                    break;
+                }
+            }
+            ?>
+            <?php if ($has_settings): ?>
                 <div class="menu-section">
                     <div class="menu-item">
-                        <a class="menu-link menu-collapse" data-bs-toggle="collapse" href="#settingsMenu" role="button" aria-expanded="true">
+                        <a class="menu-link menu-collapse <?= !$is_settings_active ? 'collapsed' : '' ?>" 
+                           data-bs-toggle="collapse" 
+                           href="#settingsMenu" 
+                           role="button" 
+                           aria-expanded="<?= $is_settings_active ? 'true' : 'false' ?>">
                             <i class="bi bi-gear-fill"></i>
                             <span>Settings</span>
                         </a>
                     </div>
-                    <div class="collapse show submenu" id="settingsMenu">
-                        <?php foreach ($categorized['settings'] as $module): ?>
-                            <div class="menu-item">
-                                <a href="<?= base_url($module->module_id) ?>" 
-                                   class="menu-link <?= ($current_module == $module->module_id) ? 'active' : '' ?>">
-                                    <i class="<?= getModuleIcon($module->module_id) ?>"></i>
-                                    <span><?= lang('Module.' . $module->module_id) ?></span>
-                                </a>
+                    <div class="collapse submenu <?= $is_settings_active ? 'show' : '' ?>" id="settingsMenu">
+                        
+                        <!-- System Settings -->
+                        <?php if (!empty($categorized['settings']['system'])): ?>
+                            <div class="submenu-group">
+                                <div class="submenu-group-title">System</div>
+                                <?php foreach ($categorized['settings']['system'] as $module): ?>
+                                    <div class="menu-item">
+                                        <a href="<?= base_url($module->module_id) ?>" 
+                                           class="menu-link <?= ($current_module == $module->module_id) ? 'active' : '' ?>">
+                                            <i class="<?= getModuleIcon($module->module_id) ?>"></i>
+                                            <span><?= lang('Module.' . $module->module_id) ?></span>
+                                        </a>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
-                        <?php endforeach; ?>
+                        <?php endif; ?>
+                        
+                        <!-- Business Settings -->
+                        <?php if (!empty($categorized['settings']['business'])): ?>
+                            <div class="submenu-group">
+                                <div class="submenu-group-title">Business</div>
+                                <?php foreach ($categorized['settings']['business'] as $module): ?>
+                                    <div class="menu-item">
+                                        <a href="<?= base_url($module->module_id) ?>" 
+                                           class="menu-link <?= ($current_module == $module->module_id) ? 'active' : '' ?>">
+                                            <i class="<?= getModuleIcon($module->module_id) ?>"></i>
+                                            <span><?= lang('Module.' . $module->module_id) ?></span>
+                                        </a>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <!-- Financial Settings -->
+                        <?php if (!empty($categorized['settings']['financial'])): ?>
+                            <div class="submenu-group">
+                                <div class="submenu-group-title">Financial</div>
+                                <?php foreach ($categorized['settings']['financial'] as $module): ?>
+                                    <div class="menu-item">
+                                        <a href="<?= base_url($module->module_id) ?>" 
+                                           class="menu-link <?= ($current_module == $module->module_id) ? 'active' : '' ?>">
+                                            <i class="<?= getModuleIcon($module->module_id) ?>"></i>
+                                            <span><?= lang('Module.' . $module->module_id) ?></span>
+                                        </a>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <!-- Tools -->
+                        <?php if (!empty($categorized['settings']['tools'])): ?>
+                            <div class="submenu-group">
+                                <div class="submenu-group-title">Tools</div>
+                                <?php foreach ($categorized['settings']['tools'] as $module): ?>
+                                    <div class="menu-item">
+                                        <a href="<?= base_url($module->module_id) ?>" 
+                                           class="menu-link <?= ($current_module == $module->module_id) ? 'active' : '' ?>">
+                                            <i class="<?= getModuleIcon($module->module_id) ?>"></i>
+                                            <span><?= lang('Module.' . $module->module_id) ?></span>
+                                        </a>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                        
                     </div>
                 </div>
             <?php endif; ?>
