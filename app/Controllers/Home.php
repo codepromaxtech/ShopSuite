@@ -34,6 +34,17 @@ class Home extends Secure_Controller
     }
     
     /**
+     * Debug sidebar data
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function getDebugSidebar(): void
+    {
+        echo view('debug_sidebar', $this->global_view_data);
+    }
+    
+    /**
      * Logs the currently logged in employee out of the system.  Used in app/Views/partial/header.php
      *
      * @return RedirectResponse
