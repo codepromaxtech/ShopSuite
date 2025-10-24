@@ -111,7 +111,7 @@ class Sales extends Secure_Controller
             $data['user_info'] = $this->global_view_data['user_info'];
             $data['config'] = $this->global_view_data['config'];
 
-            echo view('sales/manage_bootstrap5', $data);
+            echo view('sales/manage_modern', $data);
         }
     }
 
@@ -132,11 +132,14 @@ class Sales extends Secure_Controller
      */
     public function getSearch(): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         $search = $this->request->getGet('search', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $limit = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT);
-        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT);
+        $limit = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?: 20;
+        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?: 0;
         $sort = $this->sanitizeSortColumn(sales_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'sale_id');
-        $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'desc';
 
         $filters = [
             'sale_type'         => 'all',
@@ -158,19 +161,22 @@ class Sales extends Secure_Controller
 
         $sales = $this->sale->search($search, $filters, $limit, $offset, $sort, $order);
         $total_rows = $this->sale->get_found_rows($search, $filters);
-        $payments = $this->sale->get_payments_summary($search, $filters);
-        $payment_summary = get_sales_manage_payments_summary($payments);
 
         $data_rows = [];
         foreach ($sales->getResult() as $sale) {
-            $data_rows[] = get_sale_data_row($sale);
+            // Return clean, simple data
+            $data_rows[] = [
+                'sale_id' => $sale->sale_id,
+                'sale_time' => $sale->sale_time ?? '',
+                'customer_name' => $sale->customer_name ?? '',
+                'items_purchased' => $sale->items_purchased ?? 0,
+                'payment_type' => $sale->payment_type ?? '',
+                'sale_amount' => $sale->sale_amount ?? 0
+            ];
         }
 
-        if ($total_rows > 0) {
-            $data_rows[] = get_sale_data_last_row($sales);
-        }
-
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows, 'payment_summary' => $payment_summary]);
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
