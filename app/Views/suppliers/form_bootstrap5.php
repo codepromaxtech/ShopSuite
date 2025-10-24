@@ -326,51 +326,66 @@ $(document).ready(function() {
     }
     <?php endif; ?>
 
-    // Form validation
-    $('#supplier_form').validate({
-        submitHandler: function(form) {
-            $(form).ajaxSubmit({
-                success: function(response) {
-                    if (response.success) {
-                        showNotification('Supplier saved successfully', 'success');
-                        
-                        // Reload the data table if it exists
-                        if (typeof window.suppliersTable !== 'undefined' && window.suppliersTable.refresh) {
-                            window.suppliersTable.refresh();
-                        }
-                        
-                        // Close modal if function exists
-                        if (typeof hideModal === 'function') {
-                            setTimeout(() => hideModal(), 500);
-                        } else if (typeof closeModal === 'function') {
-                            setTimeout(() => closeModal(), 500);
-                        }
-                    } else {
-                        showNotification(response.message || 'Failed to save supplier', 'error');
-                    }
-                },
-                error: function() {
-                    showNotification('An error occurred', 'error');
-                },
-                dataType: 'json'
-            });
+    // Native HTML5 form validation and submission
+    const form = document.getElementById('supplier_form');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Check HTML5 validation
+        if (!form.checkValidity()) {
+            e.stopPropagation();
+            form.classList.add('was-validated');
             return false;
-        },
-        rules: {
-            company_name: "required",
-            first_name: "required",
-            last_name: "required",
-            email: {
-                email: true
-            }
-        },
-        errorClass: 'is-invalid',
-        validClass: 'is-valid',
-        errorElement: 'div',
-        errorPlacement: function(error, element) {
-            error.addClass('invalid-feedback');
-            element.closest('.col-md-6, .col-md-8, .col-12, .col-md-4').append(error);
         }
+        
+        // Disable submit button
+        const submitBtn = document.getElementById('submit_button');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Saving...';
+        
+        // Get form data
+        const formData = new FormData(form);
+        
+        // Submit via AJAX
+        $.ajax({
+            url: form.action,
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    showNotification(response.message || 'Supplier saved successfully', 'success');
+                    
+                    // Reload the data table if it exists
+                    if (typeof window.suppliersTable !== 'undefined' && window.suppliersTable.refresh) {
+                        window.suppliersTable.refresh();
+                    }
+                    
+                    // Close modal if function exists
+                    if (typeof hideModal === 'function') {
+                        setTimeout(() => hideModal(), 500);
+                    } else if (typeof closeModal === 'function') {
+                        setTimeout(() => closeModal(), 500);
+                    }
+                } else {
+                    showNotification(response.message || 'Failed to save supplier', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Save error:', error);
+                showNotification('An error occurred while saving', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+        
+        return false;
     });
 });
 </script>
