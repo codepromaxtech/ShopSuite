@@ -247,8 +247,55 @@ function showNotification(message, type = 'info') {
             padding: 1rem 0;
         }
         
+        .menu-section {
+            margin: 1.5rem 0 0.5rem 0;
+        }
+        
+        .menu-section-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 0.5rem;
+        }
+        
         .menu-item {
             margin: 0.25rem 0.75rem;
+        }
+        
+        .menu-collapse {
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .menu-collapse::after {
+            content: '\f282';
+            font-family: 'bootstrap-icons';
+            position: absolute;
+            right: 1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .menu-collapse.collapsed::after {
+            transform: rotate(-90deg);
+        }
+        
+        .submenu {
+            padding-left: 1rem;
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .submenu.collapse:not(.show) {
+            max-height: 0;
+        }
+        
+        .submenu .menu-link {
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            font-size: 0.9rem;
         }
         
         .menu-link {
@@ -614,16 +661,85 @@ function showNotification(message, type = 'info') {
         </div>
         
         <div class="sidebar-menu">
-            <?php if (isset($allowed_modules) && is_array($allowed_modules)): ?>
-                <?php foreach ($allowed_modules as $module): ?>
+            <?php 
+            // Categorize modules
+            $main_modules = ['home', 'office', 'sales', 'items', 'customers', 'suppliers', 'receivings', 'reports'];
+            $settings_modules = ['config', 'roles', 'employees', 'taxes', 'giftcards', 'item_kits', 'expenses', 'expenses_categories', 'cashups', 'messages', 'migrate'];
+            
+            $categorized = [
+                'main' => [],
+                'settings' => [],
+                'other' => []
+            ];
+            
+            if (isset($allowed_modules) && is_array($allowed_modules)) {
+                foreach ($allowed_modules as $module) {
+                    if (in_array($module->module_id, $main_modules)) {
+                        $categorized['main'][] = $module;
+                    } elseif (in_array($module->module_id, $settings_modules)) {
+                        $categorized['settings'][] = $module;
+                    } else {
+                        $categorized['other'][] = $module;
+                    }
+                }
+            }
+            
+            $current_module = $request->getUri()->getSegment(1);
+            ?>
+            
+            <!-- Main Modules -->
+            <?php if (!empty($categorized['main'])): ?>
+                <div class="menu-section">
+                    <div class="menu-section-title">Main Menu</div>
+                    <?php foreach ($categorized['main'] as $module): ?>
+                        <div class="menu-item">
+                            <a href="<?= base_url($module->module_id) ?>" 
+                               class="menu-link <?= ($current_module == $module->module_id) ? 'active' : '' ?>">
+                                <i class="<?= getModuleIcon($module->module_id) ?>"></i>
+                                <span><?= lang('Module.' . $module->module_id) ?></span>
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+            
+            <!-- Settings Section (Collapsible) -->
+            <?php if (!empty($categorized['settings'])): ?>
+                <div class="menu-section">
                     <div class="menu-item">
-                        <a href="<?= base_url($module->module_id) ?>" 
-                           class="menu-link <?= ($request->getUri()->getSegment(1) == $module->module_id) ? 'active' : '' ?>">
-                            <i class="<?= getModuleIcon($module->module_id) ?>"></i>
-                            <span><?= lang('Module.' . $module->module_id) ?></span>
+                        <a class="menu-link menu-collapse" data-bs-toggle="collapse" href="#settingsMenu" role="button" aria-expanded="true">
+                            <i class="bi bi-gear-fill"></i>
+                            <span>Settings</span>
                         </a>
                     </div>
-                <?php endforeach; ?>
+                    <div class="collapse show submenu" id="settingsMenu">
+                        <?php foreach ($categorized['settings'] as $module): ?>
+                            <div class="menu-item">
+                                <a href="<?= base_url($module->module_id) ?>" 
+                                   class="menu-link <?= ($current_module == $module->module_id) ? 'active' : '' ?>">
+                                    <i class="<?= getModuleIcon($module->module_id) ?>"></i>
+                                    <span><?= lang('Module.' . $module->module_id) ?></span>
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+            
+            <!-- Other Modules -->
+            <?php if (!empty($categorized['other'])): ?>
+                <div class="menu-section">
+                    <div class="menu-section-title">Other</div>
+                    <?php foreach ($categorized['other'] as $module): ?>
+                        <div class="menu-item">
+                            <a href="<?= base_url($module->module_id) ?>" 
+                               class="menu-link <?= ($current_module == $module->module_id) ? 'active' : '' ?>">
+                                <i class="<?= getModuleIcon($module->module_id) ?>"></i>
+                                <span><?= lang('Module.' . $module->module_id) ?></span>
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             <?php endif; ?>
         </div>
     </div>
