@@ -134,6 +134,9 @@ class Giftcards extends Secure_Controller
      */
     public function postSave(int $giftcard_id = NEW_ENTRY): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         $giftcard_number = $this->request->getPost('giftcard_number', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         if ($giftcard_id == NEW_ENTRY && trim($giftcard_number) == '') {
@@ -169,6 +172,7 @@ class Giftcards extends Secure_Controller
                 'id'      => NEW_ENTRY
             ]);
         }
+        exit;
     }
 
     /**
