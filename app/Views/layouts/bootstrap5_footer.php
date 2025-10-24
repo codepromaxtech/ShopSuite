@@ -116,23 +116,38 @@
             return;
         }
         
-        console.log('✅ User dropdown found - letting Bootstrap handle it naturally');
+        console.log('✅ User dropdown found');
         
-        // Just add debug logging - let Bootstrap data-attributes handle the rest
+        let isOpening = false;
+        let openTime = 0;
+        
+        // Prevent dropdown from closing immediately after opening
         userDropdownElement.addEventListener('show.bs.dropdown', function (e) {
             console.log('🔽 Dropdown showing');
+            isOpening = true;
         });
         
         userDropdownElement.addEventListener('shown.bs.dropdown', function () {
             console.log('✅ Dropdown shown');
+            openTime = Date.now();
+            isOpening = false;
         });
         
         userDropdownElement.addEventListener('hide.bs.dropdown', function (e) {
-            console.log('🔼 Dropdown hiding');
+            const timeSinceOpen = Date.now() - openTime;
+            console.log('🔼 Dropdown hiding (open for ' + timeSinceOpen + 'ms)');
+            
+            // Prevent immediate close (less than 300ms)
+            if (timeSinceOpen < 300) {
+                console.log('⛔ PREVENTED immediate close!');
+                e.preventDefault();
+                return false;
+            }
         });
         
         userDropdownElement.addEventListener('hidden.bs.dropdown', function () {
             console.log('❌ Dropdown hidden');
+            openTime = 0;
         });
     });
     </script>

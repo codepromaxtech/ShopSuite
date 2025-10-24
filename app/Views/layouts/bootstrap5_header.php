@@ -886,17 +886,16 @@ function showNotification(message, type = 'info') {
                     
                     <!-- User Profile Dropdown -->
                     <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" 
-                           id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" 
-                           style="cursor: pointer; padding: 0.5rem;">
+                        <button class="btn btn-link text-decoration-none p-2 border-0 d-flex align-items-center dropdown-toggle" 
+                                type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <div class="user-avatar me-2">
                                 <?= strtoupper(substr($user_info->first_name ?? 'U', 0, 1)) ?>
                             </div>
                             <div class="d-none d-md-block text-start me-1">
                                 <div class="fw-semibold" style="line-height: 1.2; color: #212529;"><?= esc($user_info->first_name ?? 'User') ?> <?= esc($user_info->last_name ?? '') ?></div>
-                                <small class="text-muted"><?= esc($user_info->username ?? '') ?></small>
+                                <small class="text-muted" style="display: block;"><?= esc($user_info->username ?? '') ?></small>
                             </div>
-                        </a>
+                        </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown" style="min-width: 280px;">
                             <!-- User Info Header -->
                             <li class="dropdown-header">
