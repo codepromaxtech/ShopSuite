@@ -146,6 +146,32 @@
             font-size: 1.5rem;
         }
         
+        .module-search-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .module-search-container .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+            border-color: white;
+        }
+        
+        .module-card.hidden {
+            display: none;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            font-size: 1.1rem;
+            display: none;
+        }
+        
+        .no-results.show {
+            display: block;
+        }
+        
         @media (max-width: 768px) {
             .modules-grid {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -158,6 +184,10 @@
             
             .module-card {
                 padding: 1.5rem 0.5rem;
+            }
+            
+            .module-search-container {
+                padding: 0 1rem;
             }
         }
     </style>
@@ -190,18 +220,45 @@
             <h1><?= lang('Common.welcome_message') ?></h1>
             <p>Select a module to get started</p>
             
-            <div class="user-info-card mx-auto">
-                <i class="bi bi-calendar-check"></i>
-                <span><?= date('l, F d, Y') ?></span>
+            <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap mb-3">
+                <div class="user-info-card">
+                    <i class="bi bi-calendar-check"></i>
+                    <span><?= date('l, F d, Y') ?></span>
+                </div>
+                <div class="user-info-card">
+                    <i class="bi bi-clock"></i>
+                    <span id="current-time"><?= date('h:i A') ?></span>
+                </div>
+            </div>
+            
+            <!-- Module Search -->
+            <div class="module-search-container">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" 
+                           class="form-control border-start-0" 
+                           id="moduleSearch" 
+                           placeholder="Search modules..." 
+                           style="background: white; border-left: none;">
+                </div>
             </div>
         </div>
     </div>
     
     <!-- Modules Grid -->
     <div class="container mb-5">
+        <div class="no-results">
+            <i class="bi bi-search" style="font-size: 3rem; opacity: 0.5;"></i>
+            <p class="mt-3">No modules found matching your search</p>
+        </div>
         <div class="modules-grid">
             <?php foreach ($allowed_modules as $module): ?>
-                <a href="<?= base_url($module->module_id) ?>" class="module-card">
+                <a href="<?= base_url($module->module_id) ?>" 
+                   class="module-card" 
+                   data-module-name="<?= esc(strtolower(lang("Module.$module->module_id"))) ?>"
+                   data-module-desc="<?= esc(strtolower(lang("Module.$module->module_id" . '_desc'))) ?>">
                     <img src="<?= base_url("images/menubar/$module->module_id.svg") ?>" 
                          alt="<?= lang("Module.$module->module_id") ?>" 
                          class="module-icon">
@@ -223,5 +280,66 @@
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Update time every second
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            document.getElementById('current-time').textContent = timeStr;
+        }
+        setInterval(updateTime, 1000);
+        
+        // Module search functionality
+        const searchInput = document.getElementById('moduleSearch');
+        const moduleCards = document.querySelectorAll('.module-card');
+        const noResults = document.querySelector('.no-results');
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+            
+            moduleCards.forEach(card => {
+                const moduleName = card.getAttribute('data-module-name');
+                const moduleDesc = card.getAttribute('data-module-desc');
+                const matches = moduleName.includes(searchTerm) || moduleDesc.includes(searchTerm);
+                
+                if (matches || searchTerm === '') {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            // Show/hide no results message
+            if (visibleCount === 0 && searchTerm !== '') {
+                noResults.classList.add('show');
+            } else {
+                noResults.classList.remove('show');
+            }
+        });
+        
+        // Add keyboard shortcut (Ctrl+K or Cmd+K to focus search)
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            
+            // ESC to clear search
+            if (e.key === 'Escape' && document.activeElement === searchInput) {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input'));
+            }
+        });
+        
+        console.log('✨ Modern Office Dashboard Loaded');
+        console.log('💡 Tip: Press Ctrl+K to search modules');
+    </script>
 </body>
 </html>
