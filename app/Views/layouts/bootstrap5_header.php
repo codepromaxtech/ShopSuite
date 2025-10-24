@@ -78,8 +78,11 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- Modern Table System (NEW) -->
     <script src="<?= base_url('js/modern-table.js') ?>"></script>
     
+    <!-- Modern DataTable (Pure Native Solution) -->
+    <script src="<?= base_url('js/modern-datatable.js') ?>"></script>
+    
     <!-- Modern Modal System (NEW - replaces BootstrapDialog) -->
-<script src="<?= base_url('js/modern-modal.js') ?>"></script>
+    <script src="<?= base_url('js/modern-modal.js') ?>"></script>
 
 <!-- Global Configuration -->
 <script>

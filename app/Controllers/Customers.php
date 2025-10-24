@@ -50,7 +50,7 @@ class Customers extends Persons
         $data['user_info'] = $this->global_view_data['user_info'];
         $data['config'] = $this->global_view_data['config'];
 
-        echo view('customers/manage_bootstrap5', $data);
+        echo view('customers/manage_modern', $data);
     }
 
     /**
@@ -87,6 +87,9 @@ class Customers extends Persons
      */
     public function getSearch(): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         $search = $this->request->getGet('search');
         $limit = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT);
         $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT);
@@ -100,7 +103,7 @@ class Customers extends Persons
 
         foreach ($customers->getResult() as $person) {
             // Retrieve the total amount the customer spent so far together with min, max and average values
-            $stats = $this->customer->get_stats($person->person_id);    // TODO: duplicated... see above
+            $stats = $this->customer->get_stats($person->person_id);
             if (empty($stats)) {
                 // Create object with empty properties.
                 $stats = new stdClass();
@@ -115,7 +118,9 @@ class Customers extends Persons
             $data_rows[] = get_customer_data_row($person, $stats);
         }
 
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows]);
+        // Return clean JSON
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit; // Prevent any further output
     }
 
     /**
