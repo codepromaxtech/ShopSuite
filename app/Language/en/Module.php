@@ -5,6 +5,8 @@ return [
     "admin_cashups_desc"         => "",
     "attributes"                 => "Attributes",
     "attributes_desc"            => "Add, Update, Delete, and Search attributes.",
+    "backups"                    => "Database Backups",
+    "backups_desc"               => "Create, restore, and manage database backups.",
     "both"                       => "Both",
     "cashups"                    => "Cashups",
     "cashups_desc"               => "Add, Update, Delete, and Search Cashups.",
