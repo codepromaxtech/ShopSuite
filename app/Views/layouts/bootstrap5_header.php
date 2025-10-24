@@ -689,11 +689,37 @@ function showNotification(message, type = 'info') {
                             </div>
                             <i class="bi bi-chevron-down"></i>
                         </div>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        <ul class="dropdown-menu dropdown-menu-end shadow" style="min-width: 250px;">
+                            <!-- User Info Header -->
+                            <li class="px-3 py-2 border-bottom">
+                                <div class="fw-semibold"><?= esc($user_info->first_name ?? 'User') ?> <?= esc($user_info->last_name ?? '') ?></div>
+                                <small class="text-muted"><?= esc($user_info->email ?? $user_info->username ?? '') ?></small>
+                            </li>
+                            
+                            <!-- Profile & Settings -->
+                            <li><a class="dropdown-item" href="<?= base_url('employees/view/' . ($user_info->person_id ?? '')) ?>">
+                                <i class="bi bi-person-circle me-2"></i> My Profile
+                            </a></li>
                             <li><a class="dropdown-item" href="<?= base_url('home/change_password/' . ($user_info->person_id ?? '')) ?>">
                                 <i class="bi bi-key me-2"></i> Change Password
                             </a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('config') ?>">
+                                <i class="bi bi-gear me-2"></i> System Settings
+                            </a></li>
+                            
                             <li><hr class="dropdown-divider"></li>
+                            
+                            <!-- Theme Toggle -->
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="toggleTheme(); return false;">
+                                    <i class="bi bi-moon-stars me-2" id="theme-icon-dropdown"></i> 
+                                    <span id="theme-text">Dark Mode</span>
+                                </a>
+                            </li>
+                            
+                            <li><hr class="dropdown-divider"></li>
+                            
+                            <!-- Logout -->
                             <li><a class="dropdown-item text-danger" href="<?= base_url('home/logout') ?>">
                                 <i class="bi bi-box-arrow-right me-2"></i> Logout
                             </a></li>

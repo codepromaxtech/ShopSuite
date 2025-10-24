@@ -41,6 +41,47 @@
         document.getElementById('sidebar').classList.toggle('show');
     }
     
+    // Toggle Dark Mode
+    function toggleTheme() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-bs-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        html.setAttribute('data-bs-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Update icons
+        const themeIcon = document.getElementById('theme-icon');
+        const themeIconDropdown = document.getElementById('theme-icon-dropdown');
+        const themeText = document.getElementById('theme-text');
+        
+        if (newTheme === 'dark') {
+            if (themeIcon) themeIcon.className = 'bi bi-sun';
+            if (themeIconDropdown) themeIconDropdown.className = 'bi bi-sun me-2';
+            if (themeText) themeText.textContent = 'Light Mode';
+        } else {
+            if (themeIcon) themeIcon.className = 'bi bi-moon-stars';
+            if (themeIconDropdown) themeIconDropdown.className = 'bi bi-moon-stars me-2';
+            if (themeText) themeText.textContent = 'Dark Mode';
+        }
+    }
+    
+    // Load saved theme on page load
+    (function() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        
+        const themeIcon = document.getElementById('theme-icon');
+        const themeIconDropdown = document.getElementById('theme-icon-dropdown');
+        const themeText = document.getElementById('theme-text');
+        
+        if (savedTheme === 'dark') {
+            if (themeIcon) themeIcon.className = 'bi bi-sun';
+            if (themeIconDropdown) themeIconDropdown.className = 'bi bi-sun me-2';
+            if (themeText) themeText.textContent = 'Light Mode';
+        }
+    })();
+    
     // Live Clock
     function updateClock() {
         const now = new Date();
