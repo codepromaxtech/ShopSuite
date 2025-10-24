@@ -28,7 +28,7 @@ class Giftcards extends Secure_Controller
         $data['user_info'] = $this->global_view_data['user_info'];
         $data['config'] = $this->global_view_data['config'];
 
-        echo view('giftcards/manage_bootstrap5', $data);
+        echo view('giftcards/manage_modern', $data);
     }
 
     /**
@@ -36,21 +36,32 @@ class Giftcards extends Secure_Controller
      */
     public function getSearch(): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         $search = $this->request->getGet('search');
-        $limit  = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT);
-        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT);
+        $limit  = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?: 20;
+        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?: 0;
         $sort   = $this->sanitizeSortColumn(giftcard_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'giftcard_id');
-        $order  = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $order  = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'asc';
 
         $giftcards = $this->giftcard->search($search, $limit, $offset, $sort, $order);
         $total_rows = $this->giftcard->get_found_rows($search);
 
         $data_rows = [];
         foreach ($giftcards->getResult() as $giftcard) {
-            $data_rows[] = get_giftcard_data_row($giftcard);
+            // Return clean, simple data
+            $data_rows[] = [
+                'giftcard_id' => $giftcard->giftcard_id,
+                'giftcard_number' => $giftcard->giftcard_number ?? '',
+                'value' => $giftcard->value ?? 0,
+                'first_name' => $giftcard->first_name ?? '',
+                'last_name' => $giftcard->last_name ?? ''
+            ];
         }
 
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows]);
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
@@ -178,6 +189,9 @@ class Giftcards extends Secure_Controller
      */
     public function postDelete(): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         // Get POST data - CodeIgniter handles ids[] as 'ids'
         $giftcards_to_delete = $this->request->getVar('ids');
 
@@ -189,5 +203,6 @@ class Giftcards extends Secure_Controller
         } else {
             echo json_encode(['success' => false, 'message' => lang('Giftcards.cannot_be_deleted')]);
         }
+        exit;
     }
 }

@@ -21,27 +21,53 @@ class Employees extends Persons
     }
 
     /**
+     * @return void
+     */
+    public function getIndex(): void
+    {
+        $data['table_headers'] = get_people_manage_table_headers();
+        $data['controller_name'] = 'employees';
+        $data['allowed_modules'] = $this->global_view_data['allowed_modules'];
+        $data['user_info'] = $this->global_view_data['user_info'];
+        $data['config'] = $this->global_view_data['config'];
+
+        echo view('employees/manage_modern', $data);
+    }
+
+    /**
      * Returns employee table data rows. This will be called with AJAX.
      *
      * @return void
      */
     public function getSearch(): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         $search = $this->request->getGet('search');
-        $limit  = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT);
-        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT);
+        $limit  = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?: 20;
+        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?: 0;
         $sort   = $this->sanitizeSortColumn(person_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'people.person_id');
-        $order  = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $order  = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'asc';
 
         $employees = $this->employee->search($search, $limit, $offset, $sort, $order);
         $total_rows = $this->employee->get_found_rows($search);
 
         $data_rows = [];
         foreach ($employees->getResult() as $person) {
-            $data_rows[] = get_person_data_row($person);
+            // Return clean, simple data
+            $data_rows[] = [
+                'person_id' => $person->person_id,
+                'first_name' => $person->first_name ?? '',
+                'last_name' => $person->last_name ?? '',
+                'username' => $person->username ?? '',
+                'email' => $person->email ?? '',
+                'phone_number' => $person->phone_number ?? ''
+            ];
         }
 
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows]);
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
@@ -189,9 +215,12 @@ class Employees extends Persons
      */
     public function postDelete(): void
     {
-        $employees_to_delete = $this->request->getPost('ids', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
+        $employees_to_delete = $this->request->getVar('ids');
 
-        if ($this->employee->delete_list($employees_to_delete)) {    // TODO: this is passing a string, but delete_list expects an array
+        if ($this->employee->delete_list($employees_to_delete)) {
             echo json_encode([
                 'success' => true,
                 'message' => lang('Employees.successful_deleted') . ' ' . count($employees_to_delete) . ' ' . lang('Employees.one_or_multiple')
@@ -199,6 +228,7 @@ class Employees extends Persons
         } else {
             echo json_encode(['success' => false, 'message' => lang('Employees.cannot_be_deleted')]);
         }
+        exit;
     }
 
     /**

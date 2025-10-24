@@ -91,7 +91,7 @@ class Items extends Secure_Controller
         $data['user_info'] = $this->global_view_data['user_info'];
         $data['config'] = $this->global_view_data['config'];
 
-        echo view('items/manage_bootstrap5', $data);
+        echo view('items/manage_modern', $data);
     }
 
     /**
@@ -132,14 +132,20 @@ class Items extends Secure_Controller
         $data_rows = [];
 
         foreach ($items->getResult() as $item) {
-            $data_rows[] = get_item_data_row($item);
-
-            if ($item->pic_filename !== null) {
-                $this->update_pic_filename($item);
-            }
+            // Return clean, simple data
+            $data_rows[] = [
+                'item_id' => $item->item_id,
+                'name' => $item->name ?? '',
+                'item_number' => $item->item_number ?? '',
+                'category' => $item->category ?? '',
+                'unit_price' => $item->unit_price ?? 0,
+                'quantity' => $item->quantity ?? 0
+            ];
         }
 
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows]);
+        $this->response->setContentType('application/json');
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
@@ -906,7 +912,10 @@ class Items extends Secure_Controller
      */
     public function postDelete(): void
     {
-        $items_to_delete = $this->request->getPost('ids');
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
+        $items_to_delete = $this->request->getVar('ids');
 
         if ($this->item->delete_list($items_to_delete)) {
             $message = lang('Items.successful_deleted') . ' ' . count($items_to_delete) . ' ' . lang('Items.one_or_multiple');
@@ -914,6 +923,7 @@ class Items extends Secure_Controller
         } else {
             echo json_encode(['success' => false, 'message' => lang('Items.cannot_be_deleted')]);
         }
+        exit;
     }
 
     /**

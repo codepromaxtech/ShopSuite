@@ -27,7 +27,7 @@ class Suppliers extends Persons
         $data['user_info'] = $this->global_view_data['user_info'];
         $data['config'] = $this->global_view_data['config'];
 
-        echo view('suppliers/manage_bootstrap5', $data);
+        echo view('suppliers/manage_modern', $data);
     }
 
     /**
@@ -49,11 +49,14 @@ class Suppliers extends Persons
      **/
     public function getSearch(): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         $search = $this->request->getGet('search');
-        $limit = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT);
-        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT);
+        $limit = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?: 20;
+        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?: 0;
         $sort = $this->sanitizeSortColumn(supplier_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'people.person_id');
-        $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'asc';
 
         $suppliers = $this->supplier->search($search, $limit, $offset, $sort, $order);
         $total_rows = $this->supplier->get_found_rows($search);
@@ -61,12 +64,21 @@ class Suppliers extends Persons
         $data_rows = [];
 
         foreach ($suppliers->getResult() as $supplier) {
-            $row = get_supplier_data_row($supplier);
-            $row['category'] = $this->supplier->get_category_name($row['category']);
-            $data_rows[] = $row;
+            // Return clean, simple data
+            $data_rows[] = [
+                'person_id' => $supplier->person_id,
+                'company_name' => html_entity_decode($supplier->company_name ?? ''),
+                'agency_name' => $supplier->agency_name ?? '',
+                'category' => $this->supplier->get_category_name($supplier->category) ?? '',
+                'first_name' => $supplier->first_name ?? '',
+                'last_name' => $supplier->last_name ?? '',
+                'email' => $supplier->email ?? '',
+                'phone_number' => $supplier->phone_number ?? ''
+            ];
         }
 
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows]);
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
@@ -184,6 +196,9 @@ class Suppliers extends Persons
      */
     public function postDelete(): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         // Get POST data - CodeIgniter handles ids[] as 'ids'
         $suppliers_to_delete = $this->request->getVar('ids');
 
@@ -195,5 +210,6 @@ class Suppliers extends Persons
         } else {
             echo json_encode(['success' => false, 'message' => lang('Suppliers.cannot_be_deleted')]);
         }
+        exit;
     }
 }
