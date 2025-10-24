@@ -398,85 +398,10 @@
 
         <!-- TAB 3: Permissions -->
         <div class="tab-pane fade" id="permissions-info">
-            
-            <div class="alert alert-info">
-                <i class="bi bi-info-circle me-2"></i><?= lang('Employees.permission_desc') ?>
-            </div>
-
-            <div id="permission_list">
-                <?php foreach ($all_modules as $module): ?>
-                    <div class="permission-item">
-                        <div class="permission-header">
-                            <div class="form-check">
-                                <?= form_checkbox([
-                                    'name' => "grant_$module->module_id",
-                                    'id' => "grant_$module->module_id",
-                                    'value' => $module->module_id,
-                                    'checked' => $module->grant == 1,
-                                    'class' => 'form-check-input module-checkbox'
-                                ]) ?>
-                            </div>
-                            
-                            <?= form_dropdown(
-                                "menu_group_$module->module_id",
-                                [
-                                    'home' => lang('Module.home'),
-                                    'office' => lang('Module.office'),
-                                    'both' => lang('Module.both')
-                                ],
-                                $module->menu_group,
-                                ['class' => 'form-select form-select-sm module-menu-group', 'style' => 'width: 150px;']
-                            ) ?>
-                            
-                            <div class="flex-grow-1">
-                                <strong><?= lang("Module.$module->module_id") ?></strong>
-                                <br><small class="text-muted"><?= lang("Module.$module->module_id" . '_desc') ?></small>
-                            </div>
-                        </div>
-
-                        <!-- Sub-permissions -->
-                        <?php
-                        $has_subpermissions = false;
-                        foreach ($all_subpermissions as $permission) {
-                            if ($permission->module_id == $module->module_id) {
-                                if (!$has_subpermissions) {
-                                    echo '<div class="permission-sublist">';
-                                    $has_subpermissions = true;
-                                }
-                                
-                                $exploded_permission = explode('_', $permission->permission_id, 2);
-                                $lang_key = $module->module_id . '.' . $exploded_permission[1];
-                                $lang_line = lang(ucfirst($lang_key));
-                                $lang_line = ($lang_line == ucfirst($lang_key)) ? ucwords(str_replace("_", " ", $exploded_permission[1])) : $lang_line;
-                                
-                                if (!empty($lang_line)) {
-                        ?>
-                                    <div class="permission-subitem">
-                                        <div class="form-check">
-                                            <?= form_checkbox([
-                                                'name' => "grant_$permission->permission_id",
-                                                'id' => "grant_$permission->permission_id",
-                                                'value' => $permission->permission_id,
-                                                'checked' => $permission->grant == 1,
-                                                'class' => 'form-check-input subpermission-checkbox'
-                                            ]) ?>
-                                            <?= form_hidden("menu_group_$permission->permission_id", "--") ?>
-                                            <label class="form-check-label" for="grant_<?= $permission->permission_id ?>">
-                                                <?= $lang_line ?>
-                                            </label>
-                                        </div>
-                                    </div>
-                        <?php
-                                }
-                            }
-                        }
-                        if ($has_subpermissions) {
-                            echo '</div>';
-                        }
-                        ?>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+            <?= view('employees/form_permissions_crud', [
+                'all_modules' => $all_modules,
+                'all_subpermissions' => $all_subpermissions
+            ]) ?>
         </div>
     </div>
 
