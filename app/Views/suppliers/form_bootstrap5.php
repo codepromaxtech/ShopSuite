@@ -295,33 +295,35 @@
 $(document).ready(function() {
     console.log('✅ Modern Supplier Form Loaded');
 
-    // Address autocomplete
+    // Address autocomplete (only if nominatim library is loaded)
     <?php if (isset($config['country_codes']) && !empty($config['country_codes'])): ?>
-    nominatim.init({
-        fields: {
-            postcode: {
-                dependencies: ["postcode", "city", "state", "country"],
-                response: {
-                    field: 'postalcode',
-                    format: ["postcode", "village|town|hamlet|city_district|city", "state", "country"]
+    if (typeof nominatim !== 'undefined') {
+        nominatim.init({
+            fields: {
+                postcode: {
+                    dependencies: ["postcode", "city", "state", "country"],
+                    response: {
+                        field: 'postalcode',
+                        format: ["postcode", "village|town|hamlet|city_district|city", "state", "country"]
+                    }
+                },
+                city: {
+                    dependencies: ["postcode", "city", "state", "country"],
+                    response: {
+                        format: ["postcode", "village|town|hamlet|city_district|city", "state", "country"]
+                    }
+                },
+                state: {
+                    dependencies: ["state", "country"]
+                },
+                country: {
+                    dependencies: ["state", "country"]
                 }
             },
-            city: {
-                dependencies: ["postcode", "city", "state", "country"],
-                response: {
-                    format: ["postcode", "village|town|hamlet|city_district|city", "state", "country"]
-                }
-            },
-            state: {
-                dependencies: ["state", "country"]
-            },
-            country: {
-                dependencies: ["state", "country"]
-            }
-        },
-        language: '<?= current_language_code() ?>',
-        country_codes: '<?= esc($config['country_codes'], 'js') ?>'
-    });
+            language: '<?= current_language_code() ?>',
+            country_codes: '<?= esc($config['country_codes'], 'js') ?>'
+        });
+    }
     <?php endif; ?>
 
     // Form validation
@@ -331,11 +333,17 @@ $(document).ready(function() {
                 success: function(response) {
                     if (response.success) {
                         showNotification('Supplier saved successfully', 'success');
+                        
+                        // Reload the data table if it exists
+                        if (typeof window.suppliersTable !== 'undefined' && window.suppliersTable.refresh) {
+                            window.suppliersTable.refresh();
+                        }
+                        
+                        // Close modal if function exists
                         if (typeof hideModal === 'function') {
                             setTimeout(() => hideModal(), 500);
-                        }
-                        if (typeof table_support !== 'undefined') {
-                            table_support.handle_submit("<?= esc($controller_name) ?>", response);
+                        } else if (typeof closeModal === 'function') {
+                            setTimeout(() => closeModal(), 500);
                         }
                     } else {
                         showNotification(response.message || 'Failed to save supplier', 'error');

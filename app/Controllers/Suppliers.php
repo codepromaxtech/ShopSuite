@@ -141,6 +141,9 @@ class Suppliers extends Persons
      */
     public function postSave(int $supplier_id = NEW_ENTRY): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         $first_name = $this->request->getPost('first_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);    // TODO: Duplicate code
         $last_name = $this->request->getPost('last_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $email = strtolower($this->request->getPost('email', FILTER_SANITIZE_EMAIL));
@@ -195,6 +198,7 @@ class Suppliers extends Persons
                 'id'      => NEW_ENTRY
             ]);
         }
+        exit;
     }
 
     /**
