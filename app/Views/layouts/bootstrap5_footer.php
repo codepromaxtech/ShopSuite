@@ -71,6 +71,12 @@
     document.addEventListener('click', function(event) {
         const sidebar = document.getElementById('sidebar');
         const toggle = document.querySelector('.mobile-toggle');
+        const userDropdown = document.getElementById('userDropdown');
+        
+        // Don't interfere with user dropdown
+        if (userDropdown && (event.target === userDropdown || userDropdown.contains(event.target))) {
+            return;
+        }
         
         if (window.innerWidth <= 768 && sidebar.classList.contains('show')) {
             if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
@@ -106,25 +112,47 @@
         console.log('✅ Bootstrap 5 initialized');
         console.log('✅ User dropdown ready');
         
-        // Ensure dropdown is properly initialized
         const userDropdownElement = document.getElementById('userDropdown');
-        if (userDropdownElement) {
-            const userDropdown = new bootstrap.Dropdown(userDropdownElement, {
-                autoClose: true
-            });
-            console.log('✅ User dropdown explicitly initialized');
-        } else {
+        if (!userDropdownElement) {
             console.warn('⚠️ User dropdown element not found!');
+            return;
         }
         
-        // Debug: Log when dropdown is shown
-        userDropdownElement?.addEventListener('show.bs.dropdown', function () {
-            console.log('🔽 Dropdown opened');
+        // Prevent event propagation that causes immediate close
+        userDropdownElement.addEventListener('click', function(e) {
+            e.stopPropagation();
+            console.log('👆 User dropdown button clicked');
         });
         
-        userDropdownElement?.addEventListener('hide.bs.dropdown', function () {
-            console.log('🔼 Dropdown closed');
+        // Initialize Bootstrap dropdown
+        const userDropdown = new bootstrap.Dropdown(userDropdownElement, {
+            autoClose: 'outside' // Close only when clicking outside
         });
+        console.log('✅ User dropdown explicitly initialized');
+        
+        // Debug: Log when dropdown is shown
+        userDropdownElement.addEventListener('show.bs.dropdown', function () {
+            console.log('🔽 Dropdown opening...');
+        });
+        
+        userDropdownElement.addEventListener('shown.bs.dropdown', function () {
+            console.log('✅ Dropdown fully opened');
+        });
+        
+        userDropdownElement.addEventListener('hide.bs.dropdown', function () {
+            console.log('🔼 Dropdown closing...');
+        });
+        
+        // Prevent dropdown menu clicks from closing the dropdown
+        const dropdownMenu = userDropdownElement.nextElementSibling;
+        if (dropdownMenu) {
+            dropdownMenu.addEventListener('click', function(e) {
+                // Only close if clicking a link (not the container)
+                if (e.target.tagName !== 'A') {
+                    e.stopPropagation();
+                }
+            });
+        }
     });
     </script>
 </body>
