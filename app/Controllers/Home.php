@@ -18,8 +18,52 @@ class Home extends Secure_Controller
     {
         $logged_in = $this->employee->is_logged_in();
         
-        // Use new Bootstrap 5 modern UI
-        echo view('home/home_bootstrap5', $this->global_view_data);
+        // Get dashboard stats
+        $stats = $this->getDashboardStats();
+        $data = $this->global_view_data;
+        $data['stats'] = $stats;
+        
+        // Use new modern responsive dashboard
+        echo view('home/dashboard_modern', $data);
+    }
+    
+    /**
+     * Get dashboard statistics
+     */
+    private function getDashboardStats(): array
+    {
+        $prefix = $this->db->getPrefix();
+        
+        // Today's sales count
+        $today_sales = $this->db->table($prefix . 'sales')
+            ->where('DATE(sale_time)', date('Y-m-d'))
+            ->countAllResults();
+        
+        // Today's revenue
+        $today_revenue = $this->db->table($prefix . 'sales')
+            ->selectSum('payment_amount', 'total')
+            ->where('DATE(sale_time)', date('Y-m-d'))
+            ->get()
+            ->getRow()
+            ->total ?? 0;
+        
+        // Total customers
+        $total_customers = $this->db->table($prefix . 'customers')
+            ->countAllResults();
+        
+        // Total items in stock
+        $total_items = $this->db->table($prefix . 'items')
+            ->selectSum('quantity', 'total')
+            ->get()
+            ->getRow()
+            ->total ?? 0;
+        
+        return [
+            'today_sales' => $today_sales,
+            'today_revenue' => $today_revenue,
+            'total_customers' => $total_customers,
+            'total_items' => $total_items
+        ];
     }
 
     /**
