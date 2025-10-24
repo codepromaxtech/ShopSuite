@@ -261,16 +261,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // Animate buttons
     animateIn('.btn-group', 200);
     
-    // Add smooth scroll to all anchor links
+    // Add smooth scroll to all anchor links (skip dropdown toggles and invalid selectors)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                e.preventDefault();
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+            const href = this.getAttribute('href');
+            
+            // Skip if it's a dropdown toggle or just "#"
+            if (href === '#' || this.hasAttribute('data-bs-toggle') || this.classList.contains('dropdown-toggle')) {
+                return;
+            }
+            
+            // Skip if selector is invalid
+            try {
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            } catch (err) {
+                // Invalid selector, ignore
+                console.warn('Invalid selector:', href);
             }
         });
     });
