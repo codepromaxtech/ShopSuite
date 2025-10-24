@@ -72,6 +72,10 @@
     <ul id="error_message_box" class="error_message_box"></ul>
 
     <?= form_open("$controller_name/save/$person_info->person_id", ['id' => 'customer_form', 'class' => 'needs-validation', 'novalidate' => true]) ?>
+    
+    <!-- Hidden Required Fields -->
+    <?= form_hidden('employee_id', $person_info->employee_id ?? '') ?>
+    <?= form_hidden('date', $person_info->date ?? date('Y-m-d H:i:s')) ?>
 
     <!-- Modern Tabs -->
     <ul class="nav nav-tabs modern-nav-tabs mb-3" id="customerTabs" role="tablist">
