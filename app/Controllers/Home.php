@@ -23,6 +23,17 @@ class Home extends Secure_Controller
     }
 
     /**
+     * User Settings Page
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function getUserSettings(): void
+    {
+        echo view('home/user_settings', $this->global_view_data);
+    }
+    
+    /**
      * Logs the currently logged in employee out of the system.  Used in app/Views/partial/header.php
      *
      * @return RedirectResponse
@@ -90,5 +101,58 @@ class Home extends Secure_Controller
                 'id'      => -1
             ]);
         }
+    }
+    
+    /**
+     * Save password from user settings page
+     * @return void
+     */
+    public function postSavePassword(): void
+    {
+        $this->response->setContentType('application/json');
+        
+        $person_id = $this->request->getPost('person_id', FILTER_SANITIZE_NUMBER_INT);
+        $current_password = $this->request->getPost('current_password');
+        $new_password = $this->request->getPost('password');
+        $confirm_password = $this->request->getPost('confirm_password');
+        
+        // Verify passwords match
+        if ($new_password !== $confirm_password) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Passwords do not match'
+            ]);
+            exit;
+        }
+        
+        // Get employee info
+        $employee_info = $this->employee->get_info($person_id);
+        
+        // Verify current password
+        if ($this->employee->check_password($employee_info->username, $current_password)) {
+            $employee_data = [
+                'username'     => $employee_info->username,
+                'password'     => password_hash($new_password, PASSWORD_DEFAULT),
+                'hash_version' => 2
+            ];
+            
+            if ($this->employee->change_password($employee_data, $person_id)) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => lang('Employees.successful_change_password')
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => lang('Employees.unsuccessful_change_password')
+                ]);
+            }
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => lang('Employees.current_password_invalid')
+            ]);
+        }
+        exit;
     }
 }

@@ -568,30 +568,6 @@ function showNotification(message, type = 'info') {
             font-size: 1.125rem;
         }
         
-        /* Dark Mode Toggle */
-        .theme-toggle {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 3.5rem;
-            height: 3.5rem;
-            border-radius: 50%;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: var(--shadow-lg);
-            transition: all var(--transition-base);
-            z-index: 1000;
-        }
-        
-        .theme-toggle:hover {
-            transform: scale(1.1) rotate(15deg);
-            box-shadow: var(--shadow-xl);
-        }
         
         /* Notification Badge */
         .badge-notification {
@@ -697,25 +673,15 @@ function showNotification(message, type = 'info') {
                             </li>
                             
                             <!-- Profile & Settings -->
+                            <li><a class="dropdown-item" href="<?= base_url('home/user_settings') ?>">
+                                <i class="bi bi-person-gear me-2"></i> My Settings
+                            </a></li>
                             <li><a class="dropdown-item" href="<?= base_url('employees/view/' . ($user_info->person_id ?? '')) ?>">
                                 <i class="bi bi-person-circle me-2"></i> My Profile
-                            </a></li>
-                            <li><a class="dropdown-item" href="<?= base_url('home/change_password/' . ($user_info->person_id ?? '')) ?>">
-                                <i class="bi bi-key me-2"></i> Change Password
                             </a></li>
                             <li><a class="dropdown-item" href="<?= base_url('config') ?>">
                                 <i class="bi bi-gear me-2"></i> System Settings
                             </a></li>
-                            
-                            <li><hr class="dropdown-divider"></li>
-                            
-                            <!-- Theme Toggle -->
-                            <li>
-                                <a class="dropdown-item" href="#" onclick="toggleTheme(); return false;">
-                                    <i class="bi bi-moon-stars me-2" id="theme-icon-dropdown"></i> 
-                                    <span id="theme-text">Dark Mode</span>
-                                </a>
-                            </li>
                             
                             <li><hr class="dropdown-divider"></li>
                             
@@ -728,11 +694,6 @@ function showNotification(message, type = 'info') {
                 </div>
             </div>
         </nav>
-        
-        <!-- Dark Mode Toggle -->
-        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
-            <i class="bi bi-moon-stars" id="theme-icon"></i>
-        </button>
         
         <!-- Content Area -->
         <div class="content-area">
