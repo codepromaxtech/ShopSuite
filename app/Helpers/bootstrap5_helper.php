@@ -28,6 +28,7 @@ if (!function_exists('getModuleIcon')) {
             'taxes' => 'bi bi-percent',
             'roles' => 'bi bi-shield-lock',
             'backups' => 'bi bi-database-fill-down',
+            'attributes' => 'bi bi-tags',
         ];
         
         return $icons[$module_id] ?? 'bi bi-circle';
@@ -59,6 +60,7 @@ if (!function_exists('getModuleColor')) {
             'taxes' => 'purple',
             'roles' => 'indigo',
             'backups' => 'success',
+            'attributes' => 'info',
         ];
         
         return $colors[$module_id] ?? 'primary';

@@ -681,7 +681,7 @@ function showNotification(message, type = 'info') {
             // Settings grouped by category
             $settings_groups = [
                 'system' => ['config', 'roles', 'employees', 'backups'],
-                'business' => ['taxes', 'giftcards', 'item_kits'],
+                'business' => ['taxes', 'attributes', 'giftcards', 'item_kits'],
                 'financial' => ['expenses', 'expenses_categories', 'cashups'],
                 'tools' => ['messages', 'migrate']
             ];
