@@ -22,7 +22,11 @@ class Messages extends Secure_Controller
      */
     public function getIndex(): void
     {
-        echo view('messages/sms');
+        $data['allowed_modules'] = $this->global_view_data['allowed_modules'];
+        $data['user_info'] = $this->global_view_data['user_info'];
+        $data['config'] = $this->global_view_data['config'];
+        
+        echo view('messages/sms_modern', $data);
     }
 
     /**
@@ -47,6 +51,9 @@ class Messages extends Secure_Controller
      */
     public function send(): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         $phone   = $this->request->getPost('phone', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $message = $this->request->getPost('message', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -57,6 +64,7 @@ class Messages extends Secure_Controller
         } else {
             echo json_encode(['success' => false, 'message' => lang('Messages.unsuccessfully_sent') . ' ' . esc($phone)]);
         }
+        exit;
     }
 
     /**
