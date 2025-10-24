@@ -26,14 +26,8 @@
     </div>
     <!-- /.main-content -->
 
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+    <!-- Scripts already loaded in header: Bootstrap 5.3.3, jQuery 3.7.1, SweetAlert2 -->
+    <!-- DO NOT RELOAD - causes conflicts! -->
     
     <script>
     // Toggle Sidebar for Mobile
@@ -67,22 +61,15 @@
     setInterval(updateClock, 1000);
     updateClock();
     
-    // Close sidebar when clicking outside on mobile (but don't interfere with dropdowns)
-    document.addEventListener('click', function(event) {
-        // Skip if clicking on any dropdown
-        if (event.target.closest('.dropdown')) {
-            return;
-        }
-        
-        const sidebar = document.getElementById('sidebar');
-        const toggle = document.querySelector('.mobile-toggle');
-        
-        if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains('show')) {
-            if (!sidebar.contains(event.target) && (!toggle || !toggle.contains(event.target))) {
+    // Mobile sidebar toggle (no global click handler that interferes)
+    function closeSidebarOnMobile() {
+        if (window.innerWidth <= 768) {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar && sidebar.classList.contains('show')) {
                 sidebar.classList.remove('show');
             }
         }
-    });
+    }
     
     // Confirm logout function
     function confirmLogout(event) {
@@ -106,49 +93,9 @@
         return false;
     }
     
-    // Initialize user dropdown on page load
+    // User dropdown - let Bootstrap handle it (no custom logic)
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('✅ Bootstrap 5 loaded');
-        
-        const userDropdownElement = document.getElementById('userDropdown');
-        if (!userDropdownElement) {
-            console.warn('⚠️ User dropdown element not found!');
-            return;
-        }
-        
-        console.log('✅ User dropdown found');
-        
-        let isOpening = false;
-        let openTime = 0;
-        
-        // Prevent dropdown from closing immediately after opening
-        userDropdownElement.addEventListener('show.bs.dropdown', function (e) {
-            console.log('🔽 Dropdown showing');
-            isOpening = true;
-        });
-        
-        userDropdownElement.addEventListener('shown.bs.dropdown', function () {
-            console.log('✅ Dropdown shown');
-            openTime = Date.now();
-            isOpening = false;
-        });
-        
-        userDropdownElement.addEventListener('hide.bs.dropdown', function (e) {
-            const timeSinceOpen = Date.now() - openTime;
-            console.log('🔼 Dropdown hiding (open for ' + timeSinceOpen + 'ms)');
-            
-            // Prevent immediate close (less than 300ms)
-            if (timeSinceOpen < 300) {
-                console.log('⛔ PREVENTED immediate close!');
-                e.preventDefault();
-                return false;
-            }
-        });
-        
-        userDropdownElement.addEventListener('hidden.bs.dropdown', function () {
-            console.log('❌ Dropdown hidden');
-            openTime = 0;
-        });
+        console.log('✅ Page loaded - Bootstrap dropdowns ready');
     });
     </script>
 </body>

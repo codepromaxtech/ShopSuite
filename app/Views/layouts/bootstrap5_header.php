@@ -41,6 +41,9 @@ $config = config('ShopSuite')->settings ?? [];
     <!-- File Upload CSS -->
     <link rel="stylesheet" href="<?= base_url('css/file-upload.css') ?>">
     
+    <!-- Modern Responsive Framework (Mobile-First) -->
+    <link rel="stylesheet" href="<?= base_url('css/modern-responsive.css') ?>">
+    
     <!-- Load CSS from gulp bundles -->
     <?php if (ENVIRONMENT == 'development' || get_cookie('debug') == 'true' || $request->getUri()->getQuery()): ?>
         <!-- inject:debug:css -->
