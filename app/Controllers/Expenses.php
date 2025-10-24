@@ -26,6 +26,10 @@ class Expenses extends Secure_Controller
     public function getIndex(): void
     {
         $data['table_headers'] = get_expenses_manage_table_headers();
+        $data['controller_name'] = 'expenses';
+        $data['allowed_modules'] = $this->global_view_data['allowed_modules'];
+        $data['user_info'] = $this->global_view_data['user_info'];
+        $data['config'] = $this->global_view_data['config'];
 
         // filters that will be loaded in the multiselect dropdown
         $data['filters'] = [
@@ -37,7 +41,7 @@ class Expenses extends Secure_Controller
             'is_deleted'  => lang('Expenses.is_deleted')
         ];
 
-        echo view('expenses/manage', $data);
+        echo view('expenses/manage_modern', $data);
     }
 
     /**
@@ -71,14 +75,20 @@ class Expenses extends Secure_Controller
         $data_rows = [];
 
         foreach ($expenses->getResult() as $expense) {
-            $data_rows[] = get_expenses_data_row($expense);
+            // Return clean, simple data
+            $data_rows[] = [
+                'expense_id' => $expense->expense_id,
+                'date' => $expense->date ?? '',
+                'category' => $expense->category ?? '',
+                'description' => $expense->description ?? '',
+                'amount' => $expense->amount ?? 0,
+                'employee_name' => $expense->employee_name ?? ''
+            ];
         }
 
-        if ($total_rows > 0) {
-            $data_rows[] = get_expenses_data_last_row($expenses);
-        }
-
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows, 'payment_summary' => $payment_summary]);
+        $this->response->setContentType('application/json');
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
@@ -181,12 +191,16 @@ class Expenses extends Secure_Controller
      */
     public function postDelete(): void
     {
-        $expenses_to_delete = $this->request->getPost('ids', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
+        $expenses_to_delete = $this->request->getVar('ids');
 
         if ($this->expense->delete_list($expenses_to_delete)) {
             echo json_encode(['success' => true, 'message' => lang('Expenses.successful_deleted') . ' ' . count($expenses_to_delete) . ' ' . lang('Expenses.one_or_multiple'), 'ids' => $expenses_to_delete]);
         } else {
             echo json_encode(['success' => false, 'message' => lang('Expenses.cannot_be_deleted'), 'ids' => $expenses_to_delete]);
         }
+        exit;
     }
 }
