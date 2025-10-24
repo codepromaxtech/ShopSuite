@@ -78,6 +78,54 @@
             }
         }
     });
+    
+    // Confirm logout function
+    function confirmLogout(event) {
+        event.preventDefault();
+        
+        Swal.fire({
+            title: 'Logout?',
+            text: 'Are you sure you want to logout?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="bi bi-box-arrow-right"></i> Yes, Logout',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = event.target.closest('a').href;
+            }
+        });
+        
+        return false;
+    }
+    
+    // Initialize user dropdown on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('✅ Bootstrap 5 initialized');
+        console.log('✅ User dropdown ready');
+        
+        // Ensure dropdown is properly initialized
+        const userDropdownElement = document.getElementById('userDropdown');
+        if (userDropdownElement) {
+            const userDropdown = new bootstrap.Dropdown(userDropdownElement, {
+                autoClose: true
+            });
+            console.log('✅ User dropdown explicitly initialized');
+        } else {
+            console.warn('⚠️ User dropdown element not found!');
+        }
+        
+        // Debug: Log when dropdown is shown
+        userDropdownElement?.addEventListener('show.bs.dropdown', function () {
+            console.log('🔽 Dropdown opened');
+        });
+        
+        userDropdownElement?.addEventListener('hide.bs.dropdown', function () {
+            console.log('🔼 Dropdown closed');
+        });
+    });
     </script>
 </body>
 </html>

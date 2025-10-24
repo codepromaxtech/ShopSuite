@@ -884,41 +884,63 @@ function showNotification(message, type = 'info') {
                         <i class="bi bi-bell"></i>
                     </button>
                     
+                    <!-- User Profile Dropdown -->
                     <div class="dropdown">
-                        <div class="user-dropdown" data-bs-toggle="dropdown">
-                            <div class="user-avatar">
-                                <?= strtoupper(substr($user_info->first_name ?? 'U', 0, 1)) ?>
+                        <button class="btn user-dropdown" type="button" id="userDropdown" 
+                                data-bs-toggle="dropdown" data-bs-auto-close="true" 
+                                aria-expanded="false" style="border: none; background: transparent;">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="user-avatar">
+                                    <?= strtoupper(substr($user_info->first_name ?? 'U', 0, 1)) ?>
+                                </div>
+                                <div class="d-none d-md-block text-start">
+                                    <div class="fw-semibold"><?= esc($user_info->first_name ?? 'User') ?> <?= esc($user_info->last_name ?? '') ?></div>
+                                    <small class="text-muted"><?= esc($user_info->username ?? '') ?></small>
+                                </div>
+                                <i class="bi bi-chevron-down"></i>
                             </div>
-                            <div class="d-none d-md-block">
-                                <div class="fw-semibold"><?= esc($user_info->first_name ?? 'User') ?> <?= esc($user_info->last_name ?? '') ?></div>
-                                <small class="text-muted"><?= esc($user_info->username ?? '') ?></small>
-                            </div>
-                            <i class="bi bi-chevron-down"></i>
-                        </div>
-                        <ul class="dropdown-menu dropdown-menu-end shadow" style="min-width: 250px;">
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown" style="min-width: 280px;">
                             <!-- User Info Header -->
-                            <li class="px-3 py-2 border-bottom">
-                                <div class="fw-semibold"><?= esc($user_info->first_name ?? 'User') ?> <?= esc($user_info->last_name ?? '') ?></div>
-                                <small class="text-muted"><?= esc($user_info->email ?? $user_info->username ?? '') ?></small>
+                            <li class="dropdown-header">
+                                <div class="d-flex align-items-center gap-3 py-2">
+                                    <div class="user-avatar" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                                        <?= strtoupper(substr($user_info->first_name ?? 'U', 0, 1)) ?>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold"><?= esc($user_info->first_name ?? 'User') ?> <?= esc($user_info->last_name ?? '') ?></div>
+                                        <small class="text-muted d-block"><?= esc($user_info->email ?? $user_info->username ?? '') ?></small>
+                                    </div>
+                                </div>
                             </li>
                             
-                            <!-- Profile & Settings -->
-                            <li><a class="dropdown-item" href="<?= base_url('home/user_settings') ?>">
-                                <i class="bi bi-person-gear me-2"></i> My Settings
-                            </a></li>
-                            <li><a class="dropdown-item" href="<?= base_url('employees/view/' . ($user_info->person_id ?? '')) ?>">
-                                <i class="bi bi-person-circle me-2"></i> My Profile
-                            </a></li>
-                            <li><a class="dropdown-item" href="<?= base_url('config') ?>">
-                                <i class="bi bi-gear me-2"></i> System Settings
-                            </a></li>
+                            <li><hr class="dropdown-divider my-1"></li>
                             
-                            <li><hr class="dropdown-divider"></li>
+                            <!-- Profile & Settings -->
+                            <li>
+                                <a class="dropdown-item py-2" href="<?= base_url('home/userSettings') ?>">
+                                    <i class="bi bi-person-gear me-2 text-primary"></i> My Settings
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="<?= base_url('employees/view/' . ($user_info->person_id ?? '')) ?>">
+                                    <i class="bi bi-person-circle me-2 text-info"></i> My Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="<?= base_url('config') ?>">
+                                    <i class="bi bi-gear me-2 text-secondary"></i> System Settings
+                                </a>
+                            </li>
+                            
+                            <li><hr class="dropdown-divider my-1"></li>
                             
                             <!-- Logout -->
-                            <li><a class="dropdown-item text-danger" href="<?= base_url('home/logout') ?>">
-                                <i class="bi bi-box-arrow-right me-2"></i> Logout
-                            </a></li>
+                            <li>
+                                <a class="dropdown-item py-2 text-danger fw-semibold" href="<?= base_url('home/logout') ?>" onclick="return confirmLogout(event)">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
