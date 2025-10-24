@@ -252,6 +252,9 @@ class Customers extends Persons
      */
     public function postSave(int $customer_id = NEW_ENTRY): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         $first_name = $this->request->getPost('first_name');
         $last_name = $this->request->getPost('last_name');
         $email = strtolower($this->request->getPost('email', FILTER_SANITIZE_EMAIL));
@@ -291,6 +294,13 @@ class Customers extends Persons
             'sales_tax_code_id' => $this->request->getPost('sales_tax_code_id') == '' ? null : $this->request->getPost('sales_tax_code_id', FILTER_SANITIZE_NUMBER_INT)
         ];
 
+        // Log the data being saved for debugging
+        log_message('debug', 'Attempting to save customer: ' . json_encode([
+            'person_data' => $person_data,
+            'customer_data' => $customer_data,
+            'customer_id' => $customer_id
+        ]));
+        
         if ($this->customer->save_customer($person_data, $customer_data, $customer_id)) {
             // Save customer to Mailchimp selected list    // TODO: addOrUpdateMember should be refactored. Potentially pass an array or object instead of 6 parameters.
             $mailchimp_status = $this->request->getPost('mailchimp_status');
@@ -318,12 +328,14 @@ class Customers extends Persons
                 ]);
             }
         } else { // Failure
+            log_message('error', 'Failed to save customer: ' . $first_name . ' ' . $last_name);
             echo json_encode([
                 'success' => false,
                 'message' => lang('Customers.error_adding_updating') . ' ' . $first_name . ' ' . $last_name,
                 'id'      => NEW_ENTRY
             ]);
         }
+        exit;
     }
 
     /**
