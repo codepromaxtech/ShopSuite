@@ -36,6 +36,8 @@ return [
     "receivings_desc"            => "Process Purchase Orders.",
     "reports"                    => "Reports",
     "reports_desc"               => "View and generate Reports.",
+    "roles"                      => "Roles & Permissions",
+    "roles_desc"                 => "Manage user roles and module access permissions.",
     "sales"                      => "Sales",
     "sales_desc"                 => "Process Sales and Returns.",
     "suppliers"                  => "Suppliers",

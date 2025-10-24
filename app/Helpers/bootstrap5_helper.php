@@ -26,6 +26,7 @@ if (!function_exists('getModuleIcon')) {
             'expenses' => 'bi bi-cash-coin',
             'cashups' => 'bi bi-cash-stack',
             'taxes' => 'bi bi-percent',
+            'roles' => 'bi bi-shield-lock',
         ];
         
         return $icons[$module_id] ?? 'bi bi-circle';
@@ -55,6 +56,7 @@ if (!function_exists('getModuleColor')) {
             'expenses' => 'orange',
             'cashups' => 'lime',
             'taxes' => 'purple',
+            'roles' => 'indigo',
         ];
         
         return $colors[$module_id] ?? 'primary';
