@@ -31,11 +31,15 @@ class Cashups extends Secure_Controller
     public function getIndex(): void
     {
         $data['table_headers'] = get_cashups_manage_table_headers();
+        $data['controller_name'] = 'cashups';
+        $data['allowed_modules'] = $this->global_view_data['allowed_modules'];
+        $data['user_info'] = $this->global_view_data['user_info'];
+        $data['config'] = $this->global_view_data['config'];
 
         // filters that will be loaded in the multiselect dropdown
         $data['filters'] = ['is_deleted' => lang('Cashups.is_deleted')];
 
-        echo view('cashups/manage', $data);
+        echo view('cashups/manage_modern', $data);
     }
 
     /**
@@ -61,10 +65,20 @@ class Cashups extends Secure_Controller
         $total_rows = $this->cashup->get_found_rows($search, $filters);
         $data_rows = [];
         foreach ($cash_ups->getResult() as $cash_up) {
-            $data_rows[] = get_cash_up_data_row($cash_up);
+            // Return clean, simple data
+            $data_rows[] = [
+                'cashup_id' => $cash_up->cashup_id,
+                'cashup_time' => $cash_up->cashup_time ?? '',
+                'employee_name' => $cash_up->employee_name ?? '',
+                'open_amount' => $cash_up->open_amount ?? 0,
+                'close_amount' => $cash_up->close_amount ?? 0,
+                'note' => $cash_up->note ?? ''
+            ];
         }
 
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows]);
+        $this->response->setContentType('application/json');
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
@@ -241,13 +255,17 @@ class Cashups extends Secure_Controller
      */
     public function postDelete(): void
     {
-        $cash_ups_to_delete = $this->request->getPost('ids', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
+        $cash_ups_to_delete = $this->request->getVar('ids');
 
         if ($this->cashup->delete_list($cash_ups_to_delete)) {
             echo json_encode(['success' => true, 'message' => lang('Cashups.successful_deleted') . ' ' . count($cash_ups_to_delete) . ' ' . lang('Cashups.one_or_multiple'), 'ids' => $cash_ups_to_delete]);
         } else {
             echo json_encode(['success' => false, 'message' => lang('Cashups.cannot_be_deleted'), 'ids' => $cash_ups_to_delete]);
         }
+        exit;
     }
 
     /**

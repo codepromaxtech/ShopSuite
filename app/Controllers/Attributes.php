@@ -29,8 +29,12 @@ class Attributes extends Secure_Controller
     public function getIndex(): void
     {
         $data['table_headers'] = get_attribute_definition_manage_table_headers();
+        $data['controller_name'] = 'attributes';
+        $data['allowed_modules'] = $this->global_view_data['allowed_modules'];
+        $data['user_info'] = $this->global_view_data['user_info'];
+        $data['config'] = $this->global_view_data['config'];
 
-        echo view('attributes/manage', $data);
+        echo view('attributes/manage_modern', $data);
     }
 
     /**
@@ -49,11 +53,18 @@ class Attributes extends Secure_Controller
 
         $data_rows = [];
         foreach ($attributes->getResult() as $attribute_row) {
-            $attribute_row->definition_flags = $this->get_attributes($attribute_row->definition_flags);
-            $data_rows[] = get_attribute_definition_data_row($attribute_row);
+            // Return clean, simple data
+            $data_rows[] = [
+                'attribute_id' => $attribute_row->definition_id,
+                'attribute_name' => $attribute_row->definition_name ?? '',
+                'attribute_type' => $attribute_row->definition_type ?? '',
+                'attribute_values' => $attribute_row->definition_values ?? ''
+            ];
         }
 
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows]);
+        $this->response->setContentType('application/json');
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
@@ -221,7 +232,10 @@ class Attributes extends Secure_Controller
      */
     public function postDelete(): void
     {
-        $attributes_to_delete = $this->request->getPost('ids', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
+        $attributes_to_delete = $this->request->getVar('ids');
 
         if($this->attribute->deleteDefinitionList($attributes_to_delete)) {
             $message = lang('Attributes.definition_successful_deleted') . ' ' . count($attributes_to_delete) . ' ' . lang('Attributes.definition_one_or_multiple');
@@ -229,5 +243,6 @@ class Attributes extends Secure_Controller
         } else {
             echo json_encode(['success' => false, 'message' => lang('Attributes.definition_cannot_be_deleted')]);
         }
+        exit;
     }
 }

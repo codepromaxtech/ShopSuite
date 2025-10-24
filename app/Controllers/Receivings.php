@@ -54,6 +54,56 @@ class Receivings extends Secure_Controller
     }
 
     /**
+     * Receivings management listing
+     * @return void
+     */
+    public function getManage(): void
+    {
+        $data['controller_name'] = 'receivings';
+        $data['allowed_modules'] = $this->global_view_data['allowed_modules'];
+        $data['user_info'] = $this->global_view_data['user_info'];
+        $data['config'] = $this->global_view_data['config'];
+
+        echo view('receivings/manage_modern', $data);
+    }
+
+    /**
+     * Search receivings for management table
+     * @return void
+     */
+    public function getSearch(): void
+    {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
+        $search = $this->request->getGet('search') ?? '';
+        $limit  = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?: 20;
+        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?: 0;
+        $sort   = $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'receiving_id';
+        $order  = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'desc';
+
+        // Get receivings from model (assuming there's a search method)
+        $receivings = $this->receiving->search($search, $limit, $offset, $sort, $order);
+        $total_rows = $this->receiving->get_found_rows($search);
+
+        $data_rows = [];
+        foreach ($receivings->getResult() as $receiving) {
+            // Return clean, simple data
+            $data_rows[] = [
+                'receiving_id' => $receiving->receiving_id,
+                'receiving_time' => $receiving->receiving_time ?? '',
+                'supplier_name' => $receiving->supplier_name ?? '',
+                'items_purchased' => $receiving->items_purchased ?? 0,
+                'payment_type' => $receiving->payment_type ?? '',
+                'receiving_amount' => $receiving->total ?? 0
+            ];
+        }
+
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    /**
      * Returns search suggestions for an item. Used in app/Views/sales/register.php
      *
      * @return void
@@ -273,10 +323,13 @@ class Receivings extends Secure_Controller
      */
     public function postDelete(int $receiving_id = -1, bool $update_inventory = true): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         $employee_id = $this->employee->get_logged_in_employee_info()->person_id;
-        $receiving_ids = $receiving_id == -1 ? $this->request->getPost('ids', FILTER_SANITIZE_NUMBER_INT) : [$receiving_id];    // TODO: Replace -1 with constant
+        $receiving_ids = $receiving_id == -1 ? $this->request->getVar('ids') : [$receiving_id];
 
-        if ($this->receiving->delete_list($receiving_ids, $employee_id, $update_inventory)) {    // TODO: Likely need to surround this block of code in a try-catch to catch the ReflectionException
+        if ($this->receiving->delete_list($receiving_ids, $employee_id, $update_inventory)) {
             echo json_encode([
                 'success' => true,
                 'message' => lang('Receivings.successfully_deleted') . ' ' . count($receiving_ids) . ' ' . lang('Receivings.one_or_multiple'),
@@ -285,6 +338,7 @@ class Receivings extends Secure_Controller
         } else {
             echo json_encode(['success' => false, 'message' => lang('Receivings.cannot_be_deleted')]);
         }
+        exit;
     }
 
     /**

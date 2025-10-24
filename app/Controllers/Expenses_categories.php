@@ -22,8 +22,12 @@ class Expenses_categories extends Secure_Controller    // TODO: Is this class ev
     public function getIndex(): void
     {
         $data['table_headers'] = get_expense_category_manage_table_headers();
+        $data['controller_name'] = 'expenses_categories';
+        $data['allowed_modules'] = $this->global_view_data['allowed_modules'];
+        $data['user_info'] = $this->global_view_data['user_info'];
+        $data['config'] = $this->global_view_data['config'];
 
-        echo view('expenses_categories/manage', $data);
+        echo view('expenses_categories/manage_modern', $data);
     }
 
     /**
@@ -42,10 +46,17 @@ class Expenses_categories extends Secure_Controller    // TODO: Is this class ev
 
         $data_rows = [];
         foreach ($expense_categories->getResult() as $expense_category) {
-            $data_rows[] = get_expense_category_data_row($expense_category);
+            // Return clean, simple data
+            $data_rows[] = [
+                'expense_category_id' => $expense_category->expense_category_id,
+                'category_name' => $expense_category->category_name ?? '',
+                'description' => $expense_category->description ?? ''
+            ];
         }
 
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows]);
+        $this->response->setContentType('application/json');
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
@@ -110,9 +121,12 @@ class Expenses_categories extends Secure_Controller    // TODO: Is this class ev
      */
     public function postDelete(): void
     {
-        $expense_category_to_delete = $this->request->getPost('ids', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
+        $expense_category_to_delete = $this->request->getVar('ids');
 
-        if ($this->expense_category->delete_list($expense_category_to_delete)) {    // TODO: Convert to ternary notation.
+        if ($this->expense_category->delete_list($expense_category_to_delete)) {
             echo json_encode([
                 'success' => true,
                 'message' => lang('Expenses_categories.successful_deleted') . ' ' . count($expense_category_to_delete) . ' ' . lang('Expenses_categories.one_or_multiple')
@@ -120,5 +134,6 @@ class Expenses_categories extends Secure_Controller    // TODO: Is this class ev
         } else {
             echo json_encode(['success' => false, 'message' => lang('Expenses_categories.cannot_be_deleted')]);
         }
+        exit;
     }
 }
