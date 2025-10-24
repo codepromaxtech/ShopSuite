@@ -523,8 +523,10 @@ class Receivings extends Secure_Controller
         }
 
         $data['print_after_sale'] = $this->receiving_lib->is_print_after_sale();
+        $data['allowed_modules'] = $this->global_view_data['allowed_modules'];
+        $data['user_info'] = $this->global_view_data['user_info'];
 
-        echo view("receivings/receiving", $data);
+        echo view("receivings/receiving_modern", $data);
     }
 
     /**
