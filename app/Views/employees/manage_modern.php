@@ -21,7 +21,7 @@
             </h3>
         </div>
         <div class="col-auto">
-            <button class="btn btn-primary" onclick="openModal('employees/view/-1', 'Add New Employee')">
+            <button class="btn btn-primary" onclick="addEmployee()">
                 <i class="bi bi-plus-circle me-1"></i>Add Employee
             </button>
         </div>
@@ -29,6 +29,29 @@
     
     <!-- Table Container -->
     <div id="dataTable-container"></div>
+</div>
+
+<!-- Modal for Add/Edit Employee -->
+<div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="employeeModalLabel">Add Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="employeeModalBody">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveEmployee()">Save Employee</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -115,8 +138,37 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Employee Actions
+function addEmployee() {
+    openEmployeeModal(-1, 'Add New Employee');
+}
+
 function editEmployee(employeeId) {
-    openModal(`employees/view/${employeeId}`, 'Edit Employee');
+    openEmployeeModal(employeeId, 'Edit Employee');
+}
+
+function openEmployeeModal(employeeId, title) {
+    const modal = new bootstrap.Modal(document.getElementById('employeeModal'));
+    document.getElementById('employeeModalLabel').textContent = title;
+    
+    // Load form content
+    fetch(`<?= base_url('employees/view/') ?>${employeeId}`)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('employeeModalBody').innerHTML = html;
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error loading form:', error);
+            showNotification('Failed to load form', 'error');
+        });
+}
+
+function saveEmployee() {
+    const form = document.getElementById('employee_form');
+    if (form) {
+        // Trigger form validation and submit
+        $(form).submit();
+    }
 }
 
 async function deleteEmployee(employeeId) {
