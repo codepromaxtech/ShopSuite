@@ -19,7 +19,7 @@ class Home extends Secure_Controller
         $logged_in = $this->employee->is_logged_in();
         
         // Use new Bootstrap 5 modern UI
-        echo view('home/home_bootstrap5');
+        echo view('home/home_bootstrap5', $this->global_view_data);
     }
 
     /**
