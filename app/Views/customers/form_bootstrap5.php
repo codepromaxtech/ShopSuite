@@ -513,26 +513,26 @@
         <?php endif; ?>
     </div>
 
-    <!-- Form Actions -->
-    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-        <button type="button" class="btn btn-secondary" onclick="window.history.back()">
-            <i class="bi bi-x-circle me-1"></i>Cancel
-        </button>
-        <button type="submit" class="btn btn-primary" id="submit_button">
-            <i class="bi bi-check-circle me-1"></i>Save Customer
-        </button>
-    </div>
-
     <?= form_close() ?>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function() {
     console.log('✅ Modern Customer Form Loaded');
+    
+    // Connect modal submit button to form
+    const modalSubmitBtn = document.getElementById('modal-submit-btn');
+    if (modalSubmitBtn) {
+        modalSubmitBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Save Customer';
+        modalSubmitBtn.addEventListener('click', function() {
+            document.getElementById('customer_form').dispatchEvent(new Event('submit'));
+        });
+    }
 
     // Address autocomplete using Nominatim
     <?php if (isset($config['country_codes']) && !empty($config['country_codes'])): ?>
-    nominatim.init({
+    if (typeof nominatim !== 'undefined') {
+        nominatim.init({
         fields: {
             postcode: {
                 dependencies: ["postcode", "city", "state", "country"],
@@ -554,46 +554,69 @@ $(document).ready(function() {
                 dependencies: ["state", "country"]
             }
         },
-        language: '<?= current_language_code() ?>',
-        country_codes: '<?= esc($config['country_codes'], 'js') ?>'
-    });
+            language: '<?= current_language_code() ?>',
+            country_codes: '<?= esc($config['country_codes'], 'js') ?>'
+        });
+    }
     <?php endif; ?>
 
-    // Form validation
-    $('#customer_form').validate({
-        submitHandler: function(form) {
-            $(form).ajaxSubmit({
-                success: function(response) {
-                    if (response.success) {
-                        showNotification('Customer saved successfully', 'success');
-                        if (typeof hideModal === 'function') {
-                            setTimeout(() => hideModal(), 500);
-                        }
-                    } else {
-                        showNotification(response.message || 'Failed to save customer', 'error');
-                    }
-                },
-                error: function() {
-                    showNotification('An error occurred', 'error');
-                },
-                dataType: 'json'
-            });
+    // Native HTML5 form validation and submission
+    const form = document.getElementById('customer_form');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!form.checkValidity()) {
+            e.stopPropagation();
+            form.classList.add('was-validated');
             return false;
-        },
-        rules: {
-            first_name: "required",
-            last_name: "required",
-            email: {
-                email: true
-            }
-        },
-        errorClass: 'is-invalid',
-        validClass: 'is-valid',
-        errorElement: 'div',
-        errorPlacement: function(error, element) {
-            error.addClass('invalid-feedback');
-            element.closest('.col-md-6, .col-md-8, .col-12').append(error);
         }
+        
+        const submitBtn = document.getElementById('modal-submit-btn');
+        const originalText = submitBtn ? submitBtn.innerHTML : '';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Saving...';
+        }
+        
+        const formData = new FormData(form);
+        
+        $.ajax({
+            url: form.action,
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    showNotification(response.message || 'Customer saved successfully', 'success');
+                    if (typeof window.customersTable !== 'undefined' && window.customersTable.refresh) {
+                        window.customersTable.refresh();
+                    }
+                    if (typeof hideModal === 'function') {
+                        setTimeout(() => hideModal(), 500);
+                    } else if (typeof closeModal === 'function') {
+                        setTimeout(() => closeModal(), 500);
+                    }
+                } else {
+                    showNotification(response.message || 'Failed to save customer', 'error');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Save error:', error);
+                showNotification('An error occurred while saving', 'error');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            }
+        });
+        
+        return false;
     });
 });
 </script>

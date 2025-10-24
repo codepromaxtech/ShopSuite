@@ -156,22 +156,21 @@
         </div>
     </div>
 
-    <!-- Form Actions -->
-    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-        <button type="button" class="btn btn-secondary" onclick="window.history.back()">
-            <i class="bi bi-x-circle me-1"></i>Cancel
-        </button>
-        <button type="submit" class="btn btn-primary" id="submit_button">
-            <i class="bi bi-check-circle me-1"></i>Save Giftcard
-        </button>
-    </div>
-
     <?= form_close() ?>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function() {
     console.log('✅ Modern Giftcard Form Loaded');
+    
+    // Connect modal submit button to form
+    const modalSubmitBtn = document.getElementById('modal-submit-btn');
+    if (modalSubmitBtn) {
+        modalSubmitBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Save Giftcard';
+        modalSubmitBtn.addEventListener('click', function() {
+            document.getElementById('giftcard_form').dispatchEvent(new Event('submit'));
+        });
+    }
 
     // Update preview
     function updatePreview() {
@@ -215,83 +214,63 @@ $(document).ready(function() {
         focus: fill_value
     });
 
-    // Form validation
-    $('#giftcard_form').validate({
-        submitHandler: function(form) {
-            $(form).ajaxSubmit({
-                success: function(response) {
-                    if (response.success) {
-                        showNotification('Giftcard saved successfully', 'success');
-                        if (typeof hideModal === 'function') {
-                            setTimeout(() => hideModal(), 500);
-                        }
-                        if (typeof table_support !== 'undefined') {
-                            table_support.handle_submit("<?= esc($controller_name) ?>", response);
-                        }
-                    } else {
-                        showNotification(response.message || 'Failed to save giftcard', 'error');
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    showNotification(errorThrown || 'An error occurred', 'error');
-                },
-                dataType: 'json'
-            });
+    // Native HTML5 form validation and submission
+    const form = document.getElementById('giftcard_form');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!form.checkValidity()) {
+            e.stopPropagation();
+            form.classList.add('was-validated');
             return false;
-        },
-        rules: {
-            <?php if ($config['giftcard_number'] == 'series'): ?>
-            giftcard_number: {
-                required: true
-            },
-            <?php endif; ?>
-            giftcard_amount: {
-                required: true,
-                number: true,
-                min: 0.01,
-                remote: {
-                    url: "<?= esc("giftcards/checkNumberGiftcard") ?>",
-                    type: 'POST',
-                    data: {
-                        'amount': function() {
-                            return $('#giftcard_amount').val();
-                        }
-                    },
-                    dataFilter: function(data) {
-                        var response = JSON.parse(data);
-                        if (response.success) {
-                            $('#giftcard_amount').val(response.giftcard_amount);
-                            updatePreview();
-                        }
-                        return response.success;
+        }
+        
+        const submitBtn = document.getElementById('modal-submit-btn');
+        const originalText = submitBtn ? submitBtn.innerHTML : '';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Saving...';
+        }
+        
+        const formData = new FormData(form);
+        
+        $.ajax({
+            url: form.action,
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    showNotification(response.message || 'Giftcard saved successfully', 'success');
+                    if (typeof window.giftcardsTable !== 'undefined' && window.giftcardsTable.refresh) {
+                        window.giftcardsTable.refresh();
+                    }
+                    if (typeof hideModal === 'function') {
+                        setTimeout(() => hideModal(), 500);
+                    } else if (typeof closeModal === 'function') {
+                        setTimeout(() => closeModal(), 500);
+                    }
+                } else {
+                    showNotification(response.message || 'Failed to save giftcard', 'error');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
                     }
                 }
-            }
-        },
-        messages: {
-            <?php if ($config['giftcard_number'] == 'series'): ?>
-            giftcard_number: {
-                required: "<?= lang('Giftcards.number_required') ?>"
             },
-            <?php endif; ?>
-            giftcard_amount: {
-                required: "<?= lang('Giftcards.value_required') ?>",
-                number: "Please enter a valid amount",
-                min: "Amount must be greater than 0",
-                remote: "<?= lang('Giftcards.value') ?>"
+            error: function(xhr, status, error) {
+                console.error('Save error:', error);
+                showNotification('An error occurred while saving', 'error');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
             }
-        },
-        errorClass: 'is-invalid',
-        validClass: 'is-valid',
-        errorElement: 'div',
-        errorPlacement: function(error, element) {
-            error.addClass('invalid-feedback');
-            if (element.parent().hasClass('input-group')) {
-                element.parent().after(error);
-            } else {
-                element.closest('.col-md-6, .col-12').append(error);
-            }
-        }
+        });
+        
+        return false;
     });
 });
 </script>
