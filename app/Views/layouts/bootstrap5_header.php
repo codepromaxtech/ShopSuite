@@ -886,21 +886,17 @@ function showNotification(message, type = 'info') {
                     
                     <!-- User Profile Dropdown -->
                     <div class="dropdown">
-                        <button class="btn user-dropdown p-2" type="button" id="userDropdown" 
-                                data-bs-toggle="dropdown" data-bs-auto-close="outside" 
-                                aria-expanded="false" 
-                                style="border: none; background: transparent;">
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="user-avatar">
-                                    <?= strtoupper(substr($user_info->first_name ?? 'U', 0, 1)) ?>
-                                </div>
-                                <div class="d-none d-md-block text-start">
-                                    <div class="fw-semibold" style="line-height: 1.2;"><?= esc($user_info->first_name ?? 'User') ?> <?= esc($user_info->last_name ?? '') ?></div>
-                                    <small class="text-muted"><?= esc($user_info->username ?? '') ?></small>
-                                </div>
-                                <i class="bi bi-chevron-down ms-1"></i>
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" 
+                           id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" 
+                           style="cursor: pointer; padding: 0.5rem;">
+                            <div class="user-avatar me-2">
+                                <?= strtoupper(substr($user_info->first_name ?? 'U', 0, 1)) ?>
                             </div>
-                        </button>
+                            <div class="d-none d-md-block text-start me-1">
+                                <div class="fw-semibold" style="line-height: 1.2; color: #212529;"><?= esc($user_info->first_name ?? 'User') ?> <?= esc($user_info->last_name ?? '') ?></div>
+                                <small class="text-muted"><?= esc($user_info->username ?? '') ?></small>
+                            </div>
+                        </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown" style="min-width: 280px;">
                             <!-- User Info Header -->
                             <li class="dropdown-header">

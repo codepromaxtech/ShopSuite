@@ -67,19 +67,18 @@
     setInterval(updateClock, 1000);
     updateClock();
     
-    // Close sidebar when clicking outside on mobile
+    // Close sidebar when clicking outside on mobile (but don't interfere with dropdowns)
     document.addEventListener('click', function(event) {
-        const sidebar = document.getElementById('sidebar');
-        const toggle = document.querySelector('.mobile-toggle');
-        const userDropdown = document.getElementById('userDropdown');
-        
-        // Don't interfere with user dropdown
-        if (userDropdown && (event.target === userDropdown || userDropdown.contains(event.target))) {
+        // Skip if clicking on any dropdown
+        if (event.target.closest('.dropdown')) {
             return;
         }
         
-        if (window.innerWidth <= 768 && sidebar.classList.contains('show')) {
-            if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+        const sidebar = document.getElementById('sidebar');
+        const toggle = document.querySelector('.mobile-toggle');
+        
+        if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains('show')) {
+            if (!sidebar.contains(event.target) && (!toggle || !toggle.contains(event.target))) {
                 sidebar.classList.remove('show');
             }
         }
@@ -109,8 +108,7 @@
     
     // Initialize user dropdown on page load
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('✅ Bootstrap 5 initialized');
-        console.log('✅ User dropdown ready');
+        console.log('✅ Bootstrap 5 loaded');
         
         const userDropdownElement = document.getElementById('userDropdown');
         if (!userDropdownElement) {
@@ -118,41 +116,24 @@
             return;
         }
         
-        // Prevent event propagation that causes immediate close
-        userDropdownElement.addEventListener('click', function(e) {
-            e.stopPropagation();
-            console.log('👆 User dropdown button clicked');
-        });
+        console.log('✅ User dropdown found - letting Bootstrap handle it naturally');
         
-        // Initialize Bootstrap dropdown
-        const userDropdown = new bootstrap.Dropdown(userDropdownElement, {
-            autoClose: 'outside' // Close only when clicking outside
-        });
-        console.log('✅ User dropdown explicitly initialized');
-        
-        // Debug: Log when dropdown is shown
-        userDropdownElement.addEventListener('show.bs.dropdown', function () {
-            console.log('🔽 Dropdown opening...');
+        // Just add debug logging - let Bootstrap data-attributes handle the rest
+        userDropdownElement.addEventListener('show.bs.dropdown', function (e) {
+            console.log('🔽 Dropdown showing');
         });
         
         userDropdownElement.addEventListener('shown.bs.dropdown', function () {
-            console.log('✅ Dropdown fully opened');
+            console.log('✅ Dropdown shown');
         });
         
-        userDropdownElement.addEventListener('hide.bs.dropdown', function () {
-            console.log('🔼 Dropdown closing...');
+        userDropdownElement.addEventListener('hide.bs.dropdown', function (e) {
+            console.log('🔼 Dropdown hiding');
         });
         
-        // Prevent dropdown menu clicks from closing the dropdown
-        const dropdownMenu = userDropdownElement.nextElementSibling;
-        if (dropdownMenu) {
-            dropdownMenu.addEventListener('click', function(e) {
-                // Only close if clicking a link (not the container)
-                if (e.target.tagName !== 'A') {
-                    e.stopPropagation();
-                }
-            });
-        }
+        userDropdownElement.addEventListener('hidden.bs.dropdown', function () {
+            console.log('❌ Dropdown hidden');
+        });
     });
     </script>
 </body>
