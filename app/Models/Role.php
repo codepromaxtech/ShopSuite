@@ -24,13 +24,14 @@ class Role extends Model
      */
     public function get_all_with_counts()
     {
-        return $this->db->table('roles')
-            ->select('roles.*, COUNT(role_permissions.permission_id) as permission_count, 
-                     (SELECT COUNT(*) FROM employees WHERE employees.role_id = roles.role_id) as employee_count')
-            ->join('role_permissions', 'role_permissions.role_id = roles.role_id', 'left')
-            ->groupBy('roles.role_id')
-            ->orderBy('roles.is_system_role', 'DESC')
-            ->orderBy('roles.role_name', 'ASC')
+        $prefix = $this->db->getPrefix();
+        return $this->db->table($prefix . 'roles')
+            ->select($prefix . 'roles.*, COUNT(' . $prefix . 'role_permissions.permission_id) as permission_count, 
+                     (SELECT COUNT(*) FROM ' . $prefix . 'employees WHERE ' . $prefix . 'employees.role_id = ' . $prefix . 'roles.role_id) as employee_count')
+            ->join($prefix . 'role_permissions', $prefix . 'role_permissions.role_id = ' . $prefix . 'roles.role_id', 'left')
+            ->groupBy($prefix . 'roles.role_id')
+            ->orderBy($prefix . 'roles.is_system_role', 'DESC')
+            ->orderBy($prefix . 'roles.role_name', 'ASC')
             ->get()
             ->getResult();
     }
@@ -43,11 +44,12 @@ class Role extends Model
         $role = $this->find($role_id);
         
         if ($role) {
-            $permissions = $this->db->table('role_permissions')
-                ->select('role_permissions.*, permissions.module_id, modules.name_lang_key, modules.desc_lang_key')
-                ->join('permissions', 'permissions.permission_id = role_permissions.permission_id')
-                ->join('modules', 'modules.module_id = permissions.module_id', 'left')
-                ->where('role_permissions.role_id', $role_id)
+            $prefix = $this->db->getPrefix();
+            $permissions = $this->db->table($prefix . 'role_permissions')
+                ->select($prefix . 'role_permissions.*, ' . $prefix . 'permissions.module_id, ' . $prefix . 'modules.name_lang_key, ' . $prefix . 'modules.desc_lang_key')
+                ->join($prefix . 'permissions', $prefix . 'permissions.permission_id = ' . $prefix . 'role_permissions.permission_id')
+                ->join($prefix . 'modules', $prefix . 'modules.module_id = ' . $prefix . 'permissions.module_id', 'left')
+                ->where($prefix . 'role_permissions.role_id', $role_id)
                 ->get()
                 ->getResult();
             
@@ -62,11 +64,12 @@ class Role extends Model
      */
     public function get_all_permissions_grouped()
     {
-        $permissions = $this->db->table('permissions')
-            ->select('permissions.*, modules.name_lang_key, modules.desc_lang_key, modules.sort')
-            ->join('modules', 'modules.module_id = permissions.module_id', 'left')
-            ->orderBy('modules.sort', 'ASC')
-            ->orderBy('permissions.permission_id', 'ASC')
+        $prefix = $this->db->getPrefix();
+        $permissions = $this->db->table($prefix . 'permissions')
+            ->select($prefix . 'permissions.*, ' . $prefix . 'modules.name_lang_key, ' . $prefix . 'modules.desc_lang_key, ' . $prefix . 'modules.sort')
+            ->join($prefix . 'modules', $prefix . 'modules.module_id = ' . $prefix . 'permissions.module_id', 'left')
+            ->orderBy($prefix . 'modules.sort', 'ASC')
+            ->orderBy($prefix . 'permissions.permission_id', 'ASC')
             ->get()
             ->getResult();
 
@@ -94,14 +97,15 @@ class Role extends Model
     public function save_role_permissions(int $role_id, array $permissions_data): bool
     {
         $this->db->transStart();
+        $prefix = $this->db->getPrefix();
 
         // Delete existing permissions
-        $this->db->table('role_permissions')->where('role_id', $role_id)->delete();
+        $this->db->table($prefix . 'role_permissions')->where('role_id', $role_id)->delete();
 
         // Insert new permissions
         if (!empty($permissions_data)) {
             foreach ($permissions_data as $perm) {
-                $this->db->table('role_permissions')->insert([
+                $this->db->table($prefix . 'role_permissions')->insert([
                     'role_id'       => $role_id,
                     'permission_id' => $perm['permission_id'],
                     'menu_group'    => $perm['menu_group'] ?? 'home'
@@ -130,7 +134,8 @@ class Role extends Model
         }
 
         // Check if any employees have this role
-        $employee_count = $this->db->table('employees')
+        $prefix = $this->db->getPrefix();
+        $employee_count = $this->db->table($prefix . 'employees')
             ->where('role_id', $role_id)
             ->countAllResults();
 
@@ -168,8 +173,9 @@ class Role extends Model
 
         // Copy permissions
         if ($new_role_id && !empty($role->permissions)) {
+            $prefix = $this->db->getPrefix();
             foreach ($role->permissions as $perm) {
-                $this->db->table('role_permissions')->insert([
+                $this->db->table($prefix . 'role_permissions')->insert([
                     'role_id'       => $new_role_id,
                     'permission_id' => $perm->permission_id,
                     'menu_group'    => $perm->menu_group
