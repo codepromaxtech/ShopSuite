@@ -91,10 +91,10 @@ class Customers extends Persons
         $this->response->setContentType('application/json');
         
         $search = $this->request->getGet('search');
-        $limit = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT);
-        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT);
+        $limit = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?: 20;
+        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?: 0;
         $sort = $this->sanitizeSortColumn(customer_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'people.person_id');
-        $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'asc';
 
         $customers = $this->customer->search($search, $limit, $offset, $sort, $order);
         $total_rows = $this->customer->get_found_rows($search);
@@ -102,25 +102,29 @@ class Customers extends Persons
         $data_rows = [];
 
         foreach ($customers->getResult() as $person) {
-            // Retrieve the total amount the customer spent so far together with min, max and average values
+            // Get stats
             $stats = $this->customer->get_stats($person->person_id);
             if (empty($stats)) {
-                // Create object with empty properties.
-                $stats = new stdClass();
+                $stats = new \stdClass();
                 $stats->total = 0;
-                $stats->min = 0;
-                $stats->max = 0;
-                $stats->average = 0;
-                $stats->avg_discount = 0;
-                $stats->quantity = 0;
             }
 
-            $data_rows[] = get_customer_data_row($person, $stats);
+            // Return simple, clean data for modern datatable
+            $data_rows[] = [
+                'person_id' => $person->person_id,
+                'first_name' => $person->first_name ?? '',
+                'last_name' => $person->last_name ?? '',
+                'email' => $person->email ?? '',
+                'phone_number' => $person->phone_number ?? '',
+                'company_name' => $person->company_name ?? '',
+                'total' => $stats->total ?? 0,
+                'date' => $person->date ?? ''
+            ];
         }
 
-        // Return clean JSON
+        // Return clean JSON only
         echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
-        exit; // Prevent any further output
+        exit;
     }
 
     /**
@@ -356,13 +360,16 @@ class Customers extends Persons
      */
     public function postDelete(): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         // Get POST data - CodeIgniter handles ids[] as 'ids'
         $customers_to_delete = $this->request->getVar('ids');
         
         // Validate we have IDs to delete
         if (empty($customers_to_delete) || !is_array($customers_to_delete)) {
             echo json_encode(['success' => false, 'message' => 'No customer IDs provided']);
-            return;
+            exit;
         }
         
         $customers_info = $this->customer->get_multiple_info($customers_to_delete);
@@ -386,6 +393,7 @@ class Customers extends Persons
         } else {
             echo json_encode(['success' => false, 'message' => lang('Customers.cannot_be_deleted')]);
         }
+        exit;
     }
 
     /**
