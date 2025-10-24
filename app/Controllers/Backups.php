@@ -43,7 +43,7 @@ class Backups extends Secure_Controller
     /**
      * Download backup file
      */
-    public function getDownload(int $backup_id): void
+    public function getDownload(int $backup_id)
     {
         $backup_record = $this->backup->find($backup_id);
 
