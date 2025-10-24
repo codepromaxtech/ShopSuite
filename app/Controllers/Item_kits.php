@@ -64,8 +64,12 @@ class Item_kits extends Secure_Controller
     public function getIndex(): void
     {
         $data['table_headers'] = get_item_kits_manage_table_headers();
+        $data['controller_name'] = 'item_kits';
+        $data['allowed_modules'] = $this->global_view_data['allowed_modules'];
+        $data['user_info'] = $this->global_view_data['user_info'];
+        $data['config'] = $this->global_view_data['config'];
 
-        echo view('item_kits/manage', $data);
+        echo view('item_kits/manage_modern', $data);
     }
 
     /**
@@ -73,23 +77,36 @@ class Item_kits extends Secure_Controller
      */
     public function getSearch(): void
     {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
         $search = $this->request->getGet('search') ?? '';
-        $limit  = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT);
-        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT);
+        $limit  = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?: 20;
+        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?: 0;
         $sort   = $this->sanitizeSortColumn(item_kit_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'item_kit_id');
-        $order  = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $order  = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'asc';
 
         $item_kits = $this->item_kit->search($search, $limit, $offset, $sort, $order);
         $total_rows = $this->item_kit->get_found_rows($search);
 
         $data_rows = [];
         foreach ($item_kits->getResult() as $item_kit) {
-            // Calculate the total cost and retail price of the Kit, so it can be printed out in the manage table
+            // Calculate totals
             $item_kit = $this->_add_totals_to_item_kit($item_kit);
-            $data_rows[] = get_item_kit_data_row($item_kit);
+            
+            // Return clean, simple data
+            $data_rows[] = [
+                'item_kit_id' => $item_kit->item_kit_id,
+                'name' => $item_kit->name ?? '',
+                'item_kit_number' => $item_kit->item_kit_number ?? '',
+                'description' => $item_kit->description ?? '',
+                'cost_price' => $item_kit->cost_price ?? 0,
+                'unit_price' => $item_kit->unit_price ?? 0
+            ];
         }
 
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows]);
+        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
@@ -227,7 +244,10 @@ class Item_kits extends Secure_Controller
      */
     public function postDelete(): void
     {
-        $item_kits_to_delete = $this->request->getPost('ids', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
+        $item_kits_to_delete = $this->request->getVar('ids');
 
         if ($this->item_kit->delete_list($item_kits_to_delete)) {
             echo json_encode([
@@ -237,6 +257,7 @@ class Item_kits extends Secure_Controller
         } else {
             echo json_encode(['success' => false, 'message' => lang('Item_kits.cannot_be_deleted')]);
         }
+        exit;
     }
 
     /**
