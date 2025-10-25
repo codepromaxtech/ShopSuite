@@ -110,6 +110,11 @@ class Detailed_sales extends Report
             MAX(sale_status) as sale_status,
             MAX(sale_time) AS sale_time';
         
+        // Add Employee and Customer right after Sale Time
+        $select .= ',
+            MAX(employee_name) AS employee_name,
+            MAX(customer_name) AS customer_name';
+        
         // Only add quantity if not explicitly hidden
         if (!isset($inputs['hide_quantity']) || !$inputs['hide_quantity']) {
             $select .= ',
@@ -117,8 +122,6 @@ class Detailed_sales extends Report
         }
         
         $select .= ',
-            MAX(employee_name) AS employee_name,
-            MAX(customer_name) AS customer_name,
             SUM(subtotal) AS subtotal,
             SUM(tax) AS tax,
             SUM(total) AS total,
