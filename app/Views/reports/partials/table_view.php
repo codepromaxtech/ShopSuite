@@ -59,9 +59,26 @@
                 <?php if ($totalsData): ?>
                 <tfoot>
                     <tr class="total-row">
-                        <?php foreach ((array)$totalsData as $total): ?>
-                            <td><strong><?= is_numeric($total) ? number_format($total, 2) : htmlspecialchars($total) ?></strong></td>
-                        <?php endforeach; ?>
+                        <?php 
+                        // Get column keys from data to ensure alignment
+                        $dataKeys = array_keys((array)$tableData[0]);
+                        $isFirst = true;
+                        foreach ($dataKeys as $key):
+                            if ($isFirst):
+                                // First column shows "TOTAL" label
+                        ?>
+                            <td><strong>TOTAL</strong></td>
+                        <?php 
+                                $isFirst = false;
+                            else:
+                                // Other columns show totals if they exist, empty otherwise
+                                $value = $totalsData[$key] ?? '';
+                        ?>
+                            <td><strong><?= is_numeric($value) ? number_format($value, 2) : htmlspecialchars($value) ?></strong></td>
+                        <?php 
+                            endif;
+                        endforeach; 
+                        ?>
                     </tr>
                 </tfoot>
                 <?php endif; ?>

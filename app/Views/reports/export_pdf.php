@@ -209,15 +209,28 @@
         <?php if ($summary_data): ?>
         <tfoot>
             <tr>
-                <?php foreach ($summary_data as $key => $total): ?>
-                    <td class="<?= is_numeric($total) ? 'numeric' : '' ?>">
-                        <?php if ($key === array_key_first($summary_data)): ?>
-                            <strong>TOTAL</strong>
-                        <?php else: ?>
-                            <strong><?= is_numeric($total) ? number_format($total, 2) : htmlspecialchars($total) ?></strong>
-                        <?php endif; ?>
+                <?php 
+                // Get column keys from data to ensure alignment
+                $dataKeys = array_keys($report_data[0]);
+                $isFirst = true;
+                foreach ($dataKeys as $key):
+                    if ($isFirst):
+                        // First column shows "TOTAL" label
+                ?>
+                    <td><strong>TOTAL</strong></td>
+                <?php 
+                        $isFirst = false;
+                    else:
+                        // Other columns show totals if they exist, empty otherwise
+                        $value = $summary_data[$key] ?? '';
+                ?>
+                    <td class="<?= is_numeric($value) ? 'numeric' : '' ?>">
+                        <strong><?= is_numeric($value) ? number_format($value, 2) : htmlspecialchars($value) ?></strong>
                     </td>
-                <?php endforeach; ?>
+                <?php 
+                    endif;
+                endforeach; 
+                ?>
             </tr>
         </tfoot>
         <?php endif; ?>
