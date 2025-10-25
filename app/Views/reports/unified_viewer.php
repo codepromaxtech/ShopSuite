@@ -162,9 +162,13 @@ echo view('layouts/modern_header', ['title' => $title]);
                     if (isset($debug_info['exception'])) {
                         echo "\n!!! EXCEPTION !!!\n" . $debug_info['exception'] . "\n";
                     }
-                } else {
-                    echo "POST method detected but debug_info not set in controller!\n";
-                    echo "This means the 'if POST' block isn't executing.\n";
+                    
+                    // Display condition debug
+                    echo "\n=== DISPLAY CONDITION ===\n";
+                    echo "isset(report_data): " . (isset($report_data) ? 'YES' : 'NO') . "\n";
+                    echo "is_array(report_data): " . (is_array($report_data) ? 'YES' : 'NO') . "\n";
+                    echo "count(report_data): " . (isset($report_data) ? count($report_data) : 'N/A') . "\n";
+                    echo "Condition passes: " . ((isset($report_data) && is_array($report_data) && count($report_data) > 0) ? 'YES - SHOULD SHOW' : 'NO - WILL NOT SHOW') . "\n";
                 }
             ?></pre>
         </div>
