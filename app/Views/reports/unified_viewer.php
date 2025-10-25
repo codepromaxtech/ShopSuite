@@ -146,8 +146,10 @@ echo view('layouts/modern_header', ['title' => $title]);
                 }
                 
                 // Show execution flow
+                echo "\n=== EXECUTION DEBUG ===\n";
+                echo "Debug Info Variable Exists: " . (isset($debug_info) ? 'YES' : 'NO') . "\n";
+                
                 if (isset($debug_info)) {
-                    echo "\n=== EXECUTION DEBUG ===\n";
                     echo "Last Step: " . ($debug_info['step'] ?? 'unknown') . "\n";
                     echo "Model Name: " . ($debug_info['model_name'] ?? 'not set') . "\n";
                     echo "Filters: " . print_r($debug_info['filters'] ?? [], true);
@@ -160,6 +162,9 @@ echo view('layouts/modern_header', ['title' => $title]);
                     if (isset($debug_info['exception'])) {
                         echo "\n!!! EXCEPTION !!!\n" . $debug_info['exception'] . "\n";
                     }
+                } else {
+                    echo "POST method detected but debug_info not set in controller!\n";
+                    echo "This means the 'if POST' block isn't executing.\n";
                 }
             ?></pre>
         </div>
