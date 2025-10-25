@@ -290,6 +290,12 @@ class Reports extends Secure_Controller
         }
         
         $model = model($modelName);
+        
+        // Call create() first if method exists (for reports using temp tables)
+        if (method_exists($model, 'create')) {
+            $model->create($filters);
+        }
+        
         $reportData = $model->getData($filters);
         $summaryData = method_exists($model, 'getSummaryData') ? $model->getSummaryData($filters) : null;
         
