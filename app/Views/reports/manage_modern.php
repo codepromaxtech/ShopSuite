@@ -32,27 +32,38 @@ echo view('layouts/modern_header', ['title' => $title]);
                 <i class="bi bi-currency-dollar"></i>
             </div>
             <div class="config-category-title">
-                <h3>Sales Reports</h3>
+                <h3>
+                    Sales Reports
+                    <span class="badge badge-new">NEW</span>
+                </h3>
                 <p>Revenue and transaction analysis</p>
             </div>
         </div>
         <div class="config-category-links">
-            <a href="<?= base_url('reports/summary_sales') ?>" class="config-link">
+            <a href="<?= base_url('reports/sales') ?>" class="config-link config-link-featured">
+                <i class="bi bi-lightning-fill"></i>
+                <span><strong>Unified Sales Reports</strong> - All in one place!</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <div style="border-top: 1px solid var(--border-color); margin: var(--space-2) 0; padding-top: var(--space-2);">
+                <small style="color: var(--text-tertiary); padding: 0 var(--space-4); display: block; margin-bottom: var(--space-2);">Legacy Reports:</small>
+            </div>
+            <a href="<?= base_url('reports/summary_sales') ?>" class="config-link config-link-legacy">
                 <i class="bi bi-graph-up"></i>
                 <span>Sales Summary</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
-            <a href="<?= base_url('reports/detailed_sales') ?>" class="config-link">
+            <a href="<?= base_url('reports/detailed_sales') ?>" class="config-link config-link-legacy">
                 <i class="bi bi-receipt"></i>
                 <span>Detailed Sales</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
-            <a href="<?= base_url('reports/summary_payments') ?>" class="config-link">
+            <a href="<?= base_url('reports/summary_payments') ?>" class="config-link config-link-legacy">
                 <i class="bi bi-credit-card"></i>
                 <span>Payment Summary</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
-            <a href="<?= base_url('reports/summary_taxes') ?>" class="config-link">
+            <a href="<?= base_url('reports/summary_taxes') ?>" class="config-link config-link-legacy">
                 <i class="bi bi-percent"></i>
                 <span>Tax Summary</span>
                 <i class="bi bi-chevron-right"></i>
@@ -307,6 +318,58 @@ echo view('layouts/modern_header', ['title' => $title]);
 .config-link i:last-child {
     font-size: 14px;
     color: var(--text-tertiary);
+}
+
+/* Featured Link (New Unified Reports) */
+.config-link-featured {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+    border: 2px solid var(--primary-600);
+    font-weight: var(--font-semibold);
+}
+
+.config-link-featured:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%);
+    border-color: var(--primary-700);
+    transform: translateX(8px);
+}
+
+.config-link-featured i:first-child {
+    color: var(--primary-600) !important;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Legacy Links (Old Reports) */
+.config-link-legacy {
+    opacity: 0.7;
+    font-size: var(--text-sm);
+}
+
+.config-link-legacy:hover {
+    opacity: 1;
+}
+
+/* NEW Badge */
+.badge-new {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: var(--font-bold);
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-radius: 4px;
+    margin-left: var(--space-2);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
 }
 
 /* Responsive */

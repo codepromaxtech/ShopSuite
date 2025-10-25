@@ -98,6 +98,171 @@ class Reports extends Secure_Controller
     {
         $this->getIndex();
     }
+    
+    /**
+     * Unified Sales Reports Interface
+     * Handles all sales-related reports in one page
+     */
+    public function sales(): void
+    {
+        $this->renderUnifiedReport('sales');
+    }
+    
+    /**
+     * Unified Product Reports Interface
+     * Handles all product-related reports in one page
+     */
+    public function products(): void
+    {
+        $this->renderUnifiedReport('products');
+    }
+    
+    /**
+     * Unified Customer Reports Interface
+     * Handles all customer-related reports in one page
+     */
+    public function customers(): void
+    {
+        $this->renderUnifiedReport('customers');
+    }
+    
+    /**
+     * Unified Supplier Reports Interface
+     * Handles all supplier-related reports in one page
+     */
+    public function suppliers(): void
+    {
+        $this->renderUnifiedReport('suppliers');
+    }
+    
+    /**
+     * Unified Employee Reports Interface
+     * Handles all employee-related reports in one page
+     */
+    public function employees(): void
+    {
+        $this->renderUnifiedReport('employees');
+    }
+    
+    /**
+     * Unified Financial Reports Interface
+     * Handles all financial-related reports in one page
+     */
+    public function financial(): void
+    {
+        $this->renderUnifiedReport('financial');
+    }
+    
+    /**
+     * Core method to render any unified report
+     * @param string $category The report category (sales, products, etc.)
+     */
+    private function renderUnifiedReport(string $category): void
+    {
+        $reportsConfig = config('Reports');
+        $categoryConfig = $reportsConfig->categories[$category] ?? null;
+        
+        if (!$categoryConfig) {
+            show_404();
+            return;
+        }
+        
+        // Get selected report type from query or use first one
+        $selectedType = $this->request->getGet('type') ?? array_key_first($categoryConfig['types']);
+        $typeConfig = $categoryConfig['types'][$selectedType] ?? null;
+        
+        if (!$typeConfig) {
+            show_404();
+            return;
+        }
+        
+        // Prepare data for view
+        $data = [
+            'category' => $category,
+            'category_config' => $categoryConfig,
+            'selected_type' => $selectedType,
+            'type_config' => $typeConfig,
+            'filter_configs' => $reportsConfig->filters,
+            'locations' => $this->stock_location->get_all()->getResult(),
+            'categories' => [] // TODO: Load categories
+        ];
+        
+        // If form submitted, generate report
+        if ($this->request->getMethod() === 'post') {
+            $filters = $this->getFiltersFromRequest();
+            $viewMode = $this->request->getPost('view_mode') ?? 'table';
+            $chartType = $this->request->getPost('chart_type') ?? ($typeConfig['default_chart'] ?? 'bar');
+            
+            // Load appropriate model
+            $modelName = 'App\\Models\\Reports\\' . $typeConfig['model'];
+            if (class_exists($modelName)) {
+                $model = model($modelName);
+                
+                try {
+                    $reportData = $model->getData($filters);
+                    $data['report_data'] = $reportData;
+                    $data['view_mode'] = $viewMode;
+                    $data['chart_type'] = $chartType;
+                    $data['report_subtitle'] = $this->_get_subtitle_report($filters);
+                    $data['auto_submit'] = true;
+                } catch (\Exception $e) {
+                    log_message('error', 'Report generation error: ' . $e->getMessage());
+                    $data['error'] = 'Failed to generate report. Please try again.';
+                }
+            }
+        }
+        
+        echo view('reports/unified_viewer', $data);
+    }
+    
+    /**
+     * Extract filters from request
+     */
+    private function getFiltersFromRequest(): array
+    {
+        $filters = [];
+        
+        // Date range
+        if ($this->request->getPost('start_date')) {
+            $filters['start_date'] = $this->request->getPost('start_date');
+        }
+        if ($this->request->getPost('end_date')) {
+            $filters['end_date'] = $this->request->getPost('end_date');
+        }
+        
+        // Location
+        if ($this->request->getPost('location')) {
+            $filters['location_id'] = $this->request->getPost('location');
+        }
+        
+        // Sale type
+        if ($this->request->getPost('sale_type')) {
+            $filters['sale_type'] = $this->request->getPost('sale_type');
+        }
+        
+        // Category
+        if ($this->request->getPost('category')) {
+            $filters['category'] = $this->request->getPost('category');
+        }
+        
+        // Discount type
+        if ($this->request->getPost('discount_type')) {
+            $filters['discount_type'] = $this->request->getPost('discount_type');
+        }
+        
+        // Specific entity IDs
+        if ($this->request->getPost('customer_id')) {
+            $filters['customer_id'] = $this->request->getPost('customer_id');
+        }
+        if ($this->request->getPost('supplier_id')) {
+            $filters['supplier_id'] = $this->request->getPost('supplier_id');
+        }
+        if ($this->request->getPost('employee_id')) {
+            $filters['employee_id'] = $this->request->getPost('employee_id');
+        }
+        
+        return $filters;
+    }
 
     /**
      * Initial Report listing screen

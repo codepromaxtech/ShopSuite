@@ -1,0 +1,386 @@
+<?php
+/**
+ * Unified Report Viewer
+ * Dynamic interface for all report types
+ */
+$categoryConfig = $category_config;
+$reportTypes = $categoryConfig['types'];
+$selectedType = $selected_type ?? array_key_first($reportTypes);
+$typeConfig = $reportTypes[$selectedType];
+
+$title = $categoryConfig['title'];
+echo view('layouts/modern_header', ['title' => $title]);
+?>
+
+<div class="page-header">
+    <div class="page-header-top">
+        <div class="page-header-title">
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <div>
+                <h1><?= $categoryConfig['title'] ?></h1>
+                <p style="font-size: var(--text-sm); color: var(--text-secondary); margin: 0;"><?= $categoryConfig['description'] ?></p>
+            </div>
+        </div>
+        
+        <div class="page-header-actions">
+            <a href="<?= base_url('reports') ?>" class="btn btn-outline">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Reports
+            </a>
+        </div>
+    </div>
+    
+    <div class="breadcrumbs">
+        <div class="breadcrumb-item"><a href="<?= base_url('home') ?>">Dashboard</a></div>
+        <span class="breadcrumb-separator">/</span>
+        <div class="breadcrumb-item"><a href="<?= base_url('reports') ?>">Reports</a></div>
+        <span class="breadcrumb-separator">/</span>
+        <div class="breadcrumb-item active"><?= $categoryConfig['title'] ?></div>
+    </div>
+</div>
+
+<div class="unified-report-container">
+    <form id="reportForm" method="post" action="<?= current_url() ?>">
+        <?= csrf_field() ?>
+        
+        <!-- Report Configuration Panel -->
+        <div class="report-config-panel card">
+            <div class="card-header">
+                <h3><i class="bi bi-sliders"></i> Report Configuration</h3>
+            </div>
+            <div class="card-body">
+                <!-- Report Type Selector -->
+                <div class="form-group">
+                    <label for="reportType" class="form-label">
+                        <i class="bi bi-file-text"></i> Report Type
+                    </label>
+                    <select name="report_type" id="reportType" class="form-control" onchange="handleReportTypeChange()" required>
+                        <?php foreach ($reportTypes as $typeKey => $typeData): ?>
+                            <option value="<?= $typeKey ?>" <?= $typeKey === $selectedType ? 'selected' : '' ?>>
+                                <?= $typeData['label'] ?> - <?= $typeData['description'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                
+                <!-- Dynamic Filters Container -->
+                <div id="dynamicFilters">
+                    <?= view('reports/partials/filters', [
+                        'type_config' => $typeConfig,
+                        'filter_configs' => $filter_configs,
+                        'locations' => $locations ?? [],
+                        'categories' => $categories ?? []
+                    ]) ?>
+                </div>
+                
+                <!-- View Mode (Table/Chart) -->
+                <?php if ($typeConfig['supports_chart']): ?>
+                <div class="view-mode-container">
+                    <label class="form-label">
+                        <i class="bi bi-eye"></i> View Mode
+                    </label>
+                    <div class="view-mode-toggle">
+                        <input type="radio" name="view_mode" value="table" id="viewTable" <?= (!isset($view_mode) || $view_mode === 'table') ? 'checked' : '' ?>>
+                        <label for="viewTable">
+                            <i class="bi bi-table"></i> Table
+                        </label>
+                        
+                        <input type="radio" name="view_mode" value="chart" id="viewChart" <?= (isset($view_mode) && $view_mode === 'chart') ? 'checked' : '' ?>>
+                        <label for="viewChart">
+                            <i class="bi bi-bar-chart"></i> Chart
+                        </label>
+                    </div>
+                    
+                    <!-- Chart Type (shown only when chart mode selected) -->
+                    <div id="chartTypeContainer" style="display: <?= (isset($view_mode) && $view_mode === 'chart') ? 'block' : 'none' ?>; margin-top: var(--space-4);">
+                        <label class="form-label">Chart Type</label>
+                        <select name="chart_type" class="form-control">
+                            <?php foreach ($typeConfig['chart_types'] ?? ['bar'] as $chartType): ?>
+                                <option value="<?= $chartType ?>" <?= ($typeConfig['default_chart'] ?? 'bar') === $chartType ? 'selected' : '' ?>>
+                                    <?= ucfirst($chartType) ?> Chart
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <?php else: ?>
+                    <input type="hidden" name="view_mode" value="table">
+                <?php endif; ?>
+                
+                <!-- Action Buttons -->
+                <div class="report-actions">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-play-fill"></i>
+                        Generate Report
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetFilters()">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <!-- Report Results -->
+    <?php if (isset($report_data) && !empty($report_data)): ?>
+    <div class="report-results card">
+        <div class="card-header">
+            <h3>
+                <i class="bi bi-graph-up"></i> 
+                <?= $typeConfig['label'] ?> Report
+                <?php if (isset($report_subtitle)): ?>
+                    <span style="font-size: var(--text-sm); color: var(--text-secondary); font-weight: normal;">
+                        <?= $report_subtitle ?>
+                    </span>
+                <?php endif; ?>
+            </h3>
+            <div class="card-actions">
+                <button class="btn btn-outline btn-sm" onclick="window.print()">
+                    <i class="bi bi-printer"></i> Print
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="exportReport('pdf')">
+                    <i class="bi bi-file-pdf"></i> PDF
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="exportReport('excel')">
+                    <i class="bi bi-file-excel"></i> Excel
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <?php if ($view_mode === 'table'): ?>
+                <!-- Table View -->
+                <?= view('reports/partials/table_view', ['report_data' => $report_data, 'type_config' => $typeConfig]) ?>
+            <?php else: ?>
+                <!-- Chart View -->
+                <?= view('reports/partials/chart_view', ['report_data' => $report_data, 'type_config' => $typeConfig, 'chart_type' => $chart_type ?? 'bar']) ?>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php elseif (isset($report_data)): ?>
+    <div class="card">
+        <div class="card-body" style="text-align: center; padding: var(--space-12);">
+            <i class="bi bi-inbox" style="font-size: 64px; color: var(--text-tertiary);"></i>
+            <h3 style="margin-top: var(--space-4); color: var(--text-secondary);">No Data Found</h3>
+            <p style="color: var(--text-tertiary);">No results match your filter criteria. Try adjusting the date range or filters.</p>
+        </div>
+    </div>
+    <?php endif; ?>
+</div>
+
+<style>
+/* Unified Report Container */
+.unified-report-container {
+    display: grid;
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+}
+
+/* Report Config Panel */
+.report-config-panel {
+    background: var(--bg-elevated);
+    position: sticky;
+    top: 20px;
+    z-index: 10;
+}
+
+.report-config-panel .card-header {
+    background: linear-gradient(135deg, <?= $categoryConfig['color'] ?? '#6366f1' ?> 0%, <?= $categoryConfig['color'] ?? '#6366f1' ?>dd 100%);
+    color: white;
+    padding: var(--space-4) var(--space-6);
+    border-bottom: none;
+}
+
+.report-config-panel .card-header h3 {
+    margin: 0;
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.report-config-panel .card-body {
+    padding: var(--space-6);
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: var(--space-5);
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: var(--font-medium);
+    margin-bottom: var(--space-2);
+    color: var(--text-primary);
+}
+
+/* View Mode Toggle */
+.view-mode-container {
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-color);
+}
+
+.view-mode-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+}
+
+.view-mode-toggle input[type="radio"] {
+    display: none;
+}
+
+.view-mode-toggle label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-weight: var(--font-medium);
+}
+
+.view-mode-toggle input[type="radio"]:checked + label {
+    background: var(--primary-600);
+    border-color: var(--primary-600);
+    color: white;
+}
+
+.view-mode-toggle label:hover {
+    border-color: var(--primary-400);
+}
+
+/* Report Actions */
+.report-actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-color);
+}
+
+.report-actions .btn-lg {
+    flex: 1;
+}
+
+/* Report Results */
+.report-results {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Card Actions */
+.card-actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .report-config-panel {
+        position: relative;
+        top: 0;
+    }
+    
+    .report-actions {
+        flex-direction: column;
+    }
+    
+    .card-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .report-config-panel,
+    .page-header,
+    .btn,
+    .card-actions {
+        display: none !important;
+    }
+}
+</style>
+
+<script>
+// Report Type Change Handler
+function handleReportTypeChange() {
+    const form = document.getElementById('reportForm');
+    const reportType = document.getElementById('reportType').value;
+    
+    // Reload page with new report type
+    window.location.href = '<?= current_url() ?>?type=' + reportType;
+}
+
+// View Mode Toggle Handler
+document.querySelectorAll('input[name="view_mode"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const chartContainer = document.getElementById('chartTypeContainer');
+        if (chartContainer) {
+            chartContainer.style.display = this.value === 'chart' ? 'block' : 'none';
+        }
+    });
+});
+
+// Reset Filters
+function resetFilters() {
+    document.getElementById('reportForm').reset();
+}
+
+// Export Report
+function exportReport(format) {
+    const form = document.getElementById('reportForm');
+    const formData = new FormData(form);
+    formData.append('export', format);
+    
+    // Create temporary form for export
+    const exportForm = document.createElement('form');
+    exportForm.method = 'POST';
+    exportForm.action = '<?= current_url() ?>/export';
+    
+    for (let [key, value] of formData.entries()) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        exportForm.appendChild(input);
+    }
+    
+    document.body.appendChild(exportForm);
+    exportForm.submit();
+    document.body.removeChild(exportForm);
+}
+
+// Auto-submit on load if coming from report generation
+<?php if (isset($auto_submit) && $auto_submit): ?>
+document.addEventListener('DOMContentLoaded', function() {
+    // Scroll to results
+    document.querySelector('.report-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+<?php endif; ?>
+</script>
+
+<?= view('layouts/modern_footer') ?>
