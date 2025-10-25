@@ -21,8 +21,10 @@
         
         .header {
             margin-bottom: 30px;
-            border-bottom: 3px solid #2563eb;
+            border-bottom: 3px solid #1e3a8a;
             padding-bottom: 20px;
+            background: linear-gradient(to right, #f8fafc, #ffffff);
+            padding: 20px;
         }
         
         .header h1 {
@@ -49,21 +51,11 @@
             color: #666;
         }
         
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        
-        th {
-            background: #f0f0f0;
-            border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
             font-weight: bold;
             font-size: 12px;
         }
-        
         }
         
         tbody tr:nth-child(even) {
@@ -71,15 +63,26 @@
         }
         
         thead {
-            background: linear-gradient(to bottom, #2563eb, #1e40af);
+            background: linear-gradient(to bottom, #1e3a8a, #1e40af);
             color: white;
         }
         
         thead th {
             font-weight: 600;
             text-align: left;
-            border-bottom: 2px solid #1e40af;
+            border-bottom: 2px solid #b45309;
             color: white !important;
+        }
+        
+        tfoot {
+            background: linear-gradient(to bottom, #fef3c7, #fde68a);
+            font-weight: bold;
+            border-top: 3px solid #b45309;
+        }
+        
+        tfoot td {
+            color: #78350f;
+            font-weight: 700;
         }
         
         .footer {
@@ -123,7 +126,7 @@
         <table style="width: 100%; border: none;">
             <tr>
                 <td style="width: 60%; vertical-align: top; border: none;">
-                    <h1 style="margin: 0; font-size: 28px; color: #2563eb;">
+                    <h1 style="margin: 0; font-size: 28px; color: #1e3a8a; font-weight: 700;">
                         <?= config('ShopSuite')->settings['company'] ?? config('App')->siteName ?? 'ShopSuite ERP' ?>
                     </h1>
                     <p style="margin: 5px 0 0 0; font-size: 11px; line-height: 1.5;">
@@ -153,11 +156,11 @@
     
     <!-- Report Title -->
     <div class="report-title">
-        <h2 style="color: #1e40af; border-bottom: 3px solid #2563eb; padding-bottom: 10px;">
+        <h2 style="color: #1e3a8a; border-bottom: 3px solid #b45309; padding-bottom: 10px; font-weight: 700;">
             <?= htmlspecialchars($title) ?>
         </h2>
-        <p style="margin-top: 10px; padding: 10px; background: #eff6ff; border-left: 4px solid #2563eb;">
-            <strong>Report Period:</strong> <?= htmlspecialchars($subtitle) ?>
+        <p style="margin-top: 10px; padding: 10px; background: #fef3c7; border-left: 4px solid #b45309; color: #78350f;">
+            <strong style="color: #1e3a8a;">Report Period:</strong> <?= htmlspecialchars($subtitle) ?>
         </p>
     </div>
     
