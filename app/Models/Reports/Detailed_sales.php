@@ -90,25 +90,33 @@ class Detailed_sales extends Report
     }
 
     /**
-     * @param array $inputs
      * @return array
      */
     public function getData(array $inputs): array
     {
         $builder = $this->db->table('sales_items_temp');
-        $builder->select('sale_id,
+        
+        // Build SELECT with proper column order
+        $select = 'sale_id,
             MAX(CASE
-            WHEN sale_type = ' . SALE_TYPE_POS . ' && sale_status = ' . COMPLETED . ' THEN \'' . lang('Reports.code_pos') . '\'
-            WHEN sale_type = ' . SALE_TYPE_INVOICE . ' && sale_status = ' . COMPLETED . ' THEN \'' . lang('Reports.code_invoice') . '\'
-            WHEN sale_type = ' . SALE_TYPE_WORK_ORDER . ' && sale_status = ' . SUSPENDED . ' THEN \'' . lang('Reports.code_work_order') . '\'
-            WHEN sale_type = ' . SALE_TYPE_QUOTE . ' && sale_status = ' . SUSPENDED . ' THEN \'' . lang('Reports.code_quote') . '\'
-            WHEN sale_type = ' . SALE_TYPE_RETURN . ' && sale_status = ' . COMPLETED . ' THEN \'' . lang('Reports.code_return') . '\'
-            WHEN sale_status = ' . CANCELED . ' THEN \'' . lang('Reports.code_canceled') . '\'
-            ELSE \'\'
-            END) AS type_code,
+            WHEN sale_type = ' . SALE_TYPE_POS . ' && sale_status = ' . COMPLETED . ' THEN \'' . lang('Reports.code_pos') . '\' ' .
+            'WHEN sale_type = ' . SALE_TYPE_INVOICE . ' && sale_status = ' . COMPLETED . ' THEN \'' . lang('Reports.code_invoice') . '\' ' .
+            'WHEN sale_type = ' . SALE_TYPE_WORK_ORDER . ' && sale_status = ' . SUSPENDED . ' THEN \'' . lang('Reports.code_work_order') . '\' ' .
+            'WHEN sale_type = ' . SALE_TYPE_QUOTE . ' && sale_status = ' . SUSPENDED . ' THEN \'' . lang('Reports.code_quote') . '\' ' .
+            'WHEN sale_type = ' . SALE_TYPE_RETURN . ' && sale_status = ' . COMPLETED . ' THEN \'' . lang('Reports.code_return') . '\' ' .
+            'WHEN sale_status = ' . CANCELED . ' THEN \'' . lang('Reports.code_canceled') . '\' ' .
+            'ELSE \'\'  ' .
+            'END) AS type_code,
             MAX(sale_status) as sale_status,
-            MAX(sale_time) AS sale_time,
-            SUM(quantity_purchased) AS items_purchased,
+            MAX(sale_time) AS sale_time';
+        
+        // Only add quantity if not explicitly hidden
+        if (!isset($inputs['hide_quantity']) || !$inputs['hide_quantity']) {
+            $select .= ',
+            SUM(quantity_purchased) AS items_purchased';
+        }
+        
+        $select .= ',
             MAX(employee_name) AS employee_name,
             MAX(customer_name) AS customer_name,
             SUM(subtotal) AS subtotal,
@@ -117,13 +125,16 @@ class Detailed_sales extends Report
             SUM(cost) AS cost,
             SUM(profit) AS profit,
             MAX(payment_type) AS payment_type,
-            MAX(comment) AS comment');
+            MAX(comment) AS comment';
+        
+        $builder->select($select);
 
-        if ($inputs['location_id'] != 'all') {    // TODO: Duplicated code
+        if (isset($inputs['location_id']) && $inputs['location_id'] != 'all') {    // TODO: Duplicated code
             $builder->where('item_location', $inputs['location_id']);
         }
 
-        switch ($inputs['sale_type']) {
+        if (isset($inputs['sale_type'])) {
+            switch ($inputs['sale_type']) {
             case 'complete':
                 $builder->where('sale_status', COMPLETED);
                 $builder->groupStart();
@@ -159,6 +170,7 @@ class Detailed_sales extends Report
                 $builder->where('sale_status', COMPLETED);
                 $builder->where('sale_type', SALE_TYPE_RETURN);
                 break;
+            }
         }
 
         $builder->groupBy('sale_id');
@@ -218,11 +230,12 @@ class Detailed_sales extends Report
         $builder = $this->db->table('sales_items_temp');
         $builder->select('SUM(subtotal) AS subtotal, SUM(tax) AS tax, SUM(total) AS total, SUM(cost) AS cost, SUM(profit) AS profit');
 
-        if ($inputs['location_id'] != 'all') {    // TODO: Duplicated code
+        if (isset($inputs['location_id']) && $inputs['location_id'] != 'all') {    // TODO: Duplicated code
             $builder->where('item_location', $inputs['location_id']);
         }
 
-        switch ($inputs['sale_type']) {
+        if (isset($inputs['sale_type'])) {
+            switch ($inputs['sale_type']) {
             case 'complete':
                 $builder->where('sale_status', COMPLETED);
                 $builder->groupStart();
@@ -258,6 +271,7 @@ class Detailed_sales extends Report
                 $builder->where('sale_status', COMPLETED);
                 $builder->where('sale_type', SALE_TYPE_RETURN);
                 break;
+            }
         }
 
         return $builder->get()->getRowArray();
