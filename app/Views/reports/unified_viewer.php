@@ -126,6 +126,41 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
     </form>
     
+    <!-- Debug Info (remove after testing) -->
+    <?php if (ENVIRONMENT === 'development'): ?>
+    <div class="card" style="background: #f0f9ff; border: 1px solid #bae6fd;">
+        <div class="card-body">
+            <h4 style="margin: 0 0 var(--space-2) 0; color: #0369a1;">Debug Info:</h4>
+            <pre style="font-size: 12px; margin: 0;"><?php 
+                echo "Request Method: " . strtoupper($_SERVER['REQUEST_METHOD']) . "\n";
+                echo "POST Data: " . print_r($_POST, true);
+                echo "\nCategory: {$category}\n";
+                echo "Selected Type: {$selected_type}\n";
+                echo "Model: " . ($type_config['model'] ?? 'not set') . "\n";
+                echo "Report Data Set: " . (isset($report_data) ? 'YES' : 'NO') . "\n";
+                if (isset($report_data)) {
+                    echo "Report Data Keys: " . implode(', ', array_keys($report_data)) . "\n";
+                }
+            ?></pre>
+        </div>
+    </div>
+    <?php endif; ?>
+    
+    <!-- Error Display -->
+    <?php if (isset($error)): ?>
+    <div class="card" style="border-left: 4px solid var(--danger-600);">
+        <div class="card-body">
+            <div style="display: flex; align-items: center; gap: var(--space-3); color: var(--danger-600);">
+                <i class="bi bi-exclamation-triangle" style="font-size: 24px;"></i>
+                <div>
+                    <h3 style="margin: 0; color: var(--danger-600);">Error Generating Report</h3>
+                    <p style="margin: var(--space-2) 0 0 0; color: var(--text-secondary);"><?= $error ?></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+    
     <!-- Report Results -->
     <?php if (isset($report_data) && !empty($report_data)): ?>
     <div class="report-results card">

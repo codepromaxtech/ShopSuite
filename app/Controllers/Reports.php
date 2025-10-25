@@ -195,20 +195,31 @@ class Reports extends Secure_Controller
             
             // Load appropriate model
             $modelName = 'App\\Models\\Reports\\' . $typeConfig['model'];
+            
             if (class_exists($modelName)) {
                 $model = model($modelName);
                 
                 try {
+                    log_message('debug', 'Generating report: ' . $modelName . ' with filters: ' . json_encode($filters));
+                    
                     $reportData = $model->getData($filters);
+                    
+                    log_message('debug', 'Report data generated: ' . json_encode(array_keys($reportData)));
+                    
                     $data['report_data'] = $reportData;
                     $data['view_mode'] = $viewMode;
                     $data['chart_type'] = $chartType;
                     $data['report_subtitle'] = $this->_get_subtitle_report($filters);
                     $data['auto_submit'] = true;
+                    
                 } catch (\Exception $e) {
                     log_message('error', 'Report generation error: ' . $e->getMessage());
-                    $data['error'] = 'Failed to generate report. Please try again.';
+                    log_message('error', 'Stack trace: ' . $e->getTraceAsString());
+                    $data['error'] = 'Failed to generate report: ' . $e->getMessage();
                 }
+            } else {
+                log_message('error', 'Report model not found: ' . $modelName);
+                $data['error'] = 'Report model not found: ' . $typeConfig['model'];
             }
         }
         
