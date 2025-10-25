@@ -13,28 +13,34 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 20px;
-            font-size: 12px;
+            padding: 15px;
+            font-size: 11px;
             color: #1e293b;
             background: #fff;
         }
         
-        .header {
+        @page {
+            size: A4 landscape;
+            margin: 10mm;
+        }
+        
             margin-bottom: 30px;
             border-bottom: 3px solid #1e3a8a;
             padding-bottom: 20px;
             background: linear-gradient(to right, #f8fafc, #ffffff);
             padding: 20px;
         }
-        
-        .header h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            table-layout: auto;
         }
         
         .header p {
             font-size: 12px;
             color: #666;
+{{ ... }}
         }
         
         .report-title {
@@ -79,24 +85,22 @@
             font-weight: bold;
             border-top: 3px solid #b45309;
         }
-        
         tfoot td {
             color: #78350f;
             font-weight: 700;
         }
         
-        .footer {
-            margin-top: 30px;
-            padding-top: 15px;
-            text-align: center;
-            font-size: 10px;
-            color: #666;
+        td, th {
+            border: 1px solid #ddd;
+            padding: 6px 8px;
+            text-align: left;
+            font-size: 11px;
+            white-space: nowrap;
         }
-        
         .numeric {
             text-align: right;
         }
-        
+{{ ... }}
         @media print {
             body {
                 padding: 0;

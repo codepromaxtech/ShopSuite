@@ -230,14 +230,11 @@ echo view('layouts/modern_header', ['title' => $title]);
                 <?php endif; ?>
             </h3>
             <div class="card-actions">
-                <button class="btn btn-outline btn-sm" onclick="window.print()">
-                    <i class="bi bi-printer"></i> Print
-                </button>
                 <button class="btn btn-outline btn-sm" onclick="exportReport('pdf')">
                     <i class="bi bi-file-pdf"></i> PDF
                 </button>
                 <button class="btn btn-outline btn-sm" onclick="exportReport('excel')">
-                    <i class="bi bi-file-excel"></i> Excel
+                    <i class="bi bi-file-earmark-spreadsheet"></i> Excel
                 </button>
             </div>
         </div>
