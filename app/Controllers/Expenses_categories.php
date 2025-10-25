@@ -78,7 +78,7 @@ class Expenses_categories extends Secure_Controller    // TODO: Is this class ev
     {
         $data['category_info'] = $this->expense_category->get_info($expense_category_id);
 
-        echo view("expenses_categories/form", $data);
+        echo view("expenses_categories/form_modern", $data);
     }
 
     /**

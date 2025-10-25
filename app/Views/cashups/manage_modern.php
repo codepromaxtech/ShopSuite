@@ -1,177 +1,148 @@
 <?php
-/**
- * MODERN CASHUPS MANAGEMENT - Pure Native Solution
- */
+$title = 'Cash Ups - ShopSuite';
+echo view('layouts/modern_header', ['title' => $title]);
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => lang('Module.cashups'),
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
-
-<!-- Page Header -->
-<div class="container-fluid py-3">
-    <div class="row align-items-center mb-3">
-        <div class="col">
-            <h3 class="mb-0">
-                <i class="bi bi-calculator me-2"></i>
-                <?= lang('Module.cashups') ?>
-            </h3>
+<div class="page-header">
+    <div class="page-header-top">
+        <div class="page-header-title">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+            <div>
+                <h1>Cash Ups</h1>
+            </div>
         </div>
-        <div class="col-auto">
-            <button class="btn btn-primary" onclick="openModal('cashups/view/-1', 'New Cash Up')">
-                <i class="bi bi-plus-circle me-1"></i>New Cash Up
+        
+        <div class="page-header-actions">
+            <button class="btn btn-primary" onclick="addCashup()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                New Cash Up
             </button>
         </div>
     </div>
     
-    <!-- Table Container -->
-    <div id="dataTable-container"></div>
+    <div class="breadcrumbs">
+        <div class="breadcrumb-item"><a href="<?= base_url('home') ?>">Dashboard</a></div>
+        <span class="breadcrumb-separator">/</span>
+        <div class="breadcrumb-item active">Cash Ups</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body" style="padding: 0;">
+        <div id="cashupsTable"></div>
+    </div>
 </div>
 
 <script>
+let cashupsTable;
+
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Modern Cashups Page Loading...');
-    
-    // Define table columns
-    const columns = [
-        {
-            field: 'cashup_id',
-            title: 'ID',
-            sortable: true
-        },
-        {
-            field: 'cashup_time',
-            title: 'Date & Time',
-            sortable: true,
-            formatter: (value) => {
-                if (!value) return '-';
-                const date = new Date(value);
-                return `
-                    <div>
-                        <div>${date.toLocaleDateString()}</div>
-                        <small class="text-muted">${date.toLocaleTimeString()}</small>
-                    </div>
-                `;
-            }
-        },
-        {
-            field: 'employee_name',
-            title: 'Employee',
-            sortable: true,
-            formatter: (value) => {
-                return value || '<span class="text-muted">Unknown</span>';
-            }
-        },
-        {
-            field: 'open_amount',
-            title: 'Opening',
-            sortable: true,
-            formatter: (value) => {
-                return `<span class="text-info"><?= $config['currency_symbol'] ?>${parseFloat(value || 0).toFixed(2)}</span>`;
-            }
-        },
-        {
-            field: 'close_amount',
-            title: 'Closing',
-            sortable: true,
-            formatter: (value) => {
-                return `<span class="text-success fw-bold"><?= $config['currency_symbol'] ?>${parseFloat(value || 0).toFixed(2)}</span>`;
-            }
-        },
-        {
-            field: 'note',
-            title: 'Note',
-            sortable: false,
-            formatter: (value) => {
-                if (!value) return '-';
-                const truncated = value.length > 30 ? value.substring(0, 30) + '...' : value;
-                return `<small>${truncated}</small>`;
-            }
-        },
-        {
-            field: 'actions',
-            title: 'Actions',
-            sortable: false,
-            formatter: (value, row) => {
-                return `
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-primary" onclick="viewCashup(${row.cashup_id}); event.stopPropagation();" title="View">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                        <button class="btn btn-outline-danger" onclick="deleteCashup(${row.cashup_id}); event.stopPropagation();" title="Delete">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                `;
-            }
-        }
-    ];
-    
-    // Initialize Modern DataTable
-    window.cashupsTable = new ModernDataTable({
-        tableId: 'dataTable',
-        searchUrl: '<?= base_url('cashups/search') ?>',
-        columns: columns,
-        pageSize: <?= $config['lines_per_page'] ?? 20 ?>,
-        uniqueId: 'cashup_id',
-        onRowClick: function(row) {
-            viewCashup(row.cashup_id);
-        },
-        onLoadComplete: function(data) {
-            console.log(`✅ Loaded ${data.total} cashups`);
-        }
-    });
-    
-    console.log('✅ Modern Cashups Page Ready');
+    initializeDataTable();
 });
 
-// Cashup Actions
-function viewCashup(cashupId) {
-    openModal(`cashups/view/${cashupId}`, 'View Cash Up');
+function initializeDataTable() {
+    cashupsTable = new ModernDataTable('#cashupsTable', {
+        ajax: {
+            url: '<?= base_url("cashups/search") ?>',
+            dataSrc: 'rows'
+        },
+        columns: [
+            { field: 'cashup_id', title: 'ID', sortable: true },
+            { 
+                field: 'cashup_time', 
+                title: 'Time',
+                sortable: true,
+                render: (value) => {
+                    const date = new Date(value);
+                    return date.toLocaleString();
+                }
+            },
+            { field: 'employee_name', title: 'Employee', sortable: true },
+            { 
+                field: 'open_amount', 
+                title: 'Opening',
+                sortable: true,
+                render: (value) => `<span style="color: var(--text-secondary);">$${parseFloat(value).toFixed(2)}</span>`
+            },
+            { 
+                field: 'close_amount', 
+                title: 'Closing',
+                sortable: true,
+                render: (value) => `<span style="color: var(--success-600); font-weight: var(--font-semibold);">$${parseFloat(value).toFixed(2)}</span>`
+            },
+            { 
+                field: 'note', 
+                title: 'Note',
+                sortable: true,
+                render: (value) => value ? value.substring(0, 50) + (value.length > 50 ? '...' : '') : '-'
+            }
+        ],
+        actions: [
+            {
+                title: 'Edit',
+                icon: '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>',
+                className: 'btn-ghost',
+                onClick: 'editCashup'
+            },
+            {
+                title: 'Delete',
+                icon: '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>',
+                className: 'btn-ghost',
+                onClick: 'deleteCashup'
+            }
+        ],
+        searchable: true,
+        exportable: true,
+        pageSize: 25,
+        onRowClick: (row, tr) => {
+            editCashup(row);
+        }
+    });
 }
 
-async function deleteCashup(cashupId) {
-    const result = await Swal.fire({
-        title: 'Delete Cash Up?',
-        text: 'This action cannot be undone',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        confirmButtonText: 'Yes, delete',
-        cancelButtonText: 'Cancel'
-    });
-    
-    if (result.isConfirmed) {
-        try {
-            showLoading('Deleting cash up...');
-            
-            const response = await fetch('<?= base_url('cashups/delete') ?>', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ ids: [cashupId] })
-            });
-            
-            const data = await response.json();
-            hideLoading();
-            
-            if (data.success) {
-                showNotification('Cash up deleted successfully', 'success');
-                window.cashupsTable.refresh();
-            } else {
-                showNotification(data.message || 'Failed to delete cash up', 'error');
+function addCashup() {
+    window.location.href = '<?= base_url("cashups/view/-1") ?>';
+}
+
+function editCashup(cashup) {
+    window.location.href = `<?= base_url("cashups/view") ?>/${cashup.cashup_id}`;
+}
+
+function deleteCashup(cashup) {
+    if (window.shopsuiteApp) {
+        window.shopsuiteApp.confirm(
+            'Delete Cash Up',
+            `Are you sure you want to delete this cash up record? This action cannot be undone.`,
+            function() {
+                fetch(`<?= base_url("cashups/delete") ?>`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ ids: [cashup.cashup_id] })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.shopsuiteApp.showToast('Success', 'Cash up deleted successfully', 'success');
+                        cashupsTable.refresh();
+                    } else {
+                        window.shopsuiteApp.showToast('Error', data.message || 'Failed to delete cash up', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.shopsuiteApp.showToast('Error', 'An error occurred', 'error');
+                });
             }
-        } catch (error) {
-            hideLoading();
-            console.error('Delete error:', error);
-            showNotification('An error occurred', 'error');
-        }
+        );
     }
 }
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?php echo view('layouts/modern_footer'); ?>

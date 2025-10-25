@@ -199,17 +199,27 @@ class Config extends Secure_Controller
     {
         $themes = [];
 
-        // Read all themes in the dist folder
-        $dir = new DirectoryIterator('resources/bootswatch');
+        // Check if bootswatch directory exists
+        $bootstrapPath = 'resources/bootswatch';
+        
+        if (is_dir($bootstrapPath)) {
+            // Read all themes in the dist folder
+            $dir = new DirectoryIterator($bootstrapPath);
 
-        foreach ($dir as $dirinfo) {    // TODO: $dirinfo doesn't follow naming convention
-            if ($dirinfo->isDir() && !$dirinfo->isDot() && $dirinfo->getFileName() != 'fonts') {
-                $file = $dirinfo->getFileName();
-                $themes[$file] = ucfirst($file);
+            foreach ($dir as $dirinfo) {    // TODO: $dirinfo doesn't follow naming convention
+                if ($dirinfo->isDir() && !$dirinfo->isDot() && $dirinfo->getFileName() != 'fonts') {
+                    $file = $dirinfo->getFileName();
+                    $themes[$file] = ucfirst($file);
+                }
             }
-        }
 
-        asort($themes);
+            asort($themes);
+        } else {
+            // Return modern theme as default
+            $themes = [
+                'modern' => 'Modern Design System'
+            ];
+        }
 
         return $themes;
     }
@@ -275,7 +285,7 @@ class Config extends Secure_Controller
         $data['user_info'] = $this->global_view_data['user_info'];
         $data['config'] = $this->global_view_data['config'];
 
-        echo view('config/manage_bootstrap5', $data);
+        echo view('config/manage_modern', $data);
     }
 
     /**
@@ -971,5 +981,44 @@ class Config extends Secure_Controller
         $success = $this->appconfig->save(['company_logo' => '']);
 
         echo json_encode(['success' => $success]);
+    }
+
+    /**
+     * Clear system cache
+     *
+     * @return void
+     */
+    public function postClearCache(): void
+    {
+        $this->response->setContentType('application/json');
+        
+        try {
+            // Clear view cache
+            $viewPath = WRITEPATH . 'views/';
+            if (is_dir($viewPath)) {
+                array_map('unlink', glob($viewPath . '*'));
+            }
+            
+            // Clear general cache
+            $cachePath = WRITEPATH . 'cache/';
+            if (is_dir($cachePath)) {
+                $files = glob($cachePath . '*');
+                foreach ($files as $file) {
+                    if (is_file($file)) {
+                        unlink($file);
+                    }
+                }
+            }
+            
+            echo json_encode([
+                'success' => true,
+                'message' => 'Cache cleared successfully'
+            ]);
+        } catch (\Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Failed to clear cache: ' . $e->getMessage()
+            ]);
+        }
     }
 }

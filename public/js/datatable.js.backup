@@ -1,0 +1,517 @@
+/**
+ * SHOPSUITE - MODERN DATATABLE
+ * Reusable, responsive data table component
+ */
+
+class ModernDataTable {
+    constructor(container, options = {}) {
+        this.container = typeof container === 'string' ? document.querySelector(container) : container;
+        if (!this.container) {
+            console.error('DataTable container not found');
+            return;
+        }
+        
+        this.options = {
+            ajax: {
+                url: '',
+                method: 'GET',
+                dataSrc: 'data',
+                ...options.ajax
+            },
+            columns: options.columns || [],
+            pageSize: options.pageSize || 25,
+            searchable: options.searchable !== false,
+            exportable: options.exportable !== false,
+            selectable: options.selectable || false,
+            responsive: options.responsive !== false,
+            actions: options.actions || [],
+            onRowClick: options.onRowClick || null,
+            emptyMessage: options.emptyMessage || 'No data available',
+            ...options
+        };
+        
+        this.currentPage = 1;
+        this.totalRecords = 0;
+        this.searchQuery = '';
+        this.sortColumn = null;
+        this.sortDirection = 'asc';
+        this.selectedRows = new Set();
+        this.data = [];
+        
+        this.init();
+    }
+    
+    init() {
+        this.render();
+        this.attachEventListeners();
+        this.loadData();
+    }
+    
+    render() {
+        const html = `
+            <div class="datatable-wrapper">
+                ${this.renderToolbar()}
+                ${this.renderTable()}
+                ${this.renderPagination()}
+            </div>
+        `;
+        this.container.innerHTML = html;
+    }
+    
+    renderToolbar() {
+        return `
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    ${this.options.searchable ? `
+                        <div class="toolbar-search">
+                            <svg class="toolbar-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input 
+                                type="text" 
+                                class="form-control toolbar-search-input" 
+                                placeholder="Search..." 
+                                data-action="search"
+                            >
+                        </div>
+                    ` : ''}
+                    
+                    ${this.options.selectable ? `
+                        <div class="selected-count" style="display: none;">
+                            <span class="badge badge-primary">
+                                <span data-selected-count>0</span> selected
+                            </span>
+                        </div>
+                    ` : ''}
+                </div>
+                
+                <div class="toolbar-right">
+                    ${this.options.exportable ? `
+                        <button class="btn btn-outline btn-sm" data-action="export">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Export
+                        </button>
+                    ` : ''}
+                    
+                    <button class="btn btn-outline btn-sm" data-action="refresh">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    
+    renderTable() {
+        return `
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            ${this.options.selectable ? '<th width="40"><input type="checkbox" data-action="select-all"></th>' : ''}
+                            ${this.options.columns.map(col => `
+                                <th ${col.sortable ? `data-sort="${col.field}" class="sortable"` : ''}>
+                                    ${col.title}
+                                    ${col.sortable ? '<span class="sort-icon"></span>' : ''}
+                                </th>
+                            `).join('')}
+                            ${this.options.actions.length ? '<th width="120">Actions</th>' : ''}
+                        </tr>
+                    </thead>
+                    <tbody data-table-body>
+                        <tr>
+                            <td colspan="${this.getColumnCount()}" style="text-align: center; padding: var(--space-8);">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+    
+    renderPagination() {
+        return `
+            <div class="pagination-wrapper" style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4); border-top: 1px solid var(--divider-color);">
+                <div class="pagination-info text-sm text-secondary">
+                    <span data-pagination-info>Showing 0 to 0 of 0 records</span>
+                </div>
+                <div class="pagination" data-pagination></div>
+            </div>
+        `;
+    }
+    
+    getColumnCount() {
+        let count = this.options.columns.length;
+        if (this.options.selectable) count++;
+        if (this.options.actions.length) count++;
+        return count;
+    }
+    
+    attachEventListeners() {
+        // Search
+        const searchInput = this.container.querySelector('[data-action="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('input', this.debounce((e) => {
+                this.searchQuery = e.target.value;
+                this.currentPage = 1;
+                this.loadData();
+            }, 500));
+        }
+        
+        // Refresh
+        const refreshBtn = this.container.querySelector('[data-action="refresh"]');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => this.loadData());
+        }
+        
+        // Export
+        const exportBtn = this.container.querySelector('[data-action="export"]');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', () => this.exportToCSV());
+        }
+        
+        // Sort
+        this.container.addEventListener('click', (e) => {
+            const sortHeader = e.target.closest('[data-sort]');
+            if (sortHeader) {
+                const field = sortHeader.dataset.sort;
+                if (this.sortColumn === field) {
+                    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    this.sortColumn = field;
+                    this.sortDirection = 'asc';
+                }
+                this.loadData();
+            }
+        });
+        
+        // Select all
+        const selectAllCheckbox = this.container.querySelector('[data-action="select-all"]');
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', (e) => {
+                this.toggleSelectAll(e.target.checked);
+            });
+        }
+    }
+    
+    async loadData() {
+        try {
+            const params = new URLSearchParams({
+                page: this.currentPage,
+                limit: this.options.pageSize,
+                search: this.searchQuery,
+                sort: this.sortColumn || '',
+                order: this.sortDirection
+            });
+            
+            const response = await fetch(`${this.options.ajax.url}?${params}`);
+            const result = await response.json();
+            
+            // Extract data based on dataSrc
+            this.data = typeof this.options.ajax.dataSrc === 'function' 
+                ? this.options.ajax.dataSrc(result)
+                : result[this.options.ajax.dataSrc] || result.data || [];
+            
+            this.totalRecords = result.total || this.data.length;
+            
+            this.renderTableBody();
+            this.updatePagination();
+            
+        } catch (error) {
+            console.error('Error loading data:', error);
+            this.renderError();
+        }
+    }
+    
+    renderTableBody() {
+        const tbody = this.container.querySelector('[data-table-body]');
+        
+        if (!this.data || this.data.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="${this.getColumnCount()}">
+                        <div class="empty-state">
+                            <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                            </svg>
+                            <div class="empty-state-title">${this.options.emptyMessage}</div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        const rows = this.data.map((row, index) => {
+            const rowHtml = `
+                <tr data-row-id="${row.id || index}" ${this.options.onRowClick ? 'style="cursor: pointer;"' : ''}>
+                    ${this.options.selectable ? `
+                        <td><input type="checkbox" class="form-check-input" data-row-select="${row.id || index}"></td>
+                    ` : ''}
+                    ${this.options.columns.map(col => `
+                        <td>${this.formatCell(row, col)}</td>
+                    `).join('')}
+                    ${this.options.actions.length ? `
+                        <td>
+                            <div class="flex gap-2">
+                                ${this.renderActions(row)}
+                            </div>
+                        </td>
+                    ` : ''}
+                </tr>
+            `;
+            return rowHtml;
+        }).join('');
+        
+        tbody.innerHTML = rows;
+        
+        // Attach row click listeners
+        if (this.options.onRowClick) {
+            tbody.querySelectorAll('tr').forEach(tr => {
+                tr.addEventListener('click', (e) => {
+                    if (!e.target.closest('button') && !e.target.closest('input')) {
+                        const rowId = tr.dataset.rowId;
+                        const rowData = this.data.find(d => (d.id || this.data.indexOf(d)) == rowId);
+                        this.options.onRowClick(rowData, tr);
+                    }
+                });
+            });
+        }
+        
+        // Attach checkbox listeners
+        if (this.options.selectable) {
+            tbody.querySelectorAll('[data-row-select]').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const rowId = e.target.dataset.rowSelect;
+                    if (e.target.checked) {
+                        this.selectedRows.add(rowId);
+                    } else {
+                        this.selectedRows.delete(rowId);
+                    }
+                    this.updateSelectedCount();
+                });
+            });
+        }
+    }
+    
+    formatCell(row, column) {
+        const value = this.getNestedValue(row, column.field);
+        
+        if (column.render) {
+            return column.render(value, row);
+        }
+        
+        if (column.type === 'currency') {
+            return '$' + parseFloat(value || 0).toFixed(2);
+        }
+        
+        if (column.type === 'date') {
+            return value ? new Date(value).toLocaleDateString() : '';
+        }
+        
+        if (column.type === 'datetime') {
+            return value ? new Date(value).toLocaleString() : '';
+        }
+        
+        return value !== null && value !== undefined ? value : '';
+    }
+    
+    getNestedValue(obj, path) {
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+    }
+    
+    renderActions(row) {
+        return this.options.actions.map(action => {
+            const iconSvg = action.icon || '';
+            return `
+                <button 
+                    class="btn btn-sm ${action.className || 'btn-ghost'}" 
+                    onclick="event.stopPropagation(); ${action.onClick ? `(${action.onClick})(${JSON.stringify(row)})` : ''}"
+                    title="${action.title || ''}"
+                >
+                    ${iconSvg}
+                </button>
+            `;
+        }).join('');
+    }
+    
+    updatePagination() {
+        const totalPages = Math.ceil(this.totalRecords / this.options.pageSize);
+        const start = (this.currentPage - 1) * this.options.pageSize + 1;
+        const end = Math.min(this.currentPage * this.options.pageSize, this.totalRecords);
+        
+        // Update info
+        const infoEl = this.container.querySelector('[data-pagination-info]');
+        if (infoEl) {
+            infoEl.textContent = `Showing ${start} to ${end} of ${this.totalRecords} records`;
+        }
+        
+        // Update pagination buttons
+        const paginationEl = this.container.querySelector('[data-pagination]');
+        if (!paginationEl) return;
+        
+        let html = '';
+        
+        // Previous button
+        html += `
+            <button 
+                class="pagination-item" 
+                ${this.currentPage === 1 ? 'disabled' : ''}
+                onclick="window.datatableInstance_${this.container.id || 'default'}.goToPage(${this.currentPage - 1})"
+            >
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+        `;
+        
+        // Page numbers
+        const maxButtons = 5;
+        let startPage = Math.max(1, this.currentPage - Math.floor(maxButtons / 2));
+        let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+        
+        if (endPage - startPage + 1 < maxButtons) {
+            startPage = Math.max(1, endPage - maxButtons + 1);
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            html += `
+                <button 
+                    class="pagination-item ${i === this.currentPage ? 'active' : ''}"
+                    onclick="window.datatableInstance_${this.container.id || 'default'}.goToPage(${i})"
+                >
+                    ${i}
+                </button>
+            `;
+        }
+        
+        // Next button
+        html += `
+            <button 
+                class="pagination-item"
+                ${this.currentPage === totalPages ? 'disabled' : ''}
+                onclick="window.datatableInstance_${this.container.id || 'default'}.goToPage(${this.currentPage + 1})"
+            >
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        `;
+        
+        paginationEl.innerHTML = html;
+        
+        // Store instance for onclick callbacks
+        window[`datatableInstance_${this.container.id || 'default'}`] = this;
+    }
+    
+    goToPage(page) {
+        const totalPages = Math.ceil(this.totalRecords / this.options.pageSize);
+        if (page >= 1 && page <= totalPages) {
+            this.currentPage = page;
+            this.loadData();
+        }
+    }
+    
+    toggleSelectAll(checked) {
+        this.selectedRows.clear();
+        if (checked) {
+            this.data.forEach(row => {
+                this.selectedRows.add(row.id || this.data.indexOf(row));
+            });
+        }
+        
+        this.container.querySelectorAll('[data-row-select]').forEach(checkbox => {
+            checkbox.checked = checked;
+        });
+        
+        this.updateSelectedCount();
+    }
+    
+    updateSelectedCount() {
+        const countEl = this.container.querySelector('[data-selected-count]');
+        if (countEl) {
+            countEl.textContent = this.selectedRows.size;
+            const container = countEl.closest('.selected-count');
+            if (container) {
+                container.style.display = this.selectedRows.size > 0 ? 'block' : 'none';
+            }
+        }
+    }
+    
+    getSelectedRows() {
+        return Array.from(this.selectedRows);
+    }
+    
+    exportToCSV() {
+        if (!this.data || this.data.length === 0) {
+            window.shopsuiteApp.showToast('No Data', 'There is no data to export', 'warning');
+            return;
+        }
+        
+        const headers = this.options.columns.map(col => col.title).join(',');
+        const rows = this.data.map(row => {
+            return this.options.columns.map(col => {
+                const value = this.getNestedValue(row, col.field);
+                const formatted = this.formatCell(row, col);
+                return `"${(formatted || '').toString().replace(/"/g, '""')}"`;
+            }).join(',');
+        }).join('\n');
+        
+        const csv = headers + '\n' + rows;
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `export_${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }
+    
+    renderError() {
+        const tbody = this.container.querySelector('[data-table-body]');
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="${this.getColumnCount()}">
+                    <div class="alert alert-danger" style="margin: var(--space-4);">
+                        <div class="alert-content">
+                            <div class="alert-title">Error Loading Data</div>
+                            <div>Failed to load data. Please try again.</div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+    
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    
+    refresh() {
+        this.loadData();
+    }
+    
+    reload() {
+        this.loadData();
+    }
+}
+
+// Export for use in modules
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = ModernDataTable;
+}

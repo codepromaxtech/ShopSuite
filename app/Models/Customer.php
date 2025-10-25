@@ -37,7 +37,7 @@ class Customer extends Person
     public function exists(int $person_id): bool
     {
         $builder = $this->db->table('customers');
-        $builder->join('people', 'people.person_id = customers.person_id');
+        $builder->join('people', 'people.person_id = customers.person_id', 'left');
         $builder->where('customers.person_id', $person_id);
         return ($builder->get()->getNumRows() == 1);
     }
@@ -74,7 +74,7 @@ class Customer extends Person
     public function get_all(int $limit = 0, int $offset = 0): ResultInterface
     {
         $builder = $this->db->table('customers');
-        $builder->join('people', 'customers.person_id = people.person_id');
+        $builder->join('people', 'customers.person_id = people.person_id', 'left');
         $builder->where('deleted', 0);
         $builder->orderBy('last_name', 'asc');
 
@@ -91,7 +91,7 @@ class Customer extends Person
     public function get_info(?int $person_id): object
     {
         $builder = $this->db->table('customers');
-        $builder->join('people', 'people.person_id = customers.person_id');
+        $builder->join('people', 'people.person_id = customers.person_id', 'left');
         $builder->where('customers.person_id', $person_id);
         $query = $builder->get();
 
@@ -177,7 +177,7 @@ class Customer extends Person
     public function get_multiple_info(array $person_ids): ResultInterface
     {
         $builder = $this->db->table('customers');
-        $builder->join('people', 'people.person_id = customers.person_id');
+        $builder->join('people', 'people.person_id = customers.person_id', 'left');
         $builder->whereIn('customers.person_id', $person_ids);
         $builder->orderBy('last_name', 'asc');
 
@@ -195,7 +195,7 @@ class Customer extends Person
         }
 
         $builder = $this->db->table('customers');
-        $builder->join('people', 'people.person_id = customers.person_id');
+        $builder->join('people', 'people.person_id = customers.person_id', 'left');
         $builder->where('people.email', $email);
         $builder->where('customers.deleted', 0);
 
@@ -208,8 +208,9 @@ class Customer extends Person
 
     /**
      * Inserts or updates a customer
+     * @return int|false Returns person_id on success, false on failure
      */
-    public function save_customer(array &$person_data, array &$customer_data, int $customer_id = NEW_ENTRY): bool
+    public function save_customer(array &$person_data, array &$customer_data, int $customer_id = NEW_ENTRY)
     {
         $success = false;
         $this->db->transStart();
@@ -229,7 +230,12 @@ class Customer extends Person
 
         $success &= $this->db->transStatus();
 
-        return $success;
+        // Return person_id on success, false on failure
+        if ($success) {
+            return $customer_data['person_id'] ?? $customer_id;
+        }
+        
+        return false;
     }
 
     /**
@@ -315,7 +321,7 @@ class Customer extends Person
         $suggestions = [];
 
         $builder = $this->db->table('customers');
-        $builder->join('people', 'customers.person_id = people.person_id');
+        $builder->join('people', 'customers.person_id = people.person_id', 'left');
         $builder->groupStart();
         $builder->like('first_name', $search);
         $builder->orLike('last_name', $search);
@@ -339,7 +345,7 @@ class Customer extends Person
 
         if (!$unique) {
             $builder = $this->db->table('customers');
-            $builder->join('people', 'customers.person_id = people.person_id');
+            $builder->join('people', 'customers.person_id = people.person_id', 'left');
             $builder->where('deleted', 0);
             $builder->like('email', $search);
             $builder->orderBy('email', 'asc');
@@ -349,7 +355,7 @@ class Customer extends Person
             }
 
             $builder = $this->db->table('customers');
-            $builder->join('people', 'customers.person_id = people.person_id');
+            $builder->join('people', 'customers.person_id = people.person_id', 'left');
             $builder->where('deleted', 0);
             $builder->like('phone_number', $search);
             $builder->orderBy('phone_number', 'asc');
@@ -359,7 +365,7 @@ class Customer extends Person
             }
 
             $builder = $this->db->table('customers');
-            $builder->join('people', 'customers.person_id = people.person_id');
+            $builder->join('people', 'customers.person_id = people.person_id', 'left');
             $builder->where('deleted', 0);
             $builder->like('account_number', $search);
             $builder->orderBy('account_number', 'asc');
@@ -369,7 +375,7 @@ class Customer extends Person
             }
 
             $builder = $this->db->table('customers');
-            $builder->join('people', 'customers.person_id = people.person_id');
+            $builder->join('people', 'customers.person_id = people.person_id', 'left');
             $builder->where('deleted', 0);
             $builder->like('company_name', $search);
             $builder->orderBy('company_name', 'asc');
@@ -407,36 +413,86 @@ class Customer extends Person
         if ($order == null) $order = 'asc';
         if ($count_only == null) $count_only = false;
 
-        $builder = $this->db->table('customers AS customers');
-
-        // get_found_rows case
+        // Use raw SQL to avoid prefix issues
+        $prefix = $this->db->getPrefix();
+        
         if ($count_only) {
-            $builder->select('COUNT(customers.person_id) as count');
+            $sql = "SELECT COUNT(c.person_id) as count 
+                    FROM {$prefix}customers c 
+                    LEFT JOIN {$prefix}people p ON c.person_id = p.person_id 
+                    WHERE c.deleted = 0";
+            
+            if (!empty($search)) {
+                $search_safe = $this->db->escapeString($search);
+                $sql .= " AND (
+                    p.first_name LIKE '%{$search_safe}%' OR 
+                    p.last_name LIKE '%{$search_safe}%' OR 
+                    p.email LIKE '%{$search_safe}%' OR 
+                    p.phone_number LIKE '%{$search_safe}%' OR 
+                    c.account_number LIKE '%{$search_safe}%' OR 
+                    c.company_name LIKE '%{$search_safe}%'
+                )";
+            }
+            
+            return $this->db->query($sql)->getRow()->count;
         }
-
-        $builder->join('people', 'customers.person_id = people.person_id');
-        $builder->groupStart();
-        $builder->like('first_name', $search);
-        $builder->orLike('last_name', $search);
-        $builder->orLike('email', $search);
-        $builder->orLike('phone_number', $search);
-        $builder->orLike('account_number', $search);
-        $builder->orLike('company_name', $search);
-        $builder->orLike('CONCAT(first_name, " ", last_name)', $search);    // TODO: Duplicated code.
-        $builder->groupEnd();
-        $builder->where('deleted', 0);
-
-        // get_found_rows case
-        if ($count_only) {
-            return $builder->get()->getRow()->count;
+        
+        // Build main query
+        $sql = "SELECT 
+                    c.person_id,
+                    c.company_name,
+                    c.account_number,
+                    c.taxable,
+                    c.tax_id,
+                    c.sales_tax_code_id,
+                    c.package_id,
+                    c.points,
+                    c.deleted,
+                    c.discount,
+                    c.discount_type,
+                    c.date,
+                    c.employee_id,
+                    c.consent,
+                    COALESCE(p.first_name, 'No Name') as first_name,
+                    COALESCE(p.last_name, 'No Name') as last_name,
+                    p.email,
+                    p.phone_number,
+                    p.gender,
+                    p.address_1,
+                    p.address_2,
+                    p.city,
+                    p.state,
+                    p.zip,
+                    p.country,
+                    p.comments
+                FROM {$prefix}customers c
+                LEFT JOIN {$prefix}people p ON c.person_id = p.person_id
+                WHERE c.deleted = 0";
+        
+        // Add search filters
+        if (!empty($search)) {
+            $search_safe = $this->db->escapeString($search);
+            $sql .= " AND (
+                p.first_name LIKE '%{$search_safe}%' OR 
+                p.last_name LIKE '%{$search_safe}%' OR 
+                p.email LIKE '%{$search_safe}%' OR 
+                p.phone_number LIKE '%{$search_safe}%' OR 
+                c.account_number LIKE '%{$search_safe}%' OR 
+                c.company_name LIKE '%{$search_safe}%'
+            )";
         }
-
-        $builder->orderBy($sort, $order);
-
+        
+        // Add sorting - map table names to aliases
+        $sort_mapped = str_replace(['people.', 'customers.'], ['p.', 'c.'], $sort);
+        $sql .= " ORDER BY {$sort_mapped} {$order}";
+        
+        // Add pagination
         if ($rows > 0) {
-            $builder->limit($rows, $limit_from);
+            $sql .= " LIMIT {$limit_from}, {$rows}";
         }
-
-        return $builder->get();
+        
+        error_log('[CUSTOMER MODEL] Final SQL: ' . $sql);
+        
+        return $this->db->query($sql);
     }
 }

@@ -4,12 +4,9 @@
  */
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => lang('Module.office'),
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
+$title = 'Office';
+echo view('layouts/modern_header', ['title' => $title]);
+?>
 
 <!-- Page Header -->
 <div class="container-fluid py-3">
@@ -151,4 +148,4 @@ async function deleteOffice(id) {
 }
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?= view('layouts/modern_footer') ?>

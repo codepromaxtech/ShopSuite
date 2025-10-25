@@ -171,7 +171,7 @@ $config = $config ?? [];
                         <i class="bi bi-cart-plus me-2"></i>
                         New Sale
                     </a>
-                    <a href="<?= base_url('items') ?>" class="btn btn-lg btn-primary text-start">
+                    <a href="<?= base_url('products') ?>" class="btn btn-lg btn-primary text-start">
                         <i class="bi bi-box-seam me-2"></i>
                         Add Product
                     </a>

@@ -43,7 +43,7 @@ class Messages extends Secure_Controller
         }
         $data['person_info'] = $info;
 
-        echo view('messages/form_sms', $data);
+        echo view('messages/form_sms_modern', $data);
     }
 
     /**

@@ -135,47 +135,68 @@ class Sales extends Secure_Controller
         // Set JSON header
         $this->response->setContentType('application/json');
         
-        $search = $this->request->getGet('search', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $limit = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?: 20;
-        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?: 0;
-        $sort = $this->sanitizeSortColumn(sales_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'sale_id');
-        $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'desc';
+        try {
+            $search = $this->request->getGet('search', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+            $limit = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?: 20;
+            $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?: 0;
+            $sort = $this->sanitizeSortColumn(sales_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'sale_id');
+            $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'desc';
 
-        $filters = [
-            'sale_type'         => 'all',
-            'location_id'       => 'all',
-            'start_date'        => $this->request->getGet('start_date', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'end_date'          => $this->request->getGet('end_date', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-            'only_cash'         => false,
-            'only_due'          => false,
-            'only_check'        => false,
-            'selected_customer' => false,
-            'only_creditcard'   => false,
-            'only_invoices'     => $this->config['invoice_enable'] && $this->request->getGet('only_invoices', FILTER_SANITIZE_NUMBER_INT),
-            'is_valid_receipt'  => $this->sale->is_valid_receipt($search)
-        ];
+            // Get sales directly with raw SQL
+            $db = \Config\Database::connect();
+            $prefix = $db->getPrefix();
+            
+            $sql = "SELECT s.sale_id, s.sale_time, s.sale_status,
+                    CONCAT(COALESCE(p.first_name, ''), ' ', COALESCE(p.last_name, '')) as customer_name,
+                    COUNT(DISTINCT si.line) as items_purchased,
+                    SUM(si.quantity_purchased * si.item_unit_price) as sale_amount,
+                    GROUP_CONCAT(DISTINCT sp.payment_type SEPARATOR ', ') as payment_type
+                    FROM {$prefix}sales s
+                    LEFT JOIN {$prefix}people p ON s.customer_id = p.person_id
+                    LEFT JOIN {$prefix}sales_items si ON s.sale_id = si.sale_id
+                    LEFT JOIN {$prefix}sales_payments sp ON s.sale_id = sp.sale_id
+                    WHERE s.sale_status = 0";
+            
+            if (!empty($search)) {
+                $search_safe = $db->escapeString($search);
+                $sql .= " AND (p.first_name LIKE '%{$search_safe}%' OR p.last_name LIKE '%{$search_safe}%' OR s.sale_id LIKE '%{$search_safe}%')";
+            }
+            
+            $sql .= " GROUP BY s.sale_id ORDER BY {$sort} {$order} LIMIT {$offset}, {$limit}";
+            
+            $sales = $db->query($sql);
+            
+            // Get total count
+            $count_sql = "SELECT COUNT(DISTINCT s.sale_id) as count FROM {$prefix}sales s WHERE s.sale_status = 0";
+            if (!empty($search)) {
+                $search_safe = $db->escapeString($search);
+                $count_sql .= " LEFT JOIN {$prefix}people p ON s.customer_id = p.person_id";
+                $count_sql .= " WHERE (p.first_name LIKE '%{$search_safe}%' OR p.last_name LIKE '%{$search_safe}%' OR s.sale_id LIKE '%{$search_safe}%')";
+            }
+            $total_rows = $db->query($count_sql)->getRow()->count;
+            
+            $data_rows = [];
+            foreach ($sales->getResult() as $sale) {
+                $data_rows[] = [
+                    'sale_id' => $sale->sale_id,
+                    'sale_time' => $sale->sale_time ?? '',
+                    'customer_name' => trim($sale->customer_name) ?: 'Walk-in Customer',
+                    'items_purchased' => $sale->items_purchased ?? 0,
+                    'payment_type' => $sale->payment_type ?? 'Cash',
+                    'sale_amount' => $sale->sale_amount ?? 0
+                ];
+            }
 
-        // Check if any filter is set in the multiselect dropdown
-        $request_filters = array_fill_keys($this->request->getGet('filters', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? [], true);
-        $filters = array_merge($filters, $request_filters);
-
-        $sales = $this->sale->search($search, $filters, $limit, $offset, $sort, $order);
-        $total_rows = $this->sale->get_found_rows($search, $filters);
-
-        $data_rows = [];
-        foreach ($sales->getResult() as $sale) {
-            // Return clean, simple data
-            $data_rows[] = [
-                'sale_id' => $sale->sale_id,
-                'sale_time' => $sale->sale_time ?? '',
-                'customer_name' => $sale->customer_name ?? '',
-                'items_purchased' => $sale->items_purchased ?? 0,
-                'payment_type' => $sale->payment_type ?? '',
-                'sale_amount' => $sale->sale_amount ?? 0
-            ];
+            echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            error_log('[SALES] Error: ' . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'total' => 0,
+                'rows' => [],
+                'error' => $e->getMessage()
+            ]);
         }
-
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
@@ -187,19 +208,48 @@ class Sales extends Secure_Controller
      */
     public function getItemSearch(): void
     {
-        $suggestions = [];
-        $receipt = $search = $this->request->getGet('term') != ''
-            ? $this->request->getGet('term')
-            : null;
+        header('Content-Type: application/json');
+        
+        try {
+            $suggestions = [];
+            $search = $this->request->getGet('term') ?? '';
+            
+            if (empty($search)) {
+                echo json_encode([]);
+                return;
+            }
 
-        if ($this->sale_lib->get_mode() == 'return' && $this->sale->is_valid_receipt($receipt)) {
-            // If a valid receipt or invoice was found the search term will be replaced with a receipt number (POS #)
-            $suggestions[] = $receipt;
+            // Simplified item search without QueryBuilder issues
+            $db = \Config\Database::connect();
+            $prefix = $db->getPrefix();
+            $search_safe = $db->escapeString($search);
+            
+            // Search by item name
+            $sql = "SELECT item_id as value, name as label FROM {$prefix}items 
+                    WHERE deleted = 0 AND name LIKE '%{$search_safe}%' 
+                    ORDER BY name ASC LIMIT 10";
+            $items = $db->query($sql);
+            
+            foreach ($items->getResult() as $item) {
+                $suggestions[] = ['value' => $item->value, 'label' => $item->label];
+            }
+            
+            // Also search by item_number
+            $sql = "SELECT item_id as value, CONCAT(item_number, ' - ', name) as label FROM {$prefix}items 
+                    WHERE deleted = 0 AND item_number LIKE '%{$search_safe}%' 
+                    ORDER BY item_number ASC LIMIT 10";
+            $items = $db->query($sql);
+            
+            foreach ($items->getResult() as $item) {
+                $suggestions[] = ['value' => $item->value, 'label' => $item->label];
+            }
+            
+            echo json_encode($suggestions);
+        } catch (\Exception $e) {
+            error_log('[SALES] Item search error: ' . $e->getMessage());
+            echo json_encode([]);
         }
-        $suggestions = array_merge($suggestions, $this->item->get_search_suggestions($search, ['search_custom' => false, 'is_deleted' => false], true));
-        $suggestions = array_merge($suggestions, $this->item_kit->get_search_suggestions($search));
-
-        echo json_encode($suggestions);
+        exit;
     }
 
     /**
@@ -623,6 +673,42 @@ class Sales extends Secure_Controller
         $this->sale_lib->empty_payments();
 
         $this->_reload();    // TODO: Hungarian notation
+    }
+
+    /**
+     * Clear/cancel the current sale and start fresh (Clear Cart button)
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function getCancel(): void
+    {
+        $this->sale_lib->clear_all();
+        $this->_reload();
+    }
+
+    /**
+     * Select customer from POS autocomplete search
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function getSelectCustomer(): void
+    {
+        $customer_id = (int)$this->request->getGet('customer', FILTER_SANITIZE_NUMBER_INT);
+        
+        if ($customer_id > 0 && $this->customer->exists($customer_id)) {
+            $this->sale_lib->set_customer($customer_id);
+            
+            // Apply customer default discount to items that have 0 discount
+            $customer_info = $this->customer->get_info($customer_id);
+            if (!empty($customer_info->discount)) {
+                $this->sale_lib->apply_customer_discount($customer_info->discount, $customer_info->discount_type);
+            }
+        }
+        
+        // Reload POS register
+        $this->_reload();
     }
 
     /**
@@ -1226,8 +1312,8 @@ class Sales extends Secure_Controller
             $data['customer_required'] = lang('Sales.customer_optional');
         }
 
-        // Use Bootstrap 5 modern POS
-        echo view("sales/register_bootstrap5", $data);
+        // Use modern POS register
+        echo view("sales/register_modern", $data);
     }
 
     /**
@@ -1551,7 +1637,8 @@ class Sales extends Secure_Controller
         $data = [];
         $customer_id = $this->sale_lib->get_customer();
         $data['suspended_sales'] = $this->sale->get_all_suspended($customer_id);
-        echo view('sales/suspended', $data);
+        $data['config'] = $this->config;
+        echo view('sales/suspended_modern', $data);
     }
 
     /**
@@ -1585,6 +1672,130 @@ class Sales extends Secure_Controller
     public function getSalesKeyboardHelp(): void
     {
         echo view('sales/help');
+    }
+
+    /**
+     * Show return/exchange search page
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function getReturnExchange(): void
+    {
+        echo view('sales/return_exchange');
+    }
+
+    /**
+     * Search for sales to return/exchange
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function getSearchForReturn(): void
+    {
+        $this->response->setContentType('application/json');
+        
+        $term = $this->request->getGet('term');
+        
+        if (empty($term)) {
+            echo json_encode(['success' => false, 'message' => 'Search term required']);
+            return;
+        }
+        
+        try {
+            $db = \Config\Database::connect();
+            $prefix = $db->getPrefix();
+            $term_safe = $db->escapeString($term);
+            
+            // Search for sales by ID, invoice number, or customer name
+            $sql = "SELECT 
+                        s.sale_id,
+                        s.sale_time,
+                        s.invoice_number,
+                        s.sale_status,
+                        COALESCE(CONCAT(p.first_name, ' ', p.last_name), 'Walk-in') as customer_name,
+                        COALESCE(CONCAT(e.first_name, ' ', e.last_name), 'Unknown') as employee_name,
+                        s.payment_type,
+                        (SELECT SUM(si.item_unit_price * si.quantity_purchased - si.discount_percent) 
+                         FROM {$prefix}sales_items si 
+                         WHERE si.sale_id = s.sale_id) as total
+                    FROM {$prefix}sales s
+                    LEFT JOIN {$prefix}customers c ON s.customer_id = c.person_id
+                    LEFT JOIN {$prefix}people p ON c.person_id = p.person_id
+                    LEFT JOIN {$prefix}people e ON s.employee_id = e.person_id
+                    WHERE s.sale_status = 0 
+                    AND (s.sale_id LIKE '%{$term_safe}%' 
+                         OR s.invoice_number LIKE '%{$term_safe}%'
+                         OR CONCAT(p.first_name, ' ', p.last_name) LIKE '%{$term_safe}%')
+                    ORDER BY s.sale_time DESC
+                    LIMIT 10";
+            
+            $query = $db->query($sql);
+            $sales = $query->getResultArray();
+            
+            // Get items for each sale
+            foreach ($sales as &$sale) {
+                $items_sql = "SELECT name, quantity_purchased as quantity, item_unit_price as price
+                             FROM {$prefix}sales_items
+                             WHERE sale_id = {$sale['sale_id']}
+                             ORDER BY line ASC";
+                $items_query = $db->query($items_sql);
+                $sale['items'] = $items_query->getResultArray();
+            }
+            
+            echo json_encode([
+                'success' => true,
+                'sales' => $sales
+            ]);
+        } catch (\Exception $e) {
+            log_message('error', 'Search for return error: ' . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error searching sales'
+            ]);
+        }
+    }
+
+    /**
+     * Load a sale into POS for return/exchange
+     * @param int $sale_id
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function getLoadSaleForReturn(int $sale_id): void
+    {
+        // Clear current cart
+        $this->sale_lib->clear_all();
+        
+        // Set mode to return
+        $this->sale_lib->set_mode('return');
+        $this->sale_lib->set_sale_type(SALE_TYPE_RETURN);
+        
+        // Load the sale data
+        $sale_info = $this->sale->get_info($sale_id)->getRow();
+        
+        if ($sale_info) {
+            // Set customer if exists
+            if ($sale_info->customer_id) {
+                $this->sale_lib->set_customer($sale_info->customer_id);
+            }
+            
+            // Load items into cart
+            $items = $this->sale->get_sale_items($sale_id)->getResult();
+            
+            foreach ($items as $item) {
+                // Add item to cart with negative quantity for return
+                $this->sale_lib->add_item(
+                    $item->item_id,
+                    -abs($item->quantity_purchased), // Negative quantity for return
+                    [],
+                    $item->item_unit_price,
+                    $item->discount_percent
+                );
+            }
+        }
+        
+        // Redirect to POS
+        header('Location: ' . base_url('sales'));
+        exit;
     }
 
     /**

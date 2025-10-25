@@ -138,7 +138,7 @@ class Item extends Model
         }
 
         $config = config(ShopSuite::class)->settings;
-        $builder = $this->db->table('items AS items');    // TODO: I'm not sure if it's needed to write items AS items... I think you can just get away with items
+        $builder = $this->db->table('items');    // Fixed: removed redundant alias to prevent double prefix
 
         // get_found_rows case
         if ($count_only) {
@@ -182,11 +182,11 @@ class Item extends Model
             }
         }
 
-        $builder->join('suppliers AS suppliers', 'suppliers.person_id = items.supplier_id', 'left');
-        $builder->join('inventory AS inventory', 'inventory.trans_items = items.item_id');
+        $builder->join('suppliers', 'suppliers.person_id = items.supplier_id', 'left');
+        $builder->join('inventory', 'inventory.trans_items = items.item_id');
 
         if ($filters['stock_location_id'] > -1) {
-            $builder->join('item_quantities AS item_quantities', 'item_quantities.item_id = items.item_id');
+            $builder->join('item_quantities', 'item_quantities.item_id = items.item_id');
             $builder->where('location_id', $filters['stock_location_id']);
         }
 

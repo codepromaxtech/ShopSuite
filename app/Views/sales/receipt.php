@@ -7,60 +7,19 @@
 
 use App\Models\Employee;
 
-?>
-
-<?= view('partial/header') ?>
-
-<?php
+// Check for errors
 if (isset($error_message)) {
-    echo '<div class="alert alert-dismissible alert-danger">' . $error_message . '</div>';
+    echo '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Transaction Failed</title><link rel="icon" type="image/x-icon" href="' . base_url('favicon.ico') . '"></head><body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif;">';
+    echo '<div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">';
+    echo '<div style="max-width: 500px; background: white; padding: 40px; border-radius: 16px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">';
+    echo '<svg width="80" height="80" fill="none" stroke="#dc2626" viewBox="0 0 24 24" style="margin: 0 auto 20px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+    echo '<h1 style="color: #dc2626; margin-bottom: 16px;">Transaction Failed</h1>';
+    echo '<p style="color: #6b7280; margin-bottom: 24px;">' . esc($error_message) . '</p>';
+    echo '<a href="' . base_url('sales') . '" style="background: #dc2626; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; display: inline-block; font-weight: 600;">Back to POS</a>';
+    echo '</div></div></body></html>';
     exit;
 }
+
+// Use modern receipt view
+echo view('sales/receipt_modern', get_defined_vars());
 ?>
-
-<?php if (!empty($customer_email)): ?>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            var send_email = function() {
-                $.get('<?= site_url() . esc("/sales/sendPdf/$sale_id_num/receipt") ?>',
-                    function(response) {
-                        $.notify({
-                            message: response.message
-                        }, {
-                            type: response.success ? 'success' : 'danger'
-                        })
-                    }, 'json'
-                );
-            };
-
-            $("#show_email_button").click(send_email);
-
-            <?php if (!empty($email_receipt)): ?>
-                send_email();
-            <?php endif; ?>
-        });
-    </script>
-<?php endif; ?>
-
-<?= view('partial/print_receipt', ['print_after_sale' => $print_after_sale, 'selected_printer' => 'receipt_printer']) ?>
-
-<div class="print_hide" id="control_buttons" style="text-align: right;">
-    <a href="javascript:printdoc();">
-        <div class="btn btn-info btn-sm" id="show_print_button"><?= '<span class="glyphicon glyphicon-print">&nbsp;</span>' . lang('Common.print') ?></div>
-    </a>
-    <?php if (!empty($customer_email)): ?>
-        <a href="javascript:void(0);">
-            <div class="btn btn-info btn-sm" id="show_email_button"><?= '<span class="glyphicon glyphicon-envelope">&nbsp;</span>' . lang('Sales.send_receipt') ?></div>
-        </a>
-    <?php endif; ?>
-    <?= anchor('sales', '<span class="glyphicon glyphicon-shopping-cart">&nbsp;</span>' . lang('Sales.register'), ['class' => 'btn btn-info btn-sm', 'id' => 'show_sales_button']) ?>
-    <?php
-    $employee = model(Employee::class);
-    if ($employee->has_grant('reports_sales', session('person_id'))): ?>
-        <?= anchor('sales/manage', '<span class="glyphicon glyphicon-list-alt">&nbsp;</span>' . lang('Sales.takings'), ['class' => 'btn btn-info btn-sm', 'id' => 'show_takings_button']) ?>
-    <?php endif; ?>
-</div>
-
-<?= view('sales/' . $config['receipt_template']) ?>
-
-<?= view('partial/footer') ?>

@@ -1,184 +1,151 @@
 <?php
-/**
- * MODERN RECEIVINGS MANAGEMENT - Pure Native Solution
- */
+$title = 'Receivings - ShopSuite';
+echo view('layouts/modern_header', ['title' => $title]);
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => lang('Module.receivings'),
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
-
-<!-- Page Header -->
-<div class="container-fluid py-3">
-    <div class="row align-items-center mb-3">
-        <div class="col">
-            <h3 class="mb-0">
-                <i class="bi bi-box-arrow-in-down me-2"></i>
-                <?= lang('Module.receivings') ?>
-            </h3>
+<div class="page-header">
+    <div class="page-header-top">
+        <div class="page-header-title">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
+            <div>
+                <h1>Receivings</h1>
+            </div>
         </div>
-        <div class="col-auto">
-            <button class="btn btn-primary" onclick="window.location.href='<?= base_url('receivings') ?>'">
-                <i class="bi bi-plus-circle me-1"></i>New Receiving
-            </button>
+        
+        <div class="page-header-actions">
+            <a href="<?= base_url('receivings') ?>" class="btn btn-primary">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                New Receiving
+            </a>
         </div>
     </div>
     
-    <!-- Table Container -->
-    <div id="dataTable-container"></div>
+    <div class="breadcrumbs">
+        <div class="breadcrumb-item"><a href="<?= base_url('home') ?>">Dashboard</a></div>
+        <span class="breadcrumb-separator">/</span>
+        <div class="breadcrumb-item active">Receivings</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body" style="padding: 0;">
+        <div id="receivingsTable"></div>
+    </div>
 </div>
 
 <script>
+let receivingsTable;
+
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Modern Receivings Page Loading...');
-    
-    // Define table columns
-    const columns = [
-        {
-            field: 'receiving_id',
-            title: 'Receiving ID',
-            sortable: true,
-            formatter: (value) => {
-                return `<span class="badge bg-primary">#${value}</span>`;
-            }
-        },
-        {
-            field: 'receiving_time',
-            title: 'Date & Time',
-            sortable: true,
-            formatter: (value) => {
-                if (!value) return '-';
-                const date = new Date(value);
-                return `
-                    <div>
-                        <div>${date.toLocaleDateString()}</div>
-                        <small class="text-muted">${date.toLocaleTimeString()}</small>
-                    </div>
-                `;
-            }
-        },
-        {
-            field: 'supplier_name',
-            title: 'Supplier',
-            sortable: true,
-            formatter: (value) => {
-                return value || '<span class="text-muted">N/A</span>';
-            }
-        },
-        {
-            field: 'items_purchased',
-            title: 'Items',
-            sortable: true,
-            formatter: (value) => {
-                return `<span class="badge bg-info">${value || 0}</span>`;
-            }
-        },
-        {
-            field: 'payment_type',
-            title: 'Payment',
-            sortable: true,
-            formatter: (value) => {
-                const badges = {
-                    'cash': 'bg-success',
-                    'credit': 'bg-primary',
-                    'check': 'bg-warning',
-                    'due': 'bg-danger'
-                };
-                const badgeClass = badges[value?.toLowerCase()] || 'bg-secondary';
-                return `<span class="badge ${badgeClass}">${value || '-'}</span>`;
-            }
-        },
-        {
-            field: 'receiving_amount',
-            title: 'Amount',
-            sortable: true,
-            formatter: (value) => {
-                return `<span class="text-success fw-bold"><?= $config['currency_symbol'] ?>${parseFloat(value || 0).toFixed(2)}</span>`;
-            }
-        },
-        {
-            field: 'actions',
-            title: 'Actions',
-            sortable: false,
-            formatter: (value, row) => {
-                return `
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-primary" onclick="viewReceiving(${row.receiving_id}); event.stopPropagation();" title="View">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                        <button class="btn btn-outline-danger" onclick="deleteReceiving(${row.receiving_id}); event.stopPropagation();" title="Delete">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                `;
-            }
-        }
-    ];
-    
-    // Initialize Modern DataTable
-    window.receivingsTable = new ModernDataTable({
-        tableId: 'dataTable',
-        searchUrl: '<?= base_url('receivings/search') ?>',
-        columns: columns,
-        pageSize: <?= $config['lines_per_page'] ?? 20 ?>,
-        uniqueId: 'receiving_id',
-        onRowClick: function(row) {
-            viewReceiving(row.receiving_id);
-        },
-        onLoadComplete: function(data) {
-            console.log(`✅ Loaded ${data.total} receivings`);
-        }
-    });
-    
-    console.log('✅ Modern Receivings Page Ready');
+    initializeDataTable();
 });
 
-// Receiving Actions
-function viewReceiving(receivingId) {
-    openModal(`receivings/receipt/${receivingId}`, 'View Receiving');
+function initializeDataTable() {
+    receivingsTable = new ModernDataTable('#receivingsTable', {
+        ajax: {
+            url: '<?= base_url("receivings/search") ?>',
+            dataSrc: 'rows'
+        },
+        columns: [
+            { field: 'receiving_id', title: 'ID', sortable: true },
+            { 
+                field: 'receiving_time', 
+                title: 'Date',
+                sortable: true,
+                render: (value) => {
+                    const date = new Date(value);
+                    return date.toLocaleString();
+                }
+            },
+            { field: 'supplier_name', title: 'Supplier', sortable: true },
+            { 
+                field: 'items_purchased', 
+                title: 'Items',
+                sortable: true,
+                render: (value) => `<span style="font-weight: var(--font-medium);">${value}</span>`
+            },
+            { field: 'payment_type', title: 'Payment', sortable: true },
+            { 
+                field: 'receiving_amount', 
+                title: 'Amount',
+                sortable: true,
+                render: (value) => {
+                    const formatted = parseFloat(value).toFixed(2);
+                    return `<span style="color: var(--success-600); font-weight: var(--font-semibold);">$${formatted}</span>`;
+                }
+            }
+        ],
+        actions: [
+            {
+                title: 'View Receipt',
+                icon: '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>',
+                className: 'btn-ghost',
+                onClick: 'viewReceipt'
+            },
+            {
+                title: 'Edit',
+                icon: '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>',
+                className: 'btn-ghost',
+                onClick: 'editReceiving'
+            },
+            {
+                title: 'Delete',
+                icon: '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>',
+                className: 'btn-ghost',
+                onClick: 'deleteReceiving'
+            }
+        ],
+        searchable: true,
+        exportable: true,
+        pageSize: 25,
+        onRowClick: (row, tr) => {
+            viewReceipt(row);
+        }
+    });
 }
 
-async function deleteReceiving(receivingId) {
-    const result = await Swal.fire({
-        title: 'Delete Receiving?',
-        text: 'This action cannot be undone and will affect inventory',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        confirmButtonText: 'Yes, delete',
-        cancelButtonText: 'Cancel'
-    });
-    
-    if (result.isConfirmed) {
-        try {
-            showLoading('Deleting receiving...');
-            
-            const response = await fetch(`<?= base_url('receivings/delete/') ?>${receivingId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            
-            const data = await response.json();
-            hideLoading();
-            
-            if (data.success) {
-                showNotification('Receiving deleted successfully', 'success');
-                window.receivingsTable.refresh();
-            } else {
-                showNotification(data.message || 'Failed to delete receiving', 'error');
+function viewReceipt(receiving) {
+    window.location.href = `<?= base_url("receivings/receipt") ?>/${receiving.receiving_id}`;
+}
+
+function editReceiving(receiving) {
+    window.location.href = `<?= base_url("receivings/edit") ?>/${receiving.receiving_id}`;
+}
+
+function deleteReceiving(receiving) {
+    if (window.shopsuiteApp) {
+        window.shopsuiteApp.confirm(
+            'Delete Receiving',
+            `Are you sure you want to delete receiving #${receiving.receiving_id}? This action cannot be undone.`,
+            function() {
+                fetch(`<?= base_url("receivings/delete") ?>/${receiving.receiving_id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.shopsuiteApp.showToast('Success', 'Receiving deleted successfully', 'success');
+                        receivingsTable.refresh();
+                    } else {
+                        window.shopsuiteApp.showToast('Error', data.message || 'Failed to delete receiving', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.shopsuiteApp.showToast('Error', 'An error occurred', 'error');
+                });
             }
-        } catch (error) {
-            hideLoading();
-            console.error('Delete error:', error);
-            showNotification('An error occurred', 'error');
-        }
+        );
     }
 }
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?php echo view('layouts/modern_footer'); ?>

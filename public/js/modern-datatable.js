@@ -5,17 +5,45 @@
  */
 
 class ModernDataTable {
-    constructor(options) {
+    constructor(selector, options) {
+        // Support both (selector, options) and (options) signatures
+        if (typeof selector === 'string') {
+            // New signature: ('selector', options)
+            this.selector = selector;
+            this.container = document.querySelector(selector);
+            this.tableId = selector.replace('#', '');
+            this.options = options || {};
+        } else {
+            // Old signature: (options)
+            options = selector;
+            this.tableId = options.tableId || 'dataTable';
+            this.selector = '#' + this.tableId;
+            this.container = document.getElementById(this.tableId);
+            this.options = options;
+        }
+        
+        // Merge with defaults
         this.options = {
-            tableId: options.tableId || 'dataTable',
-            searchUrl: options.searchUrl || '',
-            columns: options.columns || [],
-            pageSize: options.pageSize || 20,
-            uniqueId: options.uniqueId || 'id',
-            onRowClick: options.onRowClick || null,
-            onLoadComplete: options.onLoadComplete || null,
-            actions: options.actions || []
+            ajax: this.options.ajax || { url: '', dataSrc: 'rows' },
+            columns: this.options.columns || [],
+            actions: this.options.actions || [],
+            uniqueId: this.options.uniqueId || 'id',
+            pageSize: this.options.pageSize || 20,
+            searchable: this.options.searchable !== false,
+            exportable: this.options.exportable !== false,
+            onRowClick: this.options.onRowClick || null,
+            onLoadComplete: this.options.onLoadComplete || null
         };
+        
+        // Add actions column automatically if actions are defined
+        if (this.options.actions && this.options.actions.length > 0) {
+            this.options.columns.push({
+                field: '_actions',
+                title: 'Actions',
+                sortable: false,
+                render: (value, row) => this.renderActions(row)
+            });
+        }
         
         this.currentPage = 1;
         this.totalRecords = 0;
@@ -28,15 +56,18 @@ class ModernDataTable {
     }
     
     init() {
-        console.log('✅ ModernDataTable initializing...');
+        console.log('✅ ModernDataTable initializing for:', this.tableId);
+        if (!this.container) {
+            console.error('Table container not found:', this.selector);
+            return;
+        }
         this.buildTable();
         this.attachEventListeners();
         this.loadData();
     }
     
     buildTable() {
-        const container = document.getElementById(this.options.tableId + '-container');
-        if (!container) {
+        if (!this.container) {
             console.error('Table container not found');
             return;
         }
@@ -49,16 +80,16 @@ class ModernDataTable {
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" id="${this.options.tableId}-search" 
+                                <input type="text" class="form-control" id="${this.tableId}-search" 
                                        placeholder="Search...">
                             </div>
                         </div>
                         <div class="col-md-6 text-end">
                             <div class="btn-group" role="group">
-                                <button class="btn btn-outline-primary" id="${this.options.tableId}-refresh">
+                                <button class="btn btn-outline-primary" id="${this.tableId}-refresh">
                                     <i class="bi bi-arrow-clockwise"></i> Refresh
                                 </button>
-                                <button class="btn btn-outline-success" id="${this.options.tableId}-export">
+                                <button class="btn btn-outline-success" id="${this.tableId}-export">
                                     <i class="bi bi-download"></i> Export
                                 </button>
                             </div>
@@ -70,7 +101,7 @@ class ModernDataTable {
             <!-- Table -->
             <div class="card">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped mb-0" id="${this.options.tableId}">
+                    <table class="table table-hover table-striped mb-0" id="${this.tableId}-table">
                         <thead class="table-light">
                             <tr>
                                 ${this.options.columns.map(col => `
@@ -82,7 +113,7 @@ class ModernDataTable {
                                 `).join('')}
                             </tr>
                         </thead>
-                        <tbody id="${this.options.tableId}-body">
+                        <tbody id="${this.tableId}-body">
                             <tr>
                                 <td colspan="${this.options.columns.length}" class="text-center py-5">
                                     <div class="spinner-border text-primary" role="status">
@@ -98,14 +129,14 @@ class ModernDataTable {
                 <div class="card-footer">
                     <div class="row align-items-center">
                         <div class="col-md-6">
-                            <div id="${this.options.tableId}-info" class="text-muted">
+                            <div id="${this.tableId}-info" class="text-muted">
                                 Loading...
                             </div>
                         </div>
                         <div class="col-md-6">
                             <nav aria-label="Table pagination">
                                 <ul class="pagination pagination-sm justify-content-end mb-0" 
-                                    id="${this.options.tableId}-pagination">
+                                    id="${this.tableId}-pagination">
                                 </ul>
                             </nav>
                         </div>
@@ -114,12 +145,12 @@ class ModernDataTable {
             </div>
         `;
         
-        container.innerHTML = html;
+        this.container.innerHTML = html;
     }
     
     attachEventListeners() {
         // Search
-        const searchInput = document.getElementById(`${this.options.tableId}-search`);
+        const searchInput = document.getElementById(`${this.tableId}-search`);
         if (searchInput) {
             let searchTimeout;
             searchInput.addEventListener('input', (e) => {
@@ -133,19 +164,19 @@ class ModernDataTable {
         }
         
         // Refresh
-        const refreshBtn = document.getElementById(`${this.options.tableId}-refresh`);
+        const refreshBtn = document.getElementById(`${this.tableId}-refresh`);
         if (refreshBtn) {
             refreshBtn.addEventListener('click', () => this.refresh());
         }
         
         // Export
-        const exportBtn = document.getElementById(`${this.options.tableId}-export`);
+        const exportBtn = document.getElementById(`${this.tableId}-export`);
         if (exportBtn) {
             exportBtn.addEventListener('click', () => this.exportData());
         }
         
         // Sort headers
-        document.querySelectorAll(`#${this.options.tableId} th.sortable`).forEach(th => {
+        document.querySelectorAll(`#${this.tableId} th.sortable`).forEach(th => {
             th.style.cursor = 'pointer';
             th.addEventListener('click', () => {
                 const field = th.dataset.field;
@@ -162,11 +193,11 @@ class ModernDataTable {
     }
     
     updateSortIcons() {
-        document.querySelectorAll(`#${this.options.tableId} th.sortable i`).forEach(icon => {
+        document.querySelectorAll(`#${this.tableId} th.sortable i`).forEach(icon => {
             icon.className = 'bi bi-arrow-down-up ms-1';
         });
         
-        const sortedHeader = document.querySelector(`#${this.options.tableId} th[data-field="${this.sortColumn}"] i`);
+        const sortedHeader = document.querySelector(`#${this.tableId} th[data-field="${this.sortColumn}"] i`);
         if (sortedHeader) {
             sortedHeader.className = this.sortOrder === 'asc' 
                 ? 'bi bi-arrow-up ms-1' 
@@ -184,8 +215,34 @@ class ModernDataTable {
                 order: this.sortOrder
             });
             
-            const response = await fetch(`${this.options.searchUrl}?${params}`);
-            const data = await response.json();
+            const url = this.options.ajax && this.options.ajax.url ? this.options.ajax.url : this.options.searchUrl || '';
+            const fullUrl = `${url}?${params}`;
+            console.log('📡 Fetching data from:', fullUrl);
+            
+            const response = await fetch(fullUrl);
+            console.log('📨 Response status:', response.status, response.statusText);
+            console.log('📨 Response headers:', Object.fromEntries(response.headers.entries()));
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('❌ HTTP error response:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const responseText = await response.text();
+            console.log('📄 Raw response:', responseText.substring(0, 500));
+            
+            let data;
+            try {
+                data = JSON.parse(responseText);
+                console.log('📦 Parsed JSON data:', data);
+                console.log('📊 Total records:', data.total);
+                console.log('📊 Rows count:', data.rows ? data.rows.length : 0);
+            } catch (parseError) {
+                console.error('❌ JSON parse error:', parseError);
+                console.error('Response text:', responseText);
+                throw new Error('Failed to parse JSON response');
+            }
             
             this.totalRecords = data.total || 0;
             this.renderRows(data.rows || []);
@@ -204,7 +261,9 @@ class ModernDataTable {
     }
     
     renderRows(rows) {
-        const tbody = document.getElementById(`${this.options.tableId}-body`);
+        console.log('🖌️ Rendering rows...', rows.length, 'rows');
+        const tbody = document.getElementById(`${this.tableId}-body`);
+        console.log('tbody element:', tbody);
         
         if (rows.length === 0) {
             tbody.innerHTML = `
@@ -225,12 +284,17 @@ class ModernDataTable {
                     ${this.options.columns.map(col => {
                         let value = row[col.field];
                         
-                        // Apply formatter if exists
-                        if (col.formatter) {
+                        // Apply formatter or render function if exists
+                        if (col.render) {
+                            value = col.render(value, row);
+                        } else if (col.formatter) {
                             value = col.formatter(value, row);
+                        } else if (col.type === 'currency') {
+                            // Format as currency
+                            value = this.formatCurrency(value);
                         }
                         
-                        return `<td>${value || ''}</td>`;
+                        return `<td>${value !== null && value !== undefined ? value : ''}</td>`;
                     }).join('')}
                 </tr>
             `;
@@ -249,11 +313,30 @@ class ModernDataTable {
                 }
             });
         });
+        
+        // Attach action button click events
+        tbody.querySelectorAll('button.action-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent row click
+                const actionName = btn.dataset.action;
+                const rowId = btn.dataset.rowId;
+                const rowData = rows.find(r => {
+                    return r.person_id == rowId || r.item_id == rowId || r.id == rowId || r[Object.keys(r)[0]] == rowId;
+                });
+                
+                // Call the action function if it exists in global scope
+                if (typeof window[actionName] === 'function') {
+                    window[actionName](rowData);
+                } else {
+                    console.error(`Action function '${actionName}' not found`);
+                }
+            });
+        });
     }
     
     updatePagination() {
         const totalPages = Math.ceil(this.totalRecords / this.options.pageSize);
-        const pagination = document.getElementById(`${this.options.tableId}-pagination`);
+        const pagination = document.getElementById(`${this.tableId}-pagination`);
         
         if (totalPages <= 1) {
             pagination.innerHTML = '';
@@ -322,7 +405,7 @@ class ModernDataTable {
     }
     
     updateInfo() {
-        const info = document.getElementById(`${this.options.tableId}-info`);
+        const info = document.getElementById(`${this.tableId}-info`);
         const start = (this.currentPage - 1) * this.options.pageSize + 1;
         const end = Math.min(this.currentPage * this.options.pageSize, this.totalRecords);
         
@@ -332,13 +415,13 @@ class ModernDataTable {
     }
     
     refresh() {
-        showLoading('Refreshing...');
-        this.loadData().finally(() => hideLoading());
+        console.log('Refreshing datatable...');
+        this.loadData();
     }
     
     exportData() {
         // Simple CSV export
-        const rows = Array.from(document.querySelectorAll(`#${this.options.tableId}-body tr`));
+        const rows = Array.from(document.querySelectorAll(`#${this.tableId}-body tr`));
         const headers = this.options.columns.map(col => col.title).join(',');
         
         let csv = headers + '\n';
@@ -358,7 +441,7 @@ class ModernDataTable {
     }
     
     showError(message) {
-        const tbody = document.getElementById(`${this.options.tableId}-body`);
+        const tbody = document.getElementById(`${this.tableId}-body`);
         tbody.innerHTML = `
             <tr>
                 <td colspan="${this.options.columns.length}" class="text-center py-5 text-danger">
@@ -367,6 +450,52 @@ class ModernDataTable {
                 </td>
             </tr>
         `;
+    }
+    
+    renderActions(row) {
+        if (!this.options.actions || this.options.actions.length === 0) {
+            return '';
+        }
+        
+        const rowId = row.person_id || row.item_id || row.id || row[Object.keys(row)[0]];
+        
+        const buttons = this.options.actions.map((action, index) => {
+            const btnClass = action.className || 'btn-outline';
+            const icon = action.icon || '';
+            const title = action.title || '';
+            
+            return `
+                <button type="button" 
+                        class="btn btn-sm ${btnClass} action-btn" 
+                        data-action="${action.onClick}" 
+                        data-row-id="${rowId}"
+                        data-action-index="${index}"
+                        title="${title}"
+                        style="margin-right: 4px;">
+                    ${icon}
+                </button>
+            `;
+        }).join('');
+        
+        return `<div style="display: flex; gap: 4px; justify-content: flex-start;">${buttons}</div>`;
+    }
+    
+    formatCurrency(value) {
+        if (value === null || value === undefined || value === '') {
+            return '$0.00';
+        }
+        
+        const num = parseFloat(value);
+        if (isNaN(num)) {
+            return '$0.00';
+        }
+        
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(num);
     }
 }
 

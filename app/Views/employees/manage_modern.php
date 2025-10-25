@@ -1,215 +1,139 @@
 <?php
-/**
- * MODERN EMPLOYEES MANAGEMENT - Pure Native Solution
- */
+$title = 'Employees - ShopSuite';
+echo view('layouts/modern_header', ['title' => $title]);
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => lang('Module.employees'),
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
-
-<!-- Page Header -->
-<div class="container-fluid py-3">
-    <div class="row align-items-center mb-3">
-        <div class="col">
-            <h3 class="mb-0">
-                <i class="bi bi-person-badge me-2"></i>
-                <?= lang('Module.employees') ?>
-            </h3>
+<div class="page-header">
+    <div class="page-header-top">
+        <div class="page-header-title">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+            <div>
+                <h1>Employees</h1>
+            </div>
         </div>
-        <div class="col-auto">
+        
+        <div class="page-header-actions">
             <button class="btn btn-primary" onclick="addEmployee()">
-                <i class="bi bi-plus-circle me-1"></i>Add Employee
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Employee
             </button>
         </div>
     </div>
     
-    <!-- Table Container -->
-    <div id="dataTable-container"></div>
+    <div class="breadcrumbs">
+        <div class="breadcrumb-item"><a href="<?= base_url('home') ?>">Dashboard</a></div>
+        <span class="breadcrumb-separator">/</span>
+        <div class="breadcrumb-item active">Employees</div>
+    </div>
 </div>
 
-<!-- Modal for Add/Edit Employee -->
-<div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="employeeModalLabel">Add Employee</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="employeeModalBody">
-                <div class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="saveEmployee()">Save Employee</button>
-            </div>
-        </div>
+<div class="card">
+    <div class="card-body" style="padding: 0;">
+        <div id="employeesTable"></div>
     </div>
 </div>
 
 <script>
+let employeesTable;
+
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Modern Employees Page Loading...');
-    
-    // Define table columns
-    const columns = [
-        {
-            field: 'person_id',
-            title: 'ID',
-            sortable: true
-        },
-        {
-            field: 'name',
-            title: 'Name',
-            sortable: true,
-            formatter: (value, row) => {
-                return `
-                    <div class="d-flex align-items-center">
-                        <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
-                             style="width: 32px; height: 32px; font-size: 14px;">
-                            ${row.first_name?.charAt(0) || '?'}${row.last_name?.charAt(0) || ''}
-                        </div>
-                        <div>
-                            <div class="fw-bold">${row.first_name || ''} ${row.last_name || ''}</div>
-                            ${row.email ? `<small class="text-muted">${row.email}</small>` : ''}
-                        </div>
-                    </div>
-                `;
-            }
-        },
-        {
-            field: 'username',
-            title: 'Username',
-            sortable: true,
-            formatter: (value) => {
-                return value ? `<span class="badge bg-secondary">${value}</span>` : '-';
-            }
-        },
-        {
-            field: 'phone_number',
-            title: 'Phone',
-            sortable: true,
-            formatter: (value) => {
-                return value ? `<i class="bi bi-telephone me-1"></i>${value}` : '-';
-            }
-        },
-        {
-            field: 'actions',
-            title: 'Actions',
-            sortable: false,
-            formatter: (value, row) => {
-                return `
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-primary" onclick="editEmployee(${row.person_id}); event.stopPropagation();" title="Edit">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-outline-danger" onclick="deleteEmployee(${row.person_id}); event.stopPropagation();" title="Delete">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                `;
-            }
-        }
-    ];
-    
-    // Initialize Modern DataTable
-    window.employeesTable = new ModernDataTable({
-        tableId: 'dataTable',
-        searchUrl: '<?= base_url('employees/search') ?>',
-        columns: columns,
-        pageSize: <?= $config['lines_per_page'] ?? 20 ?>,
-        uniqueId: 'person_id',
-        onRowClick: function(row) {
-            editEmployee(row.person_id);
-        },
-        onLoadComplete: function(data) {
-            console.log(`✅ Loaded ${data.total} employees`);
-        }
-    });
-    
-    console.log('✅ Modern Employees Page Ready');
+    initializeDataTable();
 });
 
-// Employee Actions
-function addEmployee() {
-    openEmployeeModal(-1, 'Add New Employee');
-}
-
-function editEmployee(employeeId) {
-    openEmployeeModal(employeeId, 'Edit Employee');
-}
-
-function openEmployeeModal(employeeId, title) {
-    const modal = new bootstrap.Modal(document.getElementById('employeeModal'));
-    document.getElementById('employeeModalLabel').textContent = title;
-    
-    // Load form content
-    fetch(`<?= base_url('employees/view/') ?>${employeeId}`)
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('employeeModalBody').innerHTML = html;
-            modal.show();
-        })
-        .catch(error => {
-            console.error('Error loading form:', error);
-            showNotification('Failed to load form', 'error');
-        });
-}
-
-function saveEmployee() {
-    const form = document.getElementById('employee_form');
-    if (form) {
-        // Trigger form validation and submit
-        $(form).submit();
-    }
-}
-
-async function deleteEmployee(employeeId) {
-    const result = await Swal.fire({
-        title: 'Delete Employee?',
-        text: 'This action cannot be undone',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        confirmButtonText: 'Yes, delete',
-        cancelButtonText: 'Cancel'
-    });
-    
-    if (result.isConfirmed) {
-        try {
-            showLoading('Deleting employee...');
-            
-            const response = await fetch('<?= base_url('employees/delete') ?>', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ ids: [employeeId] })
-            });
-            
-            const data = await response.json();
-            hideLoading();
-            
-            if (data.success) {
-                showNotification('Employee deleted successfully', 'success');
-                window.employeesTable.refresh();
-            } else {
-                showNotification(data.message || 'Failed to delete employee', 'error');
+function initializeDataTable() {
+    employeesTable = new ModernDataTable('#employeesTable', {
+        ajax: {
+            url: '<?= base_url("employees/search") ?>',
+            dataSrc: 'rows'
+        },
+        columns: [
+            { field: 'person_id', title: 'ID', sortable: true },
+            { 
+                field: 'first_name', 
+                title: 'First Name',
+                sortable: true,
+                render: (value, row) => {
+                    return `
+                        <div class="flex items-center gap-3">
+                            <div class="avatar avatar-sm" style="background-color: var(--primary-100); color: var(--primary-700);">
+                                ${(row.first_name?.charAt(0) || 'E').toUpperCase()}
+                            </div>
+                            <span style="font-weight: var(--font-medium);">${value || '-'}</span>
+                        </div>
+                    `;
+                }
+            },
+            { field: 'last_name', title: 'Last Name', sortable: true },
+            { field: 'username', title: 'Username', sortable: true },
+            { field: 'email', title: 'Email', sortable: true },
+            { field: 'phone_number', title: 'Phone', sortable: true }
+        ],
+        actions: [
+            {
+                title: 'Edit',
+                icon: '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>',
+                className: 'btn-ghost',
+                onClick: 'editEmployee'
+            },
+            {
+                title: 'Delete',
+                icon: '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>',
+                className: 'btn-ghost',
+                onClick: 'deleteEmployee'
             }
-        } catch (error) {
-            hideLoading();
-            console.error('Delete error:', error);
-            showNotification('An error occurred', 'error');
+        ],
+        searchable: true,
+        exportable: true,
+        pageSize: 25,
+        onRowClick: (row, tr) => {
+            editEmployee(row);
         }
+    });
+}
+
+function addEmployee() {
+    window.location.href = '<?= base_url("employees/view/-1") ?>';
+}
+
+function editEmployee(employee) {
+    window.location.href = `<?= base_url("employees/view") ?>/${employee.person_id}`;
+}
+
+function deleteEmployee(employee) {
+    if (window.shopsuiteApp) {
+        window.shopsuiteApp.confirm(
+            'Delete Employee',
+            `Are you sure you want to delete ${employee.first_name} ${employee.last_name}? This action cannot be undone.`,
+            function() {
+                fetch(`<?= base_url("employees/delete") ?>`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ ids: [employee.person_id] })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.shopsuiteApp.showToast('Success', 'Employee deleted successfully', 'success');
+                        employeesTable.refresh();
+                    } else {
+                        window.shopsuiteApp.showToast('Error', data.message || 'Failed to delete employee', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.shopsuiteApp.showToast('Error', 'An error occurred', 'error');
+                });
+            }
+        );
     }
 }
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?php echo view('layouts/modern_footer'); ?>

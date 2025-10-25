@@ -1,155 +1,146 @@
 <?php
-/**
- * MODERN GIFTCARDS MANAGEMENT - Pure Native Solution
- */
+$title = 'Gift Cards - ShopSuite';
+echo view('layouts/modern_header', ['title' => $title]);
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => lang('Module.giftcards'),
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
-
-<!-- Page Header -->
-<div class="container-fluid py-3">
-    <div class="row align-items-center mb-3">
-        <div class="col">
-            <h3 class="mb-0">
-                <i class="bi bi-gift me-2"></i>
-                <?= lang('Module.giftcards') ?>
-            </h3>
+<div class="page-header">
+    <div class="page-header-top">
+        <div class="page-header-title">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            <div>
+                <h1>Gift Cards</h1>
+            </div>
         </div>
-        <div class="col-auto">
-            <button class="btn btn-primary" onclick="openModal('giftcards/view/-1', 'Add New Giftcard')">
-                <i class="bi bi-plus-circle me-1"></i>Add Giftcard
+        
+        <div class="page-header-actions">
+            <button class="btn btn-primary" onclick="addGiftcard()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Gift Card
             </button>
         </div>
     </div>
     
-    <!-- Table Container -->
-    <div id="dataTable-container"></div>
+    <div class="breadcrumbs">
+        <div class="breadcrumb-item"><a href="<?= base_url('home') ?>">Dashboard</a></div>
+        <span class="breadcrumb-separator">/</span>
+        <div class="breadcrumb-item active">Gift Cards</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body" style="padding: 0;">
+        <div id="giftcardsTable"></div>
+    </div>
 </div>
 
 <script>
+let giftcardsTable;
+
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Modern Giftcards Page Loading...');
-    
-    // Define table columns
-    const columns = [
-        {
-            field: 'giftcard_id',
-            title: 'ID',
-            sortable: true
-        },
-        {
-            field: 'giftcard_number',
-            title: 'Card Number',
-            sortable: true,
-            formatter: (value) => {
-                return `<span class="badge bg-primary font-monospace">${value || '-'}</span>`;
-            }
-        },
-        {
-            field: 'value',
-            title: 'Value',
-            sortable: true,
-            formatter: (value) => {
-                return `<span class="badge bg-success fs-6"><?= $config['currency_symbol'] ?>${parseFloat(value || 0).toFixed(2)}</span>`;
-            }
-        },
-        {
-            field: 'customer_name',
-            title: 'Customer',
-            sortable: false,
-            formatter: (value, row) => {
-                if (row.first_name || row.last_name) {
-                    return `${row.first_name || ''} ${row.last_name || ''}`.trim();
-                }
-                return '<span class="text-muted">Unassigned</span>';
-            }
-        },
-        {
-            field: 'actions',
-            title: 'Actions',
-            sortable: false,
-            formatter: (value, row) => {
-                return `
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-primary" onclick="editGiftcard(${row.giftcard_id}); event.stopPropagation();" title="Edit">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-outline-danger" onclick="deleteGiftcard(${row.giftcard_id}); event.stopPropagation();" title="Delete">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                `;
-            }
-        }
-    ];
-    
-    // Initialize Modern DataTable
-    window.giftcardsTable = new ModernDataTable({
-        tableId: 'dataTable',
-        searchUrl: '<?= base_url('giftcards/search') ?>',
-        columns: columns,
-        pageSize: <?= $config['lines_per_page'] ?? 20 ?>,
-        uniqueId: 'giftcard_id',
-        onRowClick: function(row) {
-            editGiftcard(row.giftcard_id);
-        },
-        onLoadComplete: function(data) {
-            console.log(`✅ Loaded ${data.total} giftcards`);
-        }
-    });
-    
-    console.log('✅ Modern Giftcards Page Ready');
+    initializeDataTable();
 });
 
-// Giftcard Actions
-function editGiftcard(giftcardId) {
-    openModal(`giftcards/view/${giftcardId}`, 'Edit Giftcard');
+function initializeDataTable() {
+    giftcardsTable = new ModernDataTable('#giftcardsTable', {
+        ajax: {
+            url: '<?= base_url("giftcards/search") ?>',
+            dataSrc: 'rows'
+        },
+        columns: [
+            { field: 'giftcard_id', title: 'ID', sortable: true },
+            { 
+                field: 'giftcard_number', 
+                title: 'Card Number',
+                sortable: true,
+                render: (value) => `<span style="font-weight: var(--font-medium); font-family: var(--font-mono);">${value}</span>`
+            },
+            { 
+                field: 'value', 
+                title: 'Value',
+                sortable: true,
+                render: (value) => {
+                    const formatted = parseFloat(value).toFixed(2);
+                    return `<span style="color: var(--success-600); font-weight: var(--font-semibold);">$${formatted}</span>`;
+                }
+            },
+            { 
+                field: 'first_name', 
+                title: 'Owner',
+                sortable: true,
+                render: (value, row) => {
+                    if (value || row.last_name) {
+                        return `${value || ''} ${row.last_name || ''}`.trim();
+                    }
+                    return '<span style="color: var(--text-tertiary);">Unassigned</span>';
+                }
+            }
+        ],
+        actions: [
+            {
+                title: 'Edit',
+                icon: '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>',
+                className: 'btn-ghost',
+                onClick: 'editGiftcard'
+            },
+            {
+                title: 'Delete',
+                icon: '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>',
+                className: 'btn-ghost',
+                onClick: 'deleteGiftcard'
+            }
+        ],
+        searchable: true,
+        exportable: true,
+        pageSize: 25,
+        onRowClick: (row, tr) => {
+            editGiftcard(row);
+        }
+    });
 }
 
-async function deleteGiftcard(giftcardId) {
-    const result = await Swal.fire({
-        title: 'Delete Giftcard?',
-        text: 'This action cannot be undone',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        confirmButtonText: 'Yes, delete',
-        cancelButtonText: 'Cancel'
-    });
-    
-    if (result.isConfirmed) {
-        try {
-            showLoading('Deleting giftcard...');
-            
-            const response = await fetch('<?= base_url('giftcards/delete') ?>', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ ids: [giftcardId] })
-            });
-            
-            const data = await response.json();
-            hideLoading();
-            
-            if (data.success) {
-                showNotification('Giftcard deleted successfully', 'success');
-                window.giftcardsTable.refresh();
-            } else {
-                showNotification(data.message || 'Failed to delete giftcard', 'error');
+function addGiftcard() {
+    window.location.href = '<?= base_url("giftcards/view/-1") ?>';
+}
+
+function editGiftcard(giftcard) {
+    window.location.href = `<?= base_url("giftcards/view") ?>/${giftcard.giftcard_id}`;
+}
+
+function deleteGiftcard(giftcard) {
+    if (window.shopsuiteApp) {
+        window.shopsuiteApp.confirm(
+            'Delete Gift Card',
+            `Are you sure you want to delete gift card ${giftcard.giftcard_number}? This action cannot be undone.`,
+            function() {
+                fetch(`<?= base_url("giftcards/delete") ?>`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ ids: [giftcard.giftcard_id] })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.shopsuiteApp.showToast('Success', 'Gift card deleted successfully', 'success');
+                        giftcardsTable.refresh();
+                    } else {
+                        window.shopsuiteApp.showToast('Error', data.message || 'Failed to delete gift card', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.shopsuiteApp.showToast('Error', 'An error occurred', 'error');
+                });
             }
-        } catch (error) {
-            hideLoading();
-            console.error('Delete error:', error);
-            showNotification('An error occurred', 'error');
-        }
+        );
     }
 }
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?php echo view('layouts/modern_footer'); ?>

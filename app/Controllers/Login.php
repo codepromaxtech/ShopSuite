@@ -44,8 +44,8 @@ class Login extends BaseController
             ];
 
             if ($this->request->getMethod() !== 'POST') {
-                // Use new Bootstrap 5 modern UI
-                return view('login_bootstrap5', $data);
+                // Use new modern UI
+                return view('login_modern', $data);
             }
 
             $rules = ['username' => 'required|login_check[data]'];
@@ -58,9 +58,10 @@ class Login extends BaseController
 
             if (!$this->validate($rules, $messages)) {
                 $data['has_errors'] = !empty($validation->getErrors());
+                $data['error_message'] = $validation->getError('username') ?: 'Invalid username or password';
 
-                // Use new Bootstrap 5 modern UI
-                return view('login_bootstrap5', $data);
+                // Use new modern UI
+                return view('login_modern', $data);
             }
 
             if (!$data['is_latest']) {

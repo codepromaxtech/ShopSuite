@@ -4,12 +4,9 @@
  */
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => lang('Messages.sms_send'),
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
+$title = 'Send SMS';
+echo view('layouts/modern_header', ['title' => $title]);
+?>
 
 <!-- Page Content -->
 <div class="container-fluid py-4">
@@ -154,4 +151,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?= view('layouts/modern_footer') ?>

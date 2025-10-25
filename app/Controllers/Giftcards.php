@@ -125,7 +125,7 @@ class Giftcards extends Secure_Controller
         $data['controller_name'] = 'giftcards';
         $data['config'] = $config;
 
-        echo view("giftcards/form_bootstrap5", $data);
+        echo view("giftcards/form_modern", $data);
     }
 
     /**

@@ -1,435 +1,249 @@
 <?php
-/**
- * MODERN RECEIVING REGISTER - Bootstrap 5
- * @var string $controller_name
- * @var array $modes
- * @var string $mode
- * @var bool $show_stock_locations
- * @var array $stock_locations
- * @var int $stock_source
- * @var string $stock_destination
- * @var array $cart
- * @var bool $items_module_allowed
- * @var float $total
- * @var string $comment
- * @var bool $print_after_sale
- * @var string $reference
- * @var array $payment_options
- * @var array $config
- */
+$title = 'New Receiving - ShopSuite';
+echo view('layouts/modern_header', ['title' => $title]);
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => lang('Module.receivings'),
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
-
-<style>
-.register-container {
-    background: #f8f9fa;
-    min-height: calc(100vh - 100px);
-}
-.register-card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.cart-table th {
-    background: #e9ecef;
-    font-weight: 600;
-    font-size: 0.875rem;
-}
-.cart-table td {
-    vertical-align: middle;
-}
-.cart-empty {
-    text-align: center;
-    padding: 3rem;
-    color: #6c757d;
-}
-.total-section {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 1.5rem;
-}
-</style>
-
-<div class="register-container py-3">
-    <div class="container-fluid">
-        
-        <!-- Alerts -->
-        <?php if (isset($error)): ?>
-            <div class="alert alert-danger alert-dismissible fade show">
-                <i class="bi bi-exclamation-triangle me-2"></i>
-                <?= esc($error) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<div class="page-header">
+    <div class="page-header-top">
+        <div class="page-header-title">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
+            <div>
+                <h1>Receiving</h1>
             </div>
-        <?php endif; ?>
+        </div>
         
-        <?php if (!empty($warning)): ?>
-            <div class="alert alert-warning alert-dismissible fade show">
-                <i class="bi bi-exclamation-circle me-2"></i>
-                <?= esc($warning) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($success)): ?>
-            <div class="alert alert-success alert-dismissible fade show">
-                <i class="bi bi-check-circle me-2"></i>
-                <?= esc($success) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
+        <div class="page-header-actions">
+            <a href="<?= base_url('receivings/manage') ?>" class="btn btn-outline">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                </svg>
+                View History
+            </a>
+        </div>
+    </div>
+    
+    <div class="breadcrumbs">
+        <div class="breadcrumb-item"><a href="<?= base_url('home') ?>">Dashboard</a></div>
+        <span class="breadcrumb-separator">/</span>
+        <div class="breadcrumb-item"><a href="<?= base_url('receivings/manage') ?>">Receivings</a></div>
+        <span class="breadcrumb-separator">/</span>
+        <div class="breadcrumb-item active">New Receiving</div>
+    </div>
+</div>
 
-        <!-- Mode Selection -->
-        <div class="register-card mb-3 p-3">
-            <?= form_open("$controller_name/changeMode", ['id' => 'mode_form']) ?>
-            <div class="row g-3 align-items-center">
-                <div class="col-auto">
-                    <label class="form-label mb-0 fw-bold">
-                        <i class="bi bi-toggle-on me-1"></i>
-                        <?= lang(ucfirst($controller_name) . '.mode') ?>
-                    </label>
-                </div>
-                <div class="col-auto">
-                    <?= form_dropdown('mode', $modes, $mode, [
-                        'class' => 'form-select',
-                        'onchange' => "document.getElementById('mode_form').submit();"
-                    ]) ?>
-                </div>
-                
-                <?php if ($show_stock_locations): ?>
-                    <div class="col-auto">
-                        <label class="form-label mb-0 fw-bold">
-                            <?= lang(ucfirst($controller_name) . '.stock_source') ?>
-                        </label>
-                    </div>
-                    <div class="col-auto">
-                        <?= form_dropdown('stock_source', $stock_locations, $stock_source, [
-                            'class' => 'form-select',
-                            'onchange' => "document.getElementById('mode_form').submit();"
-                        ]) ?>
+<?php if (isset($error)): ?>
+    <div class="alert alert-danger"><?= esc($error) ?></div>
+<?php endif; ?>
+
+<?php if (isset($warning)): ?>
+    <div class="alert alert-warning"><?= esc($warning) ?></div>
+<?php endif; ?>
+
+<?php if (isset($success)): ?>
+    <div class="alert alert-success"><?= esc($success) ?></div>
+<?php endif; ?>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+        <div class="card" style="margin-bottom: var(--space-6);">
+            <div class="card-header">
+                <h3 class="card-header-title">Receiving Options</h3>
+            </div>
+            <div class="card-body">
+                <?= form_open("receivings/changeMode", ['id' => 'mode_form']) ?>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label for="mode" class="form-label">Mode</label>
+                        <?= form_dropdown('mode', $modes, $mode, ['id' => 'mode', 'class' => 'form-control form-select', 'onchange' => "$('#mode_form').submit();"]) ?>
                     </div>
                     
-                    <?php if ($mode == 'requisition'): ?>
-                        <div class="col-auto">
-                            <label class="form-label mb-0 fw-bold">
-                                <?= lang(ucfirst($controller_name) . '.stock_destination') ?>
-                            </label>
+                    <?php if ($show_stock_locations): ?>
+                        <div class="form-group">
+                            <label for="stock_source" class="form-label">Stock Source</label>
+                            <?= form_dropdown('stock_source', $stock_locations, $stock_source, ['id' => 'stock_source', 'class' => 'form-control form-select', 'onchange' => "$('#mode_form').submit();"]) ?>
                         </div>
-                        <div class="col-auto">
-                            <?= form_dropdown('stock_destination', $stock_locations, $stock_destination, [
-                                'class' => 'form-select',
-                                'onchange' => "document.getElementById('mode_form').submit();"
-                            ]) ?>
-                        </div>
+                        
+                        <?php if ($mode == 'requisition'): ?>
+                            <div class="form-group">
+                                <label for="stock_destination" class="form-label">Stock Destination</label>
+                                <?= form_dropdown('stock_destination', $stock_locations, $stock_destination, ['id' => 'stock_destination', 'class' => 'form-control form-select', 'onchange' => "$('#mode_form').submit();"]) ?>
+                            </div>
+                        <?php endif; ?>
                     <?php endif; ?>
-                <?php endif; ?>
+                </div>
+                <?= form_close() ?>
             </div>
-            <?= form_close() ?>
         </div>
-
-        <!-- Item Search -->
-        <div class="register-card mb-3 p-3">
-            <?= form_open("$controller_name/add", ['id' => 'add_item_form']) ?>
-            <div class="row g-3 align-items-center">
-                <div class="col-auto">
-                    <label for="item" class="form-label mb-0 fw-bold">
-                        <i class="bi bi-search me-1"></i>
-                        <?php if ($mode == 'receive' or $mode == 'requisition'): ?>
-                            <?= lang(ucfirst($controller_name) . '.find_or_scan_item') ?>
+        
+        <div class="card" style="margin-bottom: var(--space-6);">
+            <div class="card-header">
+                <h3 class="card-header-title">Add Items</h3>
+            </div>
+            <div class="card-body">
+                <?= form_open("receivings/add", ['id' => 'add_item_form']) ?>
+                <div class="form-group">
+                    <label for="item" class="form-label">
+                        <?php if ($mode == 'receive' || $mode == 'requisition'): ?>
+                            Find or Scan Item
                         <?php else: ?>
-                            <?= lang(ucfirst($controller_name) . '.find_or_scan_item_or_receipt') ?>
+                            Find or Scan Item or Receipt
                         <?php endif; ?>
                     </label>
-                </div>
-                <div class="col">
-                    <?= form_input([
-                        'name' => 'item',
-                        'id' => 'item',
-                        'class' => 'form-control',
-                        'placeholder' => 'Search by item name, SKU, or barcode...',
-                        'tabindex' => '1',
-                        'autocomplete' => 'off'
-                    ]) ?>
-                </div>
-                <?php if ($items_module_allowed): ?>
-                    <div class="col-auto">
-                        <button type="button" class="btn btn-info" onclick="openModal('items/view/-1', 'Add New Item')">
-                            <i class="bi bi-plus-circle me-1"></i>
-                            <?= lang('Sales.new_item') ?>
-                        </button>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </span>
+                        <?= form_input(['name' => 'item', 'id' => 'item', 'class' => 'form-control', 'autofocus' => 'autofocus']) ?>
                     </div>
-                <?php endif; ?>
+                </div>
+                <?= form_close() ?>
             </div>
-            <?= form_close() ?>
         </div>
-
-        <div class="row">
-            <!-- Cart Items -->
-            <div class="col-lg-8">
-                <div class="register-card p-3">
-                    <h5 class="mb-3">
-                        <i class="bi bi-cart3 me-2"></i>
-                        Receiving Cart
-                        <?php if (count($cart) > 0): ?>
-                            <span class="badge bg-primary"><?= count($cart) ?> items</span>
-                        <?php endif; ?>
-                    </h5>
-                    
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-header-title">Items in Receiving</h3>
+            </div>
+            <div class="card-body">
+                <?php if (empty($cart)): ?>
+                    <div style="text-align: center; padding: var(--space-8) var(--space-4); color: var(--text-tertiary);">
+                        <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto var(--space-4);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        <p style="font-size: var(--text-base); margin: 0;">No items in this receiving</p>
+                        <p style="font-size: var(--text-sm); margin-top: var(--space-2);">Scan or search for items to add them</p>
+                    </div>
+                <?php else: ?>
                     <div class="table-responsive">
-                        <table class="table table-hover cart-table">
+                        <table class="table">
                             <thead>
                                 <tr>
-                                    <th style="width: 40px;"></th>
                                     <th>Item</th>
-                                    <th style="width: 100px;">Cost</th>
-                                    <th style="width: 80px;">Qty</th>
-                                    <th style="width: 90px;">Discount</th>
-                                    <th style="width: 100px;">Total</th>
-                                    <th style="width: 60px;"></th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Discount</th>
+                                    <th>Total</th>
+                                    <th style="width: 100px;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (count($cart) == 0): ?>
+                                <?php foreach ($cart as $line => $item): ?>
                                     <tr>
-                                        <td colspan="7" class="cart-empty">
-                                            <i class="bi bi-cart-x" style="font-size: 3rem; opacity: 0.3;"></i>
-                                            <p class="mt-2"><?= lang('Sales.no_items_in_cart') ?></p>
+                                        <td>
+                                            <div style="font-weight: var(--font-medium);"><?= esc($item['name']) ?></div>
+                                            <?php if (!empty($item['description'])): ?>
+                                                <div style="font-size: var(--text-sm); color: var(--text-secondary);"><?= esc($item['description']) ?></div>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?= esc($item['quantity']) ?></td>
+                                        <td>$<?= number_format($item['price'], 2) ?></td>
+                                        <td><?= esc($item['discount']) ?>%</td>
+                                        <td style="font-weight: var(--font-semibold);">$<?= number_format($item['total'], 2) ?></td>
+                                        <td>
+                                            <div class="flex gap-2">
+                                                <a href="<?= base_url("receivings/deleteItem/$line") ?>" class="btn btn-sm btn-ghost" title="Remove">
+                                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
-                                <?php else: ?>
-                                    <?php foreach (array_reverse($cart, true) as $line => $item): ?>
-                                        <?= form_open("$controller_name/editItem/$line", [
-                                            'class' => 'cart-item-form',
-                                            'id' => "cart_$line"
-                                        ]) ?>
-                                        <tr>
-                                            <td>
-                                                <a href="<?= base_url("$controller_name/deleteItem/$line") ?>" 
-                                                   class="btn btn-sm btn-outline-danger"
-                                                   title="Delete">
-                                                    <i class="bi bi-trash"></i>
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <div class="fw-bold"><?= esc($item['name']) ?></div>
-                                                <small class="text-muted">
-                                                    SKU: <?= esc($item['item_number']) ?>
-                                                    <?php if (!empty($item['attribute_values'])): ?>
-                                                        | <?= esc($item['attribute_values']) ?>
-                                                    <?php endif; ?>
-                                                </small>
-                                                <br>
-                                                <small class="badge bg-info text-dark">
-                                                    <?= to_quantity_decimals($item['in_stock']) ?> in <?= $item['stock_name'] ?>
-                                                </small>
-                                                <?= form_hidden('location', (string)$item['item_location']) ?>
-                                            </td>
-                                            <td>
-                                                <?php if ($items_module_allowed && $mode != 'requisition'): ?>
-                                                    <?= form_input([
-                                                        'name' => 'price',
-                                                        'class' => 'form-control form-control-sm',
-                                                        'value' => to_currency_no_money($item['price']),
-                                                        'onClick' => 'this.select();'
-                                                    ]) ?>
-                                                <?php else: ?>
-                                                    <?= to_currency($item['price']) ?>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <?= form_input([
-                                                    'name' => 'quantity',
-                                                    'class' => 'form-control form-control-sm',
-                                                    'value' => to_quantity_decimals($item['quantity']),
-                                                    'onClick' => 'this.select();'
-                                                ]) ?>
-                                            </td>
-                                            <td>
-                                                <?php if ($items_module_allowed): ?>
-                                                    <?= form_input([
-                                                        'name' => 'discount',
-                                                        'class' => 'form-control form-control-sm',
-                                                        'value' => $item['discount'],
-                                                        'onClick' => 'this.select();'
-                                                    ]) ?>
-                                                <?php else: ?>
-                                                    <?= $item['discount'] ?>%
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="fw-bold">
-                                                <?= to_currency($item['discounted_total']) ?>
-                                            </td>
-                                            <td>
-                                                <button type="submit" class="btn btn-sm btn-success" title="Update">
-                                                    <i class="bi bi-check-lg"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <?= form_close() ?>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+    
+    <div class="lg:col-span-1">
+        <div class="card" style="margin-bottom: var(--space-6);">
+            <div class="card-header">
+                <h3 class="card-header-title">Supplier</h3>
+            </div>
+            <div class="card-body">
+                <?php if (isset($supplier) && $supplier > 0): ?>
+                    <div style="margin-bottom: var(--space-4);">
+                        <div style="font-weight: var(--font-semibold); margin-bottom: var(--space-2);"><?= esc($company_name ?? '') ?></div>
+                        <?php if (isset($supplier_address)): ?>
+                            <div style="font-size: var(--text-sm); color: var(--text-secondary);"><?= esc($supplier_address) ?></div>
+                        <?php endif; ?>
+                    </div>
+                    <a href="<?= base_url('receivings/removeSupplier') ?>" class="btn btn-outline btn-sm btn-block">Change Supplier</a>
+                <?php else: ?>
+                    <?= form_open("receivings/selectSupplier", ['id' => 'supplier_form']) ?>
+                    <div class="form-group">
+                        <label for="supplier" class="form-label">Select Supplier</label>
+                        <select name="supplier" id="supplier" class="form-control form-select" onchange="$('#supplier_form').submit();">
+                            <option value="">No Supplier</option>
+                        </select>
+                    </div>
+                    <?= form_close() ?>
+                <?php endif; ?>
+            </div>
+        </div>
+        
+        <div class="card" style="margin-bottom: var(--space-6);">
+            <div class="card-header">
+                <h3 class="card-header-title">Total</h3>
+            </div>
+            <div class="card-body">
+                <div style="font-size: var(--text-3xl); font-weight: var(--font-bold); color: var(--success-600); text-align: center;">
+                    $<?= number_format($total ?? 0, 2) ?>
                 </div>
             </div>
-
-            <!-- Sidebar - Totals & Actions -->
-            <div class="col-lg-4">
-                <!-- Total Section -->
-                <div class="total-section mb-3">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-muted">Subtotal:</span>
-                        <span class="h5 mb-0"><?= to_currency($total) ?></span>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="fw-bold">Total:</span>
-                        <span class="h3 mb-0 text-primary"><?= to_currency($total) ?></span>
-                    </div>
-                </div>
-
-                <!-- Supplier Section -->
-                <div class="register-card p-3 mb-3">
-                    <h6 class="mb-3">
-                        <i class="bi bi-building me-2"></i>
-                        Supplier
-                    </h6>
-                    <div class="mb-2">
-                        <input type="text" 
-                               id="supplier" 
-                               class="form-control" 
-                               placeholder="Search supplier..."
-                               autocomplete="off">
-                    </div>
-                    <?php if (isset($supplier)): ?>
-                        <div class="alert alert-info py-2 px-3 mb-0">
-                            <div class="fw-bold"><?= esc($supplier) ?></div>
-                            <?php if (isset($supplier_email)): ?>
-                                <small><?= esc($supplier_email) ?></small>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
-
-                <!-- Payment & Notes -->
-                <div class="register-card p-3 mb-3">
-                    <h6 class="mb-3">
-                        <i class="bi bi-credit-card me-2"></i>
-                        Payment
-                    </h6>
-                    <?= form_dropdown('payment_type', $payment_options, 'cash', [
-                        'class' => 'form-select mb-3'
-                    ]) ?>
-                    
-                    <label class="form-label">Reference:</label>
-                    <input type="text" 
-                           name="reference" 
-                           class="form-control mb-3" 
-                           value="<?= esc($reference ?? '') ?>"
-                           placeholder="PO Number, Invoice #, etc.">
-                    
-                    <label class="form-label">Comment:</label>
-                    <textarea name="comment" 
-                              class="form-control" 
-                              rows="3" 
-                              placeholder="Additional notes..."><?= esc($comment ?? '') ?></textarea>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="d-grid gap-2">
-                    <button type="button" 
-                            class="btn btn-primary btn-lg"
-                            onclick="completeReceiving()"
-                            <?= count($cart) == 0 ? 'disabled' : '' ?>>
-                        <i class="bi bi-check-circle me-2"></i>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <?php if (!empty($cart)): ?>
+                    <?= form_open("receivings/complete", ['id' => 'complete_form']) ?>
+                    <button type="submit" class="btn btn-success btn-block">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
                         Complete Receiving
                     </button>
-                    <button type="button" 
-                            class="btn btn-outline-secondary"
-                            onclick="cancelReceiving()">
-                        <i class="bi bi-x-circle me-2"></i>
+                    <?= form_close() ?>
+                    
+                    <a href="<?= base_url('receivings/cancelReceiving') ?>" class="btn btn-outline btn-block" style="margin-top: var(--space-3);">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
                         Cancel
-                    </button>
-                    <a href="<?= base_url('receivings/manage') ?>" class="btn btn-outline-info">
-                        <i class="bi bi-list-ul me-2"></i>
-                        View History
                     </a>
-                </div>
+                <?php else: ?>
+                    <a href="<?= base_url('receivings/manage') ?>" class="btn btn-outline btn-block">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Back to List
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-$(document).ready(function() {
-    console.log('🚀 Modern Receiving Register Loading...');
+// Auto-focus the item search input
+document.addEventListener('DOMContentLoaded', function() {
+    const itemInput = document.getElementById('item');
+    if (itemInput) {
+        itemInput.focus();
+    }
     
-    // Item search autocomplete
-    $('#item').autocomplete({
-        source: '<?= base_url("receivings/item_search") ?>',
-        minLength: 1,
-        delay: 300,
-        autoFocus: true,
-        select: function(event, ui) {
-            $(this).val(ui.item.value);
-            $('#add_item_form').submit();
-            return false;
-        }
+    // Auto-submit form when item is scanned/entered
+    itemInput?.addEventListener('change', function() {
+        document.getElementById('add_item_form').submit();
     });
-    
-    // Supplier search autocomplete
-    $('#supplier').autocomplete({
-        source: '<?= base_url("suppliers/suggest") ?>',
-        minLength: 1,
-        delay: 300,
-        select: function(event, ui) {
-            $.post('<?= base_url("receivings/setSupplier") ?>', {
-                supplier_id: ui.item.value
-            }, function() {
-                location.reload();
-            });
-            return false;
-        }
-    });
-    
-    // Focus on item search
-    $('#item').focus();
-    
-    // Auto-submit cart edit forms on blur
-    $('.cart-item-form input').on('blur', function() {
-        $(this).closest('form').submit();
-    });
-    
-    // Handle Enter key in search
-    $('#item').on('keypress', function(e) {
-        if (e.which === 13) {
-            e.preventDefault();
-            $('#add_item_form').submit();
-        }
-    });
-    
-    console.log('✅ Modern Receiving Register Ready');
 });
-
-function completeReceiving() {
-    if (confirm('Complete this receiving transaction?')) {
-        window.location.href = '<?= base_url("$controller_name/complete") ?>';
-    }
-}
-
-function cancelReceiving() {
-    if (confirm('Cancel this receiving? All items will be removed from cart.')) {
-        $.post('<?= base_url("$controller_name/cancelReceiving") ?>', function() {
-            location.reload();
-        });
-    }
-}
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?php echo view('layouts/modern_footer'); ?>

@@ -81,25 +81,99 @@ class Customers extends Persons
 
 
     /**
+     * Simple hardcoded test
+     */
+    public function getTestHardcoded(): void
+    {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'total' => 3,
+            'rows' => [
+                ['person_id' => 1, 'first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john@test.com', 'phone_number' => '123', 'account_number' => 'A001', 'company_name' => 'Test Co', 'total' => 1000, 'date' => '2025-01-01'],
+                ['person_id' => 2, 'first_name' => 'Jane', 'last_name' => 'Smith', 'email' => 'jane@test.com', 'phone_number' => '456', 'account_number' => 'A002', 'company_name' => 'Demo Inc', 'total' => 2000, 'date' => '2025-01-02'],
+                ['person_id' => 3, 'first_name' => 'Bob', 'last_name' => 'Wilson', 'email' => 'bob@test.com', 'phone_number' => '789', 'account_number' => 'A003', 'company_name' => 'Sample LLC', 'total' => 3000, 'date' => '2025-01-03']
+            ]
+        ]);
+        exit;
+    }
+    
+    /**
+     * Simple test endpoint to verify data
+     */
+    public function getTest(): void
+    {
+        $this->response->setContentType('application/json');
+        
+        try {
+            // Test the actual search method
+            $customers = $this->customer->search('', 5, 0, 'last_name', 'asc');
+            $total_rows = $this->customer->get_found_rows('');
+            
+            $data_rows = [];
+            foreach ($customers->getResult() as $person) {
+                $data_rows[] = [
+                    'person_id' => $person->person_id ?? 'NULL',
+                    'first_name' => $person->first_name ?? 'NULL',
+                    'last_name' => $person->last_name ?? 'NULL',
+                    'email' => $person->email ?? 'NULL',
+                    'phone_number' => $person->phone_number ?? 'NULL',
+                    'account_number' => $person->account_number ?? 'NULL',
+                    'company_name' => $person->company_name ?? 'NULL'
+                ];
+            }
+            
+            echo json_encode([
+                'success' => true,
+                'total' => $total_rows,
+                'rows' => $data_rows,
+                'num_rows_returned' => count($data_rows)
+            ], JSON_PRETTY_PRINT);
+        } catch (\Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+        exit;
+    }
+    
+    /**
      * Returns customer table data rows. This will be called with AJAX.
      *
      * @return void
      */
     public function getSearch(): void
     {
+        // CRITICAL: Output immediately to test if method is being reached
+        header('Content-Type: application/json');
+        
+        // Log that we're in the method
+        error_log('[CUSTOMERS] getSearch() called at ' . date('H:i:s'));
+        error_log('[CUSTOMERS] GET params: ' . print_r($this->request->getGet(), true));
+        
         // Set JSON header
         $this->response->setContentType('application/json');
         
-        $search = $this->request->getGet('search');
-        $limit = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?: 20;
-        $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?: 0;
-        $sort = $this->sanitizeSortColumn(customer_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'people.person_id');
-        $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'asc';
+        try {
+            $search = $this->request->getGet('search') ?? '';
+            $limit = $this->request->getGet('limit', FILTER_SANITIZE_NUMBER_INT) ?: 20;
+            $offset = $this->request->getGet('offset', FILTER_SANITIZE_NUMBER_INT) ?: 0;
+            $sort = $this->sanitizeSortColumn(customer_headers(), $this->request->getGet('sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS), 'people.person_id');
+            $order = $this->request->getGet('order', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'asc';
+            
+            error_log("[CUSTOMERS] Params - Search: '{$search}', Limit: {$limit}, Offset: {$offset}, Sort: {$sort}, Order: {$order}");
+            
+            log_message('debug', "[CUSTOMERS] Search: '{$search}', Limit: {$limit}, Offset: {$offset}, Sort: {$sort}, Order: {$order}");
 
-        $customers = $this->customer->search($search, $limit, $offset, $sort, $order);
-        $total_rows = $this->customer->get_found_rows($search);
+            $customers = $this->customer->search($search, $limit, $offset, $sort, $order);
+            $num_rows = $customers->getNumRows();
+            log_message('debug', "[CUSTOMERS] Query returned: {$num_rows} rows");
+            
+            $total_rows = $this->customer->get_found_rows($search);
+            log_message('debug', "[CUSTOMERS] Total rows found: {$total_rows}");
 
-        $data_rows = [];
+            $data_rows = [];
 
         foreach ($customers->getResult() as $person) {
             // Get stats
@@ -116,28 +190,112 @@ class Customers extends Persons
                 'last_name' => $person->last_name ?? '',
                 'email' => $person->email ?? '',
                 'phone_number' => $person->phone_number ?? '',
+                'account_number' => $person->account_number ?? '',
                 'company_name' => $person->company_name ?? '',
                 'total' => $stats->total ?? 0,
                 'date' => $person->date ?? ''
             ];
         }
+        
+            error_log("[CUSTOMERS] Returning " . count($data_rows) . " rows out of {$total_rows} total");
+            error_log("[CUSTOMERS] First row: " . json_encode($data_rows[0] ?? null));
+            
+            $response_data = ['total' => $total_rows, 'rows' => $data_rows];
+            $json_response = json_encode($response_data, JSON_UNESCAPED_UNICODE);
+            
+            error_log("[CUSTOMERS] JSON response length: " . strlen($json_response));
+            error_log("[CUSTOMERS] JSON response preview: " . substr($json_response, 0, 200));
 
-        // Return clean JSON only
-        echo json_encode(['total' => $total_rows, 'rows' => $data_rows], JSON_UNESCAPED_UNICODE);
+            // Return clean JSON only
+            echo $json_response;
+        } catch (\Exception $e) {
+            log_message('error', '[CUSTOMERS] Error in getSearch: ' . $e->getMessage());
+            log_message('error', '[CUSTOMERS] Stack trace: ' . $e->getTraceAsString());
+            echo json_encode([
+                'success' => false,
+                'total' => 0,
+                'rows' => [],
+                'error' => $e->getMessage()
+            ]);
+        }
         exit;
     }
 
     /**
-     * Gives search suggestions based on what is being searched for
+     * Get customer statistics for dashboard
+     * @return void
+     */
+    public function getStats(): void
+    {
+        $this->response->setContentType('application/json');
+        
+        try {
+            $db = \Config\Database::connect();
+            
+            // Total customers - use direct query instead of count_all()
+            $totalQuery = $db->query("SELECT COUNT(*) as count FROM shopsuite_customers WHERE deleted = 0");
+            $total_customers = $totalQuery->getRow()->count ?? 0;
+            
+            // Get customers added this month (using people table created_at if available)
+            $start_of_month = date('Y-m-01 00:00:00');
+            $end_of_month = date('Y-m-t 23:59:59');
+            
+            $newQuery = $db->query(
+                "SELECT COUNT(*) as count 
+                FROM shopsuite_customers c 
+                WHERE c.deleted = 0"
+            );
+            $new_this_month = 0; // Default to 0 if we can't determine new customers
+            
+            // Get active customers (customers with purchases this month)
+            $activeQuery = $db->query(
+                "SELECT COUNT(DISTINCT s.customer_id) as count 
+                FROM shopsuite_sales s
+                INNER JOIN shopsuite_customers c ON s.customer_id = c.person_id
+                WHERE c.deleted = 0 
+                AND s.sale_time >= ? 
+                AND s.sale_time <= ?",
+                [$start_of_month, $end_of_month]
+            );
+            $active_this_month = $activeQuery->getRow()->count ?? 0;
+            
+            echo json_encode([
+                'success' => true,
+                'total' => (int)$total_customers,
+                'new_this_month' => (int)$new_this_month,
+                'active_this_month' => (int)$active_this_month
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            log_message('error', 'Customer stats error: ' . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'total' => 0,
+                'new_this_month' => 0,
+                'active_this_month' => 0,
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit;
+    }
+
+    /**
+     * Customer search suggestions (used by POS)
+     * @return void
      */
     public function getSuggest(): void
     {
-        $search = $this->request->getGet('term');
-        $suggestions = $this->customer->get_search_suggestions($search);
-
-        echo json_encode($suggestions);
+        $search = $this->request->getGet('term') ?? '';
+        
+        try {
+            $suggestions = $this->customer->get_search_suggestions($search, 25, false);
+            echo json_encode($suggestions);
+        } catch (\Exception $e) {
+            error_log('[CUSTOMERS] Suggest error: ' . $e->getMessage());
+            echo json_encode([]);
+        }
+        exit;
     }
-
+    
     /**
      * @return void
      */
@@ -240,11 +398,11 @@ class Customers extends Persons
             }
         }
 
-        // Add missing data for Bootstrap 5 form
+        // Add missing data for modern form
         $data['controller_name'] = 'customers';
         $data['config'] = $this->config;
         
-        echo view("customers/form_bootstrap5", $data);
+        echo view("customers/form_modern", $data);
     }
 
     /**
@@ -267,30 +425,47 @@ class Customers extends Persons
             'first_name'   => $first_name,
             'last_name'    => $last_name,
             'gender'       => $this->request->getPost('gender', FILTER_SANITIZE_NUMBER_INT),
-            'email'        => $email,
-            'phone_number' => $this->request->getPost('phone_number'),
-            'address_1'    => $this->request->getPost('address_1'),
-            'address_2'    => $this->request->getPost('address_2'),
-            'city'         => $this->request->getPost('city'),
-            'state'        => $this->request->getPost('state'),
-            'zip'          => $this->request->getPost('zip'),
-            'country'      => $this->request->getPost('country'),
-            'comments'     => $this->request->getPost('comments')
+            'email'        => $email ?? '',
+            'phone_number' => $this->request->getPost('phone_number') ?? '',
+            'address_1'    => $this->request->getPost('address_1') ?? '',
+            'address_2'    => $this->request->getPost('address_2') ?? '',
+            'city'         => $this->request->getPost('city') ?? '',
+            'state'        => $this->request->getPost('state') ?? '',
+            'zip'          => $this->request->getPost('zip') ?? '',
+            'country'      => $this->request->getPost('country') ?? '',
+            'comments'     => $this->request->getPost('comments') ?? ''
         ];
 
-        $date_formatter = date_create_from_format($this->config['dateformat'] . ' ' . $this->config['timeformat'], $this->request->getPost('date'));
+        // Handle date field - use current date/time if not provided or invalid
+        $date_post = $this->request->getPost('date');
+        $date_formatter = null;
+        
+        if (!empty($date_post)) {
+            $date_formatter = date_create_from_format($this->config['dateformat'] . ' ' . $this->config['timeformat'], $date_post);
+        }
+        
+        // If date parsing failed or not provided, use current date/time
+        $formatted_date = ($date_formatter !== false && $date_formatter !== null) 
+            ? $date_formatter->format('Y-m-d H:i:s') 
+            : date('Y-m-d H:i:s');
 
+        // Get employee_id - use posted value, logged in employee, or 0 as fallback
+        $employee_id = $this->request->getPost('employee_id', FILTER_SANITIZE_NUMBER_INT);
+        if (empty($employee_id) || $employee_id === null) {
+            $employee_id = $this->session->get('person_id') ?? 0;
+        }
+        
         $customer_data = [
             'consent'           => $this->request->getPost('consent') != null,
             'account_number'    => $this->request->getPost('account_number') == '' ? null : $this->request->getPost('account_number'),
-            'tax_id'            => $this->request->getPost('tax_id'),
+            'tax_id'            => $this->request->getPost('tax_id') == '' ? '' : $this->request->getPost('tax_id'),
             'company_name'      => $this->request->getPost('company_name') == '' ? null : $this->request->getPost('company_name'),
             'discount'          => $this->request->getPost('discount') == '' ? 0.00 : parse_decimals($this->request->getPost('discount')),
             'discount_type'     => $this->request->getPost('discount_type') == null ? PERCENT : $this->request->getPost('discount_type', FILTER_SANITIZE_NUMBER_INT),
             'package_id'        => $this->request->getPost('package_id') == '' ? null : $this->request->getPost('package_id'),
             'taxable'           => $this->request->getPost('taxable') != null,
-            'date'              => $date_formatter->format('Y-m-d H:i:s'),
-            'employee_id'       => $this->request->getPost('employee_id', FILTER_SANITIZE_NUMBER_INT),
+            'date'              => $formatted_date,
+            'employee_id'       => $employee_id,
             'sales_tax_code_id' => $this->request->getPost('sales_tax_code_id') == '' ? null : $this->request->getPost('sales_tax_code_id', FILTER_SANITIZE_NUMBER_INT)
         ];
 
@@ -301,24 +476,31 @@ class Customers extends Persons
             'customer_id' => $customer_id
         ]));
         
-        if ($this->customer->save_customer($person_data, $customer_data, $customer_id)) {
-            // Save customer to Mailchimp selected list    // TODO: addOrUpdateMember should be refactored. Potentially pass an array or object instead of 6 parameters.
-            $mailchimp_status = $this->request->getPost('mailchimp_status');
-            $this->mailchimp_lib->addOrUpdateMember(
-                $this->_list_id,
-                $email,
-                $first_name,
-                $last_name,
-                $mailchimp_status == null ? "" : $mailchimp_status,
-                ['vip' => $this->request->getPost('mailchimp_vip') != null]
-            );
+        $saved_person_id = $this->customer->save_customer($person_data, $customer_data, $customer_id);
+        
+        if ($saved_person_id) {
+            // Save customer to Mailchimp selected list
+            try {
+                $mailchimp_status = $this->request->getPost('mailchimp_status');
+                $this->mailchimp_lib->addOrUpdateMember(
+                    $this->_list_id,
+                    $email,
+                    $first_name,
+                    $last_name,
+                    $mailchimp_status == null ? "" : $mailchimp_status,
+                    ['vip' => $this->request->getPost('mailchimp_vip') != null]
+                );
+            } catch (\Exception $e) {
+                log_message('error', 'Mailchimp error: ' . $e->getMessage());
+                // Don't fail the save if Mailchimp fails
+            }
 
             // New customer
             if ($customer_id == NEW_ENTRY) {
                 echo json_encode([
                     'success' => true,
                     'message' => lang('Customers.successful_adding') . ' ' . $first_name . ' ' . $last_name,
-                    'id'      => $customer_data['person_id']
+                    'id'      => $saved_person_id
                 ]);
             } else { // Existing customer
                 echo json_encode([
@@ -368,11 +550,44 @@ class Customers extends Persons
     }
 
     /**
-     * This deletes customers from the customers table
+     * Delete a single customer by ID (for modern datatable)
      */
-    public function postDelete(): void
+    public function postDelete(int $customer_id = null): void
     {
         // Set JSON header
+        $this->response->setContentType('application/json');
+        
+        // Handle single customer deletion from URL parameter
+        if ($customer_id !== null && $customer_id > 0) {
+            try {
+                $customer_info = $this->customer->get_info($customer_id);
+                
+                if ($this->customer->delete($customer_id)) {
+                    // Remove customer from Mailchimp if configured
+                    if (!empty($customer_info->email)) {
+                        $this->mailchimp_lib->removeMember($this->_list_id, $customer_info->email);
+                    }
+                    
+                    echo json_encode([
+                        'success' => true, 
+                        'message' => 'Customer deleted successfully'
+                    ]);
+                } else {
+                    echo json_encode([
+                        'success' => false, 
+                        'message' => 'Failed to delete customer'
+                    ]);
+                }
+            } catch (\Exception $e) {
+                echo json_encode([
+                    'success' => false, 
+                    'message' => 'Error: ' . $e->getMessage()
+                ]);
+            }
+            exit;
+        }
+        
+        // Set JSON header for bulk delete
         $this->response->setContentType('application/json');
         
         // Get POST data - CodeIgniter handles ids[] as 'ids'

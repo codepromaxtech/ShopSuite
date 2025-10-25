@@ -31,18 +31,17 @@ class Home extends Secure_Controller
     }
     
     /**
-     * Get dashboard statistics
+     * Get comprehensive dashboard statistics
      */
     private function getDashboardStats(): array
     {
         $prefix = $this->db->getPrefix();
         
-        // Today's sales count
+        // Today's sales count and revenue
         $today_sales = $this->db->table($prefix . 'sales')
             ->where('DATE(sale_time)', date('Y-m-d'))
             ->countAllResults();
         
-        // Today's revenue - join sales with sales_payments
         $today_revenue = $this->db->table($prefix . 'sales_payments sp')
             ->select('SUM(sp.payment_amount) as total', false)
             ->join($prefix . 'sales s', 's.sale_id = sp.sale_id')
@@ -51,22 +50,86 @@ class Home extends Secure_Controller
             ->getRow()
             ->total ?? 0;
         
+        // This month's revenue
+        $month_revenue = $this->db->table($prefix . 'sales_payments sp')
+            ->select('SUM(sp.payment_amount) as total', false)
+            ->join($prefix . 'sales s', 's.sale_id = sp.sale_id')
+            ->where('YEAR(s.sale_time)', date('Y'))
+            ->where('MONTH(s.sale_time)', date('m'))
+            ->get()
+            ->getRow()
+            ->total ?? 0;
+        
         // Total customers
         $total_customers = $this->db->table($prefix . 'customers')
+            ->where('deleted', 0)
             ->countAllResults();
         
-        // Total items in stock - get from item_quantities
+        // Total items in stock
         $total_items = $this->db->table($prefix . 'item_quantities')
             ->selectSum('quantity', 'total')
             ->get()
             ->getRow()
             ->total ?? 0;
         
+        // Low stock items (below reorder level)
+        $low_stock = $this->db->query("
+            SELECT COUNT(*) as count
+            FROM {$prefix}items i
+            LEFT JOIN {$prefix}item_quantities iq ON i.item_id = iq.item_id
+            WHERE i.deleted = 0
+            AND (iq.quantity IS NULL OR iq.quantity <= i.reorder_level)
+        ")->getRow()->count ?? 0;
+        
+        // Recent sales (last 5)
+        $recent_sales = $this->db->query("
+            SELECT s.sale_id, s.sale_time, 
+                   CONCAT(p.first_name, ' ', p.last_name) as customer_name,
+                   SUM(sp.payment_amount) as total
+            FROM {$prefix}sales s
+            LEFT JOIN {$prefix}people p ON s.customer_id = p.person_id
+            LEFT JOIN {$prefix}sales_payments sp ON s.sale_id = sp.sale_id
+            WHERE s.sale_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+            GROUP BY s.sale_id
+            ORDER BY s.sale_time DESC
+            LIMIT 5
+        ")->getResultArray();
+        
+        // Top 5 products by sales
+        $top_products = $this->db->query("
+            SELECT i.name, SUM(si.quantity_purchased) as total_sold
+            FROM {$prefix}sales_items si
+            JOIN {$prefix}items i ON si.item_id = i.item_id
+            JOIN {$prefix}sales s ON si.sale_id = s.sale_id
+            WHERE s.sale_time >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+            AND i.deleted = 0
+            GROUP BY si.item_id
+            ORDER BY total_sold DESC
+            LIMIT 5
+        ")->getResultArray();
+        
+        // Sales trend (last 7 days)
+        $sales_trend = $this->db->query("
+            SELECT DATE(s.sale_time) as date, 
+                   COUNT(s.sale_id) as count,
+                   COALESCE(SUM(sp.payment_amount), 0) as revenue
+            FROM {$prefix}sales s
+            LEFT JOIN {$prefix}sales_payments sp ON s.sale_id = sp.sale_id
+            WHERE s.sale_time >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+            GROUP BY DATE(s.sale_time)
+            ORDER BY date ASC
+        ")->getResultArray();
+        
         return [
             'today_sales' => $today_sales,
-            'today_revenue' => $today_revenue,
+            'today_revenue' => number_format($today_revenue, 2),
+            'month_revenue' => number_format($month_revenue, 2),
             'total_customers' => $total_customers,
-            'total_items' => $total_items
+            'total_items' => number_format($total_items),
+            'low_stock' => $low_stock,
+            'recent_sales' => $recent_sales,
+            'top_products' => $top_products,
+            'sales_trend' => $sales_trend
         ];
     }
 

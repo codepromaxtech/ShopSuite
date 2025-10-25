@@ -44,7 +44,7 @@ class Roles extends Secure_Controller
 
         $data['all_permissions'] = $this->role->get_all_permissions_grouped();
 
-        echo view('roles/form_bootstrap5', $data);
+        echo view('roles/form_modern', $data);
     }
 
     /**

@@ -8,12 +8,9 @@
  */
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => lang('Common.welcome_message'),
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
+$title = 'Dashboard';
+echo view('layouts/modern_header', ['title' => $title]);
+?>
 <!-- Welcome Banner -->
 <div class="welcome-banner mb-4 p-4 rounded-3 bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
     <div class="row align-items-center">
@@ -255,4 +252,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?= view('layouts/modern_footer') ?>

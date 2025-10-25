@@ -1,132 +1,330 @@
 <?php
 /**
- * MODERN REPORTS PAGE - Bootstrap 5
+ * MODERN REPORTS PAGE
+ * Category card style like config page
  */
+$title = 'Reports & Analytics';
+echo view('layouts/modern_header', ['title' => $title]);
 ?>
-
-<?= view('layouts/bootstrap5_header') ?>
 
 <!-- Page Header -->
 <div class="page-header">
-    <div>
-        <h2>
-            <i class="bi bi-graph-up"></i>
-            Reports & Analytics
-        </h2>
-        <p class="page-header-subtitle">Generate comprehensive business reports</p>
+    <div class="page-header-content">
+        <div class="page-header-text">
+            <h1 class="page-header-title">Reports & Analytics</h1>
+        </div>
     </div>
     <div class="page-header-actions">
-        <button class="btn btn-light" onclick="window.print()">
-            <i class="bi bi-printer me-1"></i>Print
-        </button>
-        <button class="btn btn-primary" onclick="generateReport()">
-            <i class="bi bi-file-earmark-bar-graph me-1"></i>Generate Report
+        <button class="btn btn-secondary" onclick="window.print()">
+            <i class="bi bi-printer"></i>
+            <span>Print</span>
         </button>
     </div>
 </div>
 
-<div class="container-fluid">
-    <!-- Report Categories -->
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-md-6 col-lg-3">
-            <a href="<?= base_url('reports/sales') ?>" class="text-decoration-none">
-                <div class="stat-item">
-                    <div class="stat-item-icon" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
-                        <i class="bi bi-cart-fill"></i>
-                    </div>
-                    <div class="stat-item-content">
-                        <div class="stat-item-label">Sales Reports</div>
-                        <div class="stat-item-value" style="font-size: 0.875rem;">Summary, Detailed, Trends</div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        
-        <div class="col-12 col-md-6 col-lg-3">
-            <a href="<?= base_url('reports/inventory') ?>" class="text-decoration-none">
-                <div class="stat-item">
-                    <div class="stat-item-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white;">
-                        <i class="bi bi-box-seam"></i>
-                    </div>
-                    <div class="stat-item-content">
-                        <div class="stat-item-label">Inventory Reports</div>
-                        <div class="stat-item-value" style="font-size: 0.875rem;">Stock, Low Stock, Valuation</div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        
-        <div class="col-12 col-md-6 col-lg-3">
-            <a href="<?= base_url('reports/customers') ?>" class="text-decoration-none">
-                <div class="stat-item">
-                    <div class="stat-item-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: white;">
-                        <i class="bi bi-people"></i>
-                    </div>
-                    <div class="stat-item-content">
-                        <div class="stat-item-label">Customer Reports</div>
-                        <div class="stat-item-value" style="font-size: 0.875rem;">Analysis, Top Customers</div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        
-        <div class="col-12 col-md-6 col-lg-3">
-            <a href="<?= base_url('reports/financial') ?>" class="text-decoration-none">
-                <div class="stat-item">
-                    <div class="stat-item-icon" style="background: linear-gradient(135deg, #fa709a, #fee140); color: white;">
-                        <i class="bi bi-cash-stack"></i>
-                    </div>
-                    <div class="stat-item-content">
-                        <div class="stat-item-label">Financial Reports</div>
-                        <div class="stat-item-value" style="font-size: 0.875rem;">Revenue, Expenses, Profit</div>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
+<!-- Reports Categories Grid -->
+<div class="config-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: var(--space-6);">
     
-    <!-- Quick Report Generator -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-            <h5 class="mb-4">Quick Report Generator</h5>
-            <div class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label">Report Type</label>
-                    <select class="form-select" id="reportType">
-                        <option>Sales Summary</option>
-                        <option>Detailed Sales</option>
-                        <option>Inventory Summary</option>
-                        <option>Customer Analysis</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Date From</label>
-                    <input type="date" class="form-control" id="dateFrom" value="<?= date('Y-m-01') ?>">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Date To</label>
-                    <input type="date" class="form-control" id="dateTo" value="<?= date('Y-m-d') ?>">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label d-block">&nbsp;</label>
-                    <button class="btn btn-primary w-100" onclick="generateReport()">
-                        <i class="bi bi-play-fill me-1"></i>Generate
-                    </button>
-                </div>
+    <!-- Sales Reports -->
+    <div class="config-category-card">
+        <div class="config-category-header">
+            <div class="config-category-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+            <div class="config-category-title">
+                <h3>Sales Reports</h3>
+                <p>Revenue and transaction analysis</p>
             </div>
         </div>
+        <div class="config-category-links">
+            <a href="<?= base_url('reports/summary_sales') ?>" class="config-link">
+                <i class="bi bi-graph-up"></i>
+                <span>Sales Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/detailed_sales') ?>" class="config-link">
+                <i class="bi bi-receipt"></i>
+                <span>Detailed Sales</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/summary_payments') ?>" class="config-link">
+                <i class="bi bi-credit-card"></i>
+                <span>Payment Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/summary_taxes') ?>" class="config-link">
+                <i class="bi bi-percent"></i>
+                <span>Tax Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Product Reports -->
+    <div class="config-category-card">
+        <div class="config-category-header">
+            <div class="config-category-icon" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+                <i class="bi bi-box-seam-fill"></i>
+            </div>
+            <div class="config-category-title">
+                <h3>Product Reports</h3>
+                <p>Inventory and product analysis</p>
+            </div>
+        </div>
+        <div class="config-category-links">
+            <a href="<?= base_url('reports/summary_items') ?>" class="config-link">
+                <i class="bi bi-box"></i>
+                <span>Items Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/summary_categories') ?>" class="config-link">
+                <i class="bi bi-tags"></i>
+                <span>Categories Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/summary_discounts') ?>" class="config-link">
+                <i class="bi bi-tag"></i>
+                <span>Discounts Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/inventory_summary') ?>" class="config-link">
+                <i class="bi bi-clipboard-data"></i>
+                <span>Inventory Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Customer Reports -->
+    <div class="config-category-card">
+        <div class="config-category-header">
+            <div class="config-category-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="config-category-title">
+                <h3>Customer Reports</h3>
+                <p>Customer behavior and insights</p>
+            </div>
+        </div>
+        <div class="config-category-links">
+            <a href="<?= base_url('reports/summary_customers') ?>" class="config-link">
+                <i class="bi bi-person-badge"></i>
+                <span>Customers Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/specific_customer') ?>" class="config-link">
+                <i class="bi bi-person-check"></i>
+                <span>Specific Customer</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/summary_rewards') ?>" class="config-link">
+                <i class="bi bi-gift"></i>
+                <span>Rewards Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Supplier Reports -->
+    <div class="config-category-card">
+        <div class="config-category-header">
+            <div class="config-category-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                <i class="bi bi-building"></i>
+            </div>
+            <div class="config-category-title">
+                <h3>Supplier Reports</h3>
+                <p>Purchase and supplier analysis</p>
+            </div>
+        </div>
+        <div class="config-category-links">
+            <a href="<?= base_url('reports/summary_suppliers') ?>" class="config-link">
+                <i class="bi bi-shop"></i>
+                <span>Suppliers Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/specific_supplier') ?>" class="config-link">
+                <i class="bi bi-shop-window"></i>
+                <span>Specific Supplier</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/detailed_receivings') ?>" class="config-link">
+                <i class="bi bi-truck"></i>
+                <span>Detailed Receivings</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Employee Reports -->
+    <div class="config-category-card">
+        <div class="config-category-header">
+            <div class="config-category-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                <i class="bi bi-person-workspace"></i>
+            </div>
+            <div class="config-category-title">
+                <h3>Employee Reports</h3>
+                <p>Staff performance tracking</p>
+            </div>
+        </div>
+        <div class="config-category-links">
+            <a href="<?= base_url('reports/summary_employees') ?>" class="config-link">
+                <i class="bi bi-people"></i>
+                <span>Employees Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/specific_employee') ?>" class="config-link">
+                <i class="bi bi-person"></i>
+                <span>Specific Employee</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/timeclock') ?>" class="config-link">
+                <i class="bi bi-clock"></i>
+                <span>Time Clock Report</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Inventory Reports -->
+    <div class="config-category-card">
+        <div class="config-category-header">
+            <div class="config-category-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                <i class="bi bi-boxes"></i>
+            </div>
+            <div class="config-category-title">
+                <h3>Inventory Reports</h3>
+                <p>Stock levels and movements</p>
+            </div>
+        </div>
+        <div class="config-category-links">
+            <a href="<?= base_url('reports/inventory_summary') ?>" class="config-link">
+                <i class="bi bi-clipboard-data"></i>
+                <span>Inventory Summary</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/inventory_low') ?>" class="config-link">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>Low Inventory</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="<?= base_url('reports/inventory_expiring') ?>" class="config-link">
+                <i class="bi bi-calendar-x"></i>
+                <span>Expiring Items</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
     </div>
 </div>
 
-<script>
-function generateReport() {
-    const reportType = document.getElementById('reportType')?.value;
-    const dateFrom = document.getElementById('dateFrom')?.value;
-    const dateTo = document.getElementById('dateTo')?.value;
-    
-    showNotification('Generating report...', 'info');
-    // Add report generation logic here
+<style>
+/* Config Category Cards (from config page) */
+.config-category-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
 }
-</script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+.config-category-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.config-category-header {
+    padding: var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.config-category-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.config-category-icon i {
+    font-size: 32px;
+    color: white;
+}
+
+.config-category-title h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-1) 0;
+}
+
+.config-category-title p {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    margin: 0;
+}
+
+.config-category-links {
+    padding: var(--space-2);
+}
+
+.config-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.config-link:hover {
+    background: var(--bg-secondary);
+    color: var(--primary-600);
+    transform: translateX(4px);
+}
+
+.config-link i:first-child {
+    font-size: 20px;
+    color: var(--text-tertiary);
+    transition: color var(--transition-fast);
+}
+
+.config-link:hover i:first-child {
+    color: var(--primary-600);
+}
+
+.config-link span {
+    flex: 1;
+    font-weight: var(--font-medium);
+}
+
+.config-link i:last-child {
+    font-size: 14px;
+    color: var(--text-tertiary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .config-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Dark Mode */
+[data-theme="dark"] .config-category-card {
+    background: var(--bg-elevated);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .config-link:hover {
+    background: var(--bg-secondary);
+}
+</style>
+
+<?= view('layouts/modern_footer') ?>

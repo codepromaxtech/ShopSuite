@@ -7,12 +7,9 @@
  */
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => 'My Settings',
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
+$title = 'My Settings';
+echo view('layouts/modern_header', ['title' => $title]);
+?>
 
 <div class="container-fluid">
     <div class="row">
@@ -278,4 +275,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?= view('layouts/modern_footer') ?>

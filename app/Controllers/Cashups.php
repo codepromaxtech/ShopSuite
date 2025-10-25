@@ -194,7 +194,7 @@ class Cashups extends Secure_Controller
 
         $data['cash_ups_info'] = $cash_ups_info;
 
-        echo view("cashups/form", $data);
+        echo view("cashups/form_modern", $data);
     }
 
     /**

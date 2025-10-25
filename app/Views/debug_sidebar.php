@@ -4,12 +4,9 @@
  */
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => 'DEBUG: Sidebar Data',
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
+$title = 'DEBUG: Sidebar Data';
+echo view('layouts/modern_header', ['title' => $title]);
+?>
 
 <div class="container-fluid py-4">
     <div class="card">
@@ -100,4 +97,4 @@
     </div>
 </div>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?= view('layouts/modern_footer') ?>

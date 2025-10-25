@@ -1,334 +1,474 @@
 <?php
 /**
- * MODERN DASHBOARD - Bootstrap 5
- * Responsive dashboard with cards, stats, and charts
+ * MODERN COMPREHENSIVE DASHBOARD
+ * Complete business overview at a glance
  */
+$title = 'Dashboard';
+echo view('layouts/modern_header', ['title' => $title]);
+
+$stats = $stats ?? [];
 ?>
 
-<?= view('layouts/bootstrap5_header') ?>
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-header-content">
+        <div class="page-header-text">
+            <h1 class="page-header-title">Dashboard</h1>
+        </div>
+    </div>
+</div>
+
+<!-- Key Metrics -->
+<div class="stats-grid" style="margin-bottom: var(--space-8);">
+    <!-- Today's Sales -->
+    <div class="stat-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
+            <i class="bi bi-cart-check" style="color: white;"></i>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Today's Sales</div>
+            <div class="stat-card-value" style="color: white;"><?= $stats['today_sales'] ?? 0 ?></div>
+            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">
+                <i class="bi bi-clock"></i> Last 24 hours
+            </div>
+        </div>
+    </div>
+    
+    <!-- Today's Revenue -->
+    <div class="stat-card" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
+            <i class="bi bi-currency-dollar" style="color: white;"></i>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Today's Revenue</div>
+            <div class="stat-card-value" style="color: white;">$<?= $stats['today_revenue'] ?? '0.00' ?></div>
+            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">
+                <i class="bi bi-graph-up"></i> This month: $<?= $stats['month_revenue'] ?? '0.00' ?>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Total Customers -->
+    <div class="stat-card" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
+            <i class="bi bi-people" style="color: white;"></i>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Total Customers</div>
+            <div class="stat-card-value" style="color: white;"><?= number_format($stats['total_customers'] ?? 0) ?></div>
+            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">
+                <i class="bi bi-person-plus"></i> Active customers
+            </div>
+        </div>
+    </div>
+    
+    <!-- Inventory -->
+    <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
+            <i class="bi bi-box-seam" style="color: white;"></i>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Products in Stock</div>
+            <div class="stat-card-value" style="color: white;"><?= $stats['total_items'] ?? 0 ?></div>
+            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">
+                <?php if (($stats['low_stock'] ?? 0) > 0): ?>
+                    <i class="bi bi-exclamation-triangle"></i> <?= $stats['low_stock'] ?> low stock
+                <?php else: ?>
+                    <i class="bi bi-check-circle"></i> All items stocked
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Grid -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); margin-bottom: var(--space-6);">
+    
+    <!-- Sales Trend Chart -->
+    <div class="card">
+        <div class="card-header">
+            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">
+                <i class="bi bi-graph-up"></i>
+                Sales Trend (Last 7 Days)
+            </h2>
+        </div>
+        <div class="card-body">
+            <div style="position: relative; height: 300px;">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="card">
+        <div class="card-header">
+            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">
+                <i class="bi bi-lightning-charge"></i>
+                Quick Actions
+            </h2>
+        </div>
+        <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                <button onclick="location.reload()" class="quick-action-btn" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); border: none; cursor: pointer;">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    <span>Refresh Dashboard</span>
+                </button>
+                <a href="<?= base_url('sales/register') ?>" class="quick-action-btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <i class="bi bi-cart-plus"></i>
+                    <span>New Sale</span>
+                </a>
+                <a href="<?= base_url('customers/view/-1') ?>" class="quick-action-btn" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                    <i class="bi bi-person-plus"></i>
+                    <span>Add Customer</span>
+                </a>
+                <a href="<?= base_url('products/view/-1') ?>" class="quick-action-btn" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Add Product</span>
+                </a>
+                <a href="<?= base_url('reports') ?>" class="quick-action-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>View Reports</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Second Row -->
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-6);">
+    
+    <!-- Recent Sales -->
+    <div class="card">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">
+                <i class="bi bi-receipt"></i>
+                Recent Sales
+            </h2>
+            <a href="<?= base_url('sales') ?>" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <?php if (!empty($stats['recent_sales'])): ?>
+                <div class="list-group">
+                    <?php foreach ($stats['recent_sales'] as $sale): ?>
+                        <div class="list-item">
+                            <div class="list-item-icon" style="background: var(--success-100); color: var(--success-600);">
+                                <i class="bi bi-receipt"></i>
+                            </div>
+                            <div class="list-item-content">
+                                <div class="list-item-title">Sale #<?= $sale['sale_id'] ?></div>
+                                <div class="list-item-subtitle">
+                                    <?= $sale['customer_name'] ?: 'Walk-in Customer' ?>
+                                </div>
+                            </div>
+                            <div class="list-item-value">
+                                $<?= number_format($sale['total'] ?? 0, 2) ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="empty-state-small">
+                    <i class="bi bi-receipt"></i>
+                    <p>No recent sales</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    
+    <!-- Top Products -->
+    <div class="card">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">
+                <i class="bi bi-star"></i>
+                Top Products
+            </h2>
+            <a href="<?= base_url('products') ?>" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <?php if (!empty($stats['top_products'])): ?>
+                <div class="list-group">
+                    <?php foreach ($stats['top_products'] as $index => $product): ?>
+                        <div class="list-item">
+                            <div class="list-item-rank">#<?= $index + 1 ?></div>
+                            <div class="list-item-content">
+                                <div class="list-item-title"><?= esc($product['name']) ?></div>
+                                <div class="list-item-subtitle">
+                                    <?= number_format($product['total_sold']) ?> sold
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="empty-state-small">
+                    <i class="bi bi-star"></i>
+                    <p>No sales data</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    
+    <!-- Low Stock Alert -->
+    <div class="card">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">
+                <i class="bi bi-exclamation-triangle"></i>
+                Low Stock Alert
+            </h2>
+            <a href="<?= base_url('reports/inventory_low') ?>" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="card-body">
+            <?php if (($stats['low_stock'] ?? 0) > 0): ?>
+                <div style="text-align: center; padding: var(--space-6) 0;">
+                    <div style="width: 80px; height: 80px; margin: 0 auto var(--space-4); background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-exclamation-triangle" style="font-size: 32px; color: white;"></i>
+                    </div>
+                    <div style="font-size: var(--text-3xl); font-weight: var(--font-bold); color: var(--danger-600); margin-bottom: var(--space-2);">
+                        <?= $stats['low_stock'] ?>
+                    </div>
+                    <div style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-4);">
+                        Products below reorder level
+                    </div>
+                    <a href="<?= base_url('reports/inventory_low') ?>" class="btn btn-danger btn-sm">
+                        <i class="bi bi-clipboard-check"></i>
+                        <span>Review Products</span>
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="empty-state-small">
+                    <i class="bi bi-check-circle" style="color: var(--success-600);"></i>
+                    <p style="color: var(--success-600);">All products well stocked!</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
 
 <style>
-/* Dashboard-specific styles */
-.dashboard-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Quick Action Buttons */
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
     color: white;
-    padding: 2rem 1.5rem;
-    border-radius: 1rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    background: white;
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    border: 1px solid #e2e8f0;
-    transition: all 0.3s;
-    height: 100%;
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-.stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.stat-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 0.25rem;
-}
-
-.stat-label {
-    font-size: 0.875rem;
-    color: #64748b;
-    font-weight: 500;
-}
-
-.stat-trend {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.375rem;
-    display: inline-block;
-    margin-top: 0.5rem;
-}
-
-.stat-trend.up {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.stat-trend.down {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.quick-action-card {
-    background: white;
-    border-radius: 0.75rem;
-    padding: 1.25rem;
-    border: 2px solid #e2e8f0;
-    text-align: center;
-    transition: all 0.2s;
-    cursor: pointer;
     text-decoration: none;
-    color: inherit;
-    display: block;
+    transition: all var(--transition-fast);
+    font-weight: var(--font-semibold);
 }
 
-.quick-action-card:hover {
-    border-color: #4f46e5;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
-    transform: translateY(-2px);
+.quick-action-btn:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-md);
 }
 
-.quick-action-icon {
-    width: 56px;
-    height: 56px;
-    margin: 0 auto 1rem;
-    border-radius: 50%;
+.quick-action-btn i {
+    font-size: 24px;
+}
+
+/* List Groups */
+.list-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.list-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 1.75rem;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--border-color);
 }
 
-.recent-activity {
-    background: white;
-    border-radius: 0.75rem;
-    border: 1px solid #e2e8f0;
-    overflow: hidden;
-}
-
-.activity-item {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #f1f5f9;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.activity-item:last-child {
+.list-item:last-child {
     border-bottom: none;
 }
 
-.activity-icon {
+.list-item-icon {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 }
 
+.list-item-rank {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary-100);
+    color: var(--primary-700);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-bold);
+    font-size: var(--text-sm);
+    flex-shrink: 0;
+}
+
+.list-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.list-item-title {
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list-item-subtitle {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    margin-top: 2px;
+}
+
+.list-item-value {
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    flex-shrink: 0;
+}
+
+.empty-state-small {
+    padding: var(--space-8) var(--space-4);
+    text-align: center;
+    color: var(--text-tertiary);
+}
+
+.empty-state-small i {
+    font-size: 48px;
+    opacity: 0.3;
+    margin-bottom: var(--space-2);
+}
+
+.empty-state-small p {
+    margin: 0;
+    font-size: var(--text-sm);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    div[style*="grid-template-columns: 2fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    div[style*="grid-template-columns: 1fr 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+
 @media (max-width: 768px) {
-    .dashboard-header {
-        padding: 1.5rem 1rem;
-    }
-    
-    .stat-card {
-        padding: 1rem;
-        margin-bottom: 1rem;
-    }
-    
-    .stat-value {
-        font-size: 1.5rem;
+    .stats-grid {
+        grid-template-columns: 1fr !important;
     }
 }
 </style>
 
-<div class="container-fluid">
-    <!-- Dashboard Header -->
-    <div class="dashboard-header">
-        <h1 class="h3 mb-2">Welcome back, <?= esc($user_info->first_name ?? 'User') ?>! 👋</h1>
-        <p class="mb-0 opacity-75">Here's what's happening with your business today</p>
-    </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-    <!-- Stats Overview -->
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #dbeafe; color: #1e40af;">
-                    <i class="bi bi-cart-fill"></i>
-                </div>
-                <div class="stat-value">
-                    <?= number_format($stats['today_sales'] ?? 0) ?>
-                </div>
-                <div class="stat-label">Today's Sales</div>
-                <span class="stat-trend up">
-                    <i class="bi bi-arrow-up"></i> +12.5%
-                </span>
-            </div>
-        </div>
+<script>
+// Prepare sales trend data
+const salesData = <?= json_encode($stats['sales_trend'] ?? []) ?>;
+const labels = salesData.map(d => {
+    const date = new Date(d.date);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+});
+const revenueData = salesData.map(d => parseFloat(d.revenue));
+const countData = salesData.map(d => parseInt(d.count));
 
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #d1fae5; color: #065f46;">
-                    <i class="bi bi-cash-stack"></i>
-                </div>
-                <div class="stat-value">
-                    $<?= number_format($stats['today_revenue'] ?? 0, 2) ?>
-                </div>
-                <div class="stat-label">Today's Revenue</div>
-                <span class="stat-trend up">
-                    <i class="bi bi-arrow-up"></i> +8.2%
-                </span>
-            </div>
-        </div>
+// Create chart
+const ctx = document.getElementById('salesChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Revenue ($)',
+                data: revenueData,
+                borderColor: 'rgb(99, 102, 241)',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                tension: 0.4,
+                fill: true,
+                yAxisID: 'y'
+            },
+            {
+                label: 'Sales Count',
+                data: countData,
+                borderColor: 'rgb(16, 185, 129)',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                tension: 0.4,
+                fill: true,
+                yAxisID: 'y1'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+            mode: 'index',
+            intersect: false
+        },
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    padding: 15
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                padding: 12,
+                titleFont: { size: 14 },
+                bodyFont: { size: 13 }
+            }
+        },
+        scales: {
+            y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.05)'
+                },
+                ticks: {
+                    callback: function(value) {
+                        return '$' + value.toFixed(0);
+                    }
+                }
+            },
+            y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                beginAtZero: true,
+                grid: {
+                    drawOnChartArea: false
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    }
+});
 
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #fef3c7; color: #92400e;">
-                    <i class="bi bi-people-fill"></i>
-                </div>
-                <div class="stat-value">
-                    <?= number_format($stats['total_customers'] ?? 0) ?>
-                </div>
-                <div class="stat-label">Total Customers</div>
-                <span class="stat-trend up">
-                    <i class="bi bi-arrow-up"></i> +23
-                </span>
-            </div>
-        </div>
+// Auto-refresh every 5 minutes
+setTimeout(() => {
+    location.reload();
+}, 300000);
+</script>
 
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #e0e7ff; color: #4338ca;">
-                    <i class="bi bi-box-seam-fill"></i>
-                </div>
-                <div class="stat-value">
-                    <?= number_format($stats['total_items'] ?? 0) ?>
-                </div>
-                <div class="stat-label">Products in Stock</div>
-                <span class="stat-trend down">
-                    <i class="bi bi-arrow-down"></i> -5
-                </span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="mb-4">
-        <h5 class="mb-3 fw-semibold">Quick Actions</h5>
-        <div class="row g-3">
-            <div class="col-6 col-md-3">
-                <a href="<?= base_url('sales') ?>" class="quick-action-card">
-                    <div class="quick-action-icon" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
-                        <i class="bi bi-plus-lg"></i>
-                    </div>
-                    <div class="fw-semibold">New Sale</div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="<?= base_url('customers/view/-1') ?>" class="quick-action-card">
-                    <div class="quick-action-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white;">
-                        <i class="bi bi-person-plus"></i>
-                    </div>
-                    <div class="fw-semibold">Add Customer</div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="<?= base_url('items/view/-1') ?>" class="quick-action-card">
-                    <div class="quick-action-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: white;">
-                        <i class="bi bi-box"></i>
-                    </div>
-                    <div class="fw-semibold">Add Product</div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="<?= base_url('reports') ?>" class="quick-action-card">
-                    <div class="quick-action-icon" style="background: linear-gradient(135deg, #fa709a, #fee140); color: white;">
-                        <i class="bi bi-graph-up"></i>
-                    </div>
-                    <div class="fw-semibold">View Reports</div>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Activity & Chart -->
-    <div class="row g-4">
-        <!-- Recent Activity -->
-        <div class="col-12 col-lg-6">
-            <h5 class="mb-3 fw-semibold">Recent Activity</h5>
-            <div class="recent-activity">
-                <div class="activity-item">
-                    <div class="activity-icon" style="background: #dbeafe; color: #1e40af;">
-                        <i class="bi bi-cart-check"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="fw-semibold" style="font-size: 0.875rem;">New sale completed</div>
-                        <small class="text-muted">Invoice #1234 - $125.50</small>
-                    </div>
-                    <small class="text-muted">2m ago</small>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon" style="background: #d1fae5; color: #065f46;">
-                        <i class="bi bi-person-plus"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="fw-semibold" style="font-size: 0.875rem;">New customer added</div>
-                        <small class="text-muted">John Smith</small>
-                    </div>
-                    <small class="text-muted">15m ago</small>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon" style="background: #fef3c7; color: #92400e;">
-                        <i class="bi bi-box-seam"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="fw-semibold" style="font-size: 0.875rem;">Product updated</div>
-                        <small class="text-muted">Laptop Pro - Stock adjusted</small>
-                    </div>
-                    <small class="text-muted">1h ago</small>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon" style="background: #fee2e2; color: #991b1b;">
-                        <i class="bi bi-exclamation-triangle"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="fw-semibold" style="font-size: 0.875rem;">Low stock alert</div>
-                        <small class="text-muted">5 items below minimum</small>
-                    </div>
-                    <small class="text-muted">2h ago</small>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon" style="background: #e0e7ff; color: #4338ca;">
-                        <i class="bi bi-truck"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="fw-semibold" style="font-size: 0.875rem;">Receiving completed</div>
-                        <small class="text-muted">PO #456 - 50 items</small>
-                    </div>
-                    <small class="text-muted">3h ago</small>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sales Chart Placeholder -->
-        <div class="col-12 col-lg-6">
-            <h5 class="mb-3 fw-semibold">Sales Overview</h5>
-            <div class="card border-0 shadow-sm" style="height: 350px;">
-                <div class="card-body d-flex align-items-center justify-content-center">
-                    <div class="text-center">
-                        <i class="bi bi-graph-up" style="font-size: 3rem; color: #cbd5e1;"></i>
-                        <p class="text-muted mt-3">Chart will appear here<br><small>Integrate Chart.js or similar</small></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<?= view('layouts/bootstrap5_footer') ?>
+<?= view('layouts/modern_footer') ?>

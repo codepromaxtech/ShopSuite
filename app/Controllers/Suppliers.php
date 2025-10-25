@@ -123,7 +123,7 @@ class Suppliers extends Persons
             $data['controller_name'] = 'suppliers';
             $data['config'] = $this->global_view_data['config'] ?? $this->config ?? [];
 
-            echo view("suppliers/form_bootstrap5", $data);
+            echo view("suppliers/form_modern", $data);
         } catch (\Exception $e) {
             log_message('error', 'Supplier view error: ' . $e->getMessage());
             echo json_encode([

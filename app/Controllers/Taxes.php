@@ -67,7 +67,16 @@ class Taxes extends Secure_Controller
 
         $data['tax_type_options'] = $this->tax_lib->get_tax_type_options($data['default_tax_type']);
 
-        echo view('taxes/manage', $data);
+        // Get all tax rates with joins for display
+        $builder = $this->tax->builder();
+        $builder->select('tax_rates.tax_rate_id as tax_id, tax_codes.tax_code as tax_name, tax_rates.tax_rate, tax_categories.tax_category as category, tax_jurisdictions.jurisdiction_name as jurisdiction, 1 as is_active');
+        $builder->join('tax_codes', 'tax_codes.tax_code_id = tax_rates.rate_tax_code_id', 'left');
+        $builder->join('tax_categories', 'tax_categories.tax_category_id = tax_rates.rate_tax_category_id', 'left');
+        $builder->join('tax_jurisdictions', 'tax_jurisdictions.jurisdiction_id = tax_rates.rate_jurisdiction_id', 'left');
+        $builder->orderBy('tax_rates.tax_rate_id', 'DESC');
+        $data['tax_rates'] = $builder->get()->getResultArray();
+
+        echo view('taxes/manage_modern', $data);
     }
 
     /**
@@ -226,7 +235,7 @@ class Taxes extends Secure_Controller
             $data['tax_rate'] = $tax_rate_info->tax_rate;
         }
 
-        echo view('taxes/tax_rates_form', $data);
+        echo view('taxes/tax_rates_form_modern', $data);
     }
 
     /**

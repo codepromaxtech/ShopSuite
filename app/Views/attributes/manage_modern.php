@@ -4,12 +4,9 @@
  */
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => lang('Module.attributes'),
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
+$title = 'Attributes';
+echo view('layouts/modern_header', ['title' => $title]);
+?>
 
 <!-- Page Header -->
 <div class="container-fluid py-3">
@@ -158,4 +155,4 @@ async function deleteAttribute(attributeId) {
 }
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?= view('layouts/modern_footer') ?>

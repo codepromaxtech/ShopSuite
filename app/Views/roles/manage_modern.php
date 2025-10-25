@@ -1,16 +1,10 @@
 <?php
 /**
- * MODERN ROLES MANAGEMENT
- * Role-Based Permission System
+ * MODERN ROLES & PERMISSIONS PAGE
  */
+$title = 'Roles & Permissions';
+echo view('layouts/modern_header', ['title' => $title]);
 ?>
-
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => 'Roles & Permissions',
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
 
 <!-- Page Header -->
 <div class="container-fluid py-3">
@@ -197,4 +191,4 @@ function duplicateRole(roleId, roleName) {
 }
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?= view('layouts/modern_footer') ?>

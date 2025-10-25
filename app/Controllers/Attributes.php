@@ -223,7 +223,7 @@ class Attributes extends Secure_Controller
         $selected_flags = $info->definition_flags === '' ? $show_all : $info->definition_flags;
         $data['selected_definition_flags'] = $this->get_attributes($selected_flags);
 
-        echo view('attributes/form', $data);
+        echo view('attributes/form_modern', $data);
     }
 
     /**

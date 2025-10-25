@@ -3,177 +3,152 @@
  * MODERN BACKUP MANAGEMENT
  * Database Backup & Restore System
  */
+$title = 'Database Backups';
+echo view('layouts/modern_header', ['title' => $title]);
 ?>
 
-<?= view('layouts/bootstrap5_header', [
-    'page_title' => 'Database Backups',
-    'allowed_modules' => $allowed_modules ?? [],
-    'user_info' => $user_info ?? null,
-    'config' => $config ?? []
-]) ?>
-
 <!-- Page Header -->
-<div class="container-fluid py-3">
-    <div class="row align-items-center mb-3">
-        <div class="col">
-            <h3 class="mb-0">
-                <i class="bi bi-database-fill-down me-2"></i>
-                Database Backups
-            </h3>
-            <small class="text-muted">Create, download, and restore database backups</small>
+<div class="page-header">
+    <div class="page-header-content">
+        <div class="page-header-text">
+            <h1 class="page-header-title">Database Backups</h1>
         </div>
-        <div class="col-auto">
-            <button class="btn btn-success" onclick="createBackup()">
-                <i class="bi bi-plus-circle me-1"></i>Create Backup
+    </div>
+    <div class="page-header-actions">
+        <button class="btn btn-primary" onclick="createBackup()">
+            <i class="bi bi-plus-circle"></i>
+            <span>Create Backup</span>
+        </button>
+        <a href="<?= base_url('backups/settings') ?>" class="btn btn-secondary">
+            <i class="bi bi-gear"></i>
+            <span>Settings</span>
+        </a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-icon">
+            <i class="bi bi-database-fill-down"></i>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-card-label">Total Backups</div>
+            <div class="stat-card-value"><?= count($backups) ?></div>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-card-icon">
+            <i class="bi bi-hdd"></i>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-card-label">Total Size</div>
+            <div class="stat-card-value"><?= number_format($total_size / 1024 / 1024, 2) ?> MB</div>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-card-icon">
+            <i class="bi bi-clock-history"></i>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-card-label">Latest Backup</div>
+            <div class="stat-card-value"><?= !empty($backups) ? date('M d', strtotime($backups[0]->created_at)) : 'Never' ?></div>
+        </div>
+    </div>
+</div>
+
+<!-- Backups Table -->
+<div class="data-table-container">
+    <div class="data-table-header">
+        <h2 class="data-table-title">
+            <i class="bi bi-list-ul"></i>
+            Backup History
+        </h2>
+        <div class="data-table-actions">
+            <button class="btn btn-danger" onclick="deleteSelected()" id="delete-btn" disabled>
+                <i class="bi bi-trash"></i>
+                <span>Delete Selected</span>
             </button>
-            <a href="<?= base_url('backups/settings') ?>" class="btn btn-outline-secondary">
-                <i class="bi bi-gear me-1"></i>Auto Backup Settings
-            </a>
+            <button class="btn btn-secondary" onclick="cleanOldBackups()">
+                <i class="bi bi-broom"></i>
+                <span>Clean Old</span>
+            </button>
         </div>
     </div>
-
-    <!-- Statistics Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <div class="rounded-circle bg-primary bg-opacity-10 p-3">
-                                <i class="bi bi-database-fill-down text-primary" style="font-size: 2rem;"></i>
-                            </div>
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="text-muted mb-0">Total Backups</h6>
-                            <h2 class="mb-0"><?= count($backups) ?></h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <div class="rounded-circle bg-success bg-opacity-10 p-3">
-                                <i class="bi bi-hdd text-success" style="font-size: 2rem;"></i>
-                            </div>
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="text-muted mb-0">Total Size</h6>
-                            <h2 class="mb-0"><?= number_format($total_size / 1024 / 1024, 2) ?> MB</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <div class="rounded-circle bg-info bg-opacity-10 p-3">
-                                <i class="bi bi-clock-history text-info" style="font-size: 2rem;"></i>
-                            </div>
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="text-muted mb-0">Latest Backup</h6>
-                            <h2 class="mb-0"><?= !empty($backups) ? date('M d', strtotime($backups[0]->created_at)) : 'Never' ?></h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Backups Table -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Backup History</h5>
-            <div class="btn-group btn-group-sm">
-                <button class="btn btn-outline-danger" onclick="deleteSelected()" id="delete-btn" disabled>
-                    <i class="bi bi-trash"></i> Delete Selected
-                </button>
-                <button class="btn btn-outline-warning" onclick="cleanOldBackups()">
-                    <i class="bi bi-broom"></i> Clean Old
+    <div class="data-table-content">
+        <?php if (empty($backups)): ?>
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <h3>No backups found</h3>
+                <p>Create your first backup to get started</p>
+                <button class="btn btn-primary" onclick="createBackup()">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Create Backup</span>
                 </button>
             </div>
-        </div>
-        <div class="card-body p-0">
-            <?php if (empty($backups)): ?>
-                <div class="text-center py-5">
-                    <i class="bi bi-inbox" style="font-size: 4rem; opacity: 0.3;"></i>
-                    <h5 class="mt-3 text-muted">No backups found</h5>
-                    <p class="text-muted">Create your first backup to get started</p>
-                    <button class="btn btn-primary" onclick="createBackup()">
-                        <i class="bi bi-plus-circle me-1"></i>Create Backup
-                    </button>
-                </div>
-            <?php else: ?>
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="40">
-                                    <input type="checkbox" class="form-check-input" id="select-all">
-                                </th>
-                                <th>Filename</th>
-                                <th>Size</th>
-                                <th>Type</th>
-                                <th>Created By</th>
-                                <th>Created At</th>
-                                <th>Notes</th>
-                                <th width="200">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($backups as $backup): ?>
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" class="form-check-input backup-checkbox" value="<?= $backup->backup_id ?>">
-                                    </td>
-                                    <td>
-                                        <i class="bi bi-file-earmark-zip text-primary me-2"></i>
-                                        <strong><?= esc($backup->filename) ?></strong>
-                                    </td>
-                                    <td><?= number_format($backup->file_size / 1024 / 1024, 2) ?> MB</td>
-                                    <td>
-                                        <?php if ($backup->backup_type === 'auto'): ?>
-                                            <span class="badge bg-info">Auto</span>
-                                        <?php else: ?>
-                                            <span class="badge bg-primary">Manual</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td><?= esc($backup->first_name . ' ' . $backup->last_name) ?></td>
-                                    <td><?= date('Y-m-d H:i', strtotime($backup->created_at)) ?></td>
-                                    <td><small class="text-muted"><?= esc($backup->notes) ?></small></td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="<?= base_url('backups/download/' . $backup->backup_id) ?>" 
-                                               class="btn btn-outline-primary" 
-                                               title="Download">
-                                                <i class="bi bi-download"></i>
-                                            </a>
-                                            <button class="btn btn-outline-success" 
-                                                    onclick="restoreBackup(<?= $backup->backup_id ?>, '<?= esc($backup->filename) ?>')" 
-                                                    title="Restore">
-                                                <i class="bi bi-arrow-counterclockwise"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger" 
-                                                    onclick="deleteBackup(<?= $backup->backup_id ?>)" 
-                                                    title="Delete">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php endif; ?>
-        </div>
+        <?php else: ?>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40px">
+                            <input type="checkbox" id="select-all">
+                        </th>
+                        <th>Filename</th>
+                        <th>Size</th>
+                        <th>Type</th>
+                        <th>Created By</th>
+                        <th>Created At</th>
+                        <th>Notes</th>
+                        <th style="width: 200px">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($backups as $backup): ?>
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="backup-checkbox" value="<?= $backup->backup_id ?>">
+                        </td>
+                        <td>
+                            <i class="bi bi-file-earmark-zip"></i>
+                            <strong><?= esc($backup->filename) ?></strong>
+                        </td>
+                        <td><?= number_format($backup->file_size / 1024 / 1024, 2) ?> MB</td>
+                        <td>
+                            <?php if ($backup->backup_type === 'auto'): ?>
+                                <span class="badge badge-info">Auto</span>
+                            <?php else: ?>
+                                <span class="badge badge-primary">Manual</span>
+                            <?php endif; ?>
+                        </td>
+                        <td><?= esc($backup->first_name . ' ' . $backup->last_name) ?></td>
+                        <td><?= date('Y-m-d H:i', strtotime($backup->created_at)) ?></td>
+                        <td><?= esc($backup->notes) ?></td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="<?= base_url('backups/download/' . $backup->backup_id) ?>" 
+                                   class="btn btn-sm btn-primary" 
+                                   title="Download">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                                <button class="btn btn-sm btn-success" 
+                                        onclick="restoreBackup(<?= $backup->backup_id ?>, '<?= esc($backup->filename) ?>')" 
+                                        title="Restore">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" 
+                                        onclick="deleteBackup(<?= $backup->backup_id ?>)" 
+                                        title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -200,165 +175,144 @@ function updateDeleteButton() {
     deleteBtn.disabled = selected.length === 0;
 }
 
-function createBackup() {
-    Swal.fire({
-        title: 'Create Database Backup',
-        input: 'textarea',
-        inputLabel: 'Notes (optional)',
-        inputPlaceholder: 'Enter backup notes...',
-        showCancelButton: true,
-        confirmButtonText: 'Create Backup',
-        showLoaderOnConfirm: true,
-        preConfirm: (notes) => {
-            return $.ajax({
-                url: BASE_URL + 'backups/create',
-                method: 'POST',
-                data: { notes: notes },
-                dataType: 'json'
-            });
-        },
-        allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-        if (result.isConfirmed) {
-            if (result.value.success) {
-                Swal.fire('Success!', result.value.message, 'success').then(() => {
-                    location.reload();
-                });
-            } else {
-                Swal.fire('Error', result.value.message, 'error');
-            }
+async function createBackup() {
+    const notes = prompt('Enter backup notes (optional):');
+    if (notes === null) return; // User cancelled
+    
+    try {
+        const formData = new FormData();
+        formData.append('notes', notes);
+        
+        const response = await fetch('<?= base_url('backups/create') ?>', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            window.shopsuiteApp?.showToast?.('Success', result.message, 'success') || alert(result.message);
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            window.shopsuiteApp?.showToast?.('Error', result.message, 'error') || alert(result.message);
         }
-    });
+    } catch (error) {
+        window.shopsuiteApp?.showToast?.('Error', 'Failed to create backup', 'error') || alert('Error creating backup');
+    }
 }
 
-function restoreBackup(backupId, filename) {
-    Swal.fire({
-        title: 'Restore Database?',
-        html: `<strong>WARNING:</strong> This will replace all current data with the backup:<br><br><code>${filename}</code><br><br>This action cannot be undone!`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        confirmButtonText: 'Yes, restore it!',
-        cancelButtonText: 'Cancel'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: BASE_URL + 'backups/restore',
-                method: 'POST',
-                data: { backup_id: backupId },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        Swal.fire('Restored!', response.message, 'success').then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire('Error', response.message, 'error');
-                    }
-                },
-                error: function() {
-                    Swal.fire('Error', 'An error occurred during restore', 'error');
-                }
-            });
+async function restoreBackup(backupId, filename) {
+    const confirmed = confirm(`WARNING: This will replace all current data with the backup:\n\n${filename}\n\nThis action cannot be undone! Continue?`);
+    if (!confirmed) return;
+    
+    try {
+        const formData = new FormData();
+        formData.append('backup_id', backupId);
+        
+        const response = await fetch('<?= base_url('backups/restore') ?>', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            window.shopsuiteApp?.showToast?.('Restored!', result.message, 'success') || alert(result.message);
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            window.shopsuiteApp?.showToast?.('Error', result.message, 'error') || alert(result.message);
         }
-    });
+    } catch (error) {
+        window.shopsuiteApp?.showToast?.('Error', 'An error occurred during restore', 'error') || alert('Error during restore');
+    }
 }
 
-function deleteBackup(backupId) {
-    Swal.fire({
-        title: 'Delete Backup?',
-        text: 'This will permanently delete the backup file.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: BASE_URL + 'backups/delete',
-                method: 'POST',
-                data: { ids: [backupId] },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        showNotification(response.message, 'success');
-                        location.reload();
-                    } else {
-                        showNotification(response.message, 'error');
-                    }
-                }
-            });
+async function deleteBackup(backupId) {
+    const confirmed = confirm('Delete this backup? This will permanently delete the backup file.');
+    if (!confirmed) return;
+    
+    try {
+        const formData = new FormData();
+        formData.append('ids[]', backupId);
+        
+        const response = await fetch('<?= base_url('backups/delete') ?>', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            window.shopsuiteApp?.showToast?.('Success', result.message, 'success') || alert(result.message);
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            window.shopsuiteApp?.showToast?.('Error', result.message, 'error') || alert(result.message);
         }
-    });
+    } catch (error) {
+        window.shopsuiteApp?.showToast?.('Error', 'Failed to delete backup', 'error') || alert('Error deleting backup');
+    }
 }
 
-function deleteSelected() {
+async function deleteSelected() {
     const selected = Array.from(document.querySelectorAll('.backup-checkbox:checked')).map(cb => cb.value);
     
-    if (selected.length === 0) {
+    if (selected.length === 0) return;
+    
+    const confirmed = confirm(`Delete ${selected.length} selected backup(s)?`);
+    if (!confirmed) return;
+    
+    try {
+        const formData = new FormData();
+        selected.forEach(id => formData.append('ids[]', id));
+        
+        const response = await fetch('<?= base_url('backups/delete') ?>', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            window.shopsuiteApp?.showToast?.('Success', result.message, 'success') || alert(result.message);
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            window.shopsuiteApp?.showToast?.('Error', result.message, 'error') || alert(result.message);
+        }
+    } catch (error) {
+        window.shopsuiteApp?.showToast?.('Error', 'Failed to delete backups', 'error') || alert('Error deleting backups');
+    }
+}
+
+async function cleanOldBackups() {
+    const keepCount = prompt('Keep how many recent backups?', '10');
+    if (keepCount === null) return; // User cancelled
+    
+    if (isNaN(keepCount) || keepCount < 1) {
+        alert('Please enter a valid number (minimum 1)');
         return;
     }
     
-    Swal.fire({
-        title: 'Delete Selected Backups?',
-        text: `This will delete ${selected.length} backup(s).`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete them!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: BASE_URL + 'backups/delete',
-                method: 'POST',
-                data: { ids: selected },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        showNotification(response.message, 'success');
-                        location.reload();
-                    } else {
-                        showNotification(response.message, 'error');
-                    }
-                }
-            });
+    try {
+        const formData = new FormData();
+        formData.append('keep_count', keepCount);
+        
+        const response = await fetch('<?= base_url('backups/clean') ?>', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            window.shopsuiteApp?.showToast?.('Success', result.message, 'success') || alert(result.message);
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            window.shopsuiteApp?.showToast?.('Error', result.message, 'error') || alert(result.message);
         }
-    });
-}
-
-function cleanOldBackups() {
-    Swal.fire({
-        title: 'Clean Old Backups',
-        input: 'number',
-        inputLabel: 'Keep how many recent backups?',
-        inputValue: 10,
-        inputAttributes: {
-            min: 1,
-            max: 100,
-            step: 1
-        },
-        showCancelButton: true,
-        confirmButtonText: 'Clean',
-        preConfirm: (keepCount) => {
-            return $.ajax({
-                url: BASE_URL + 'backups/clean',
-                method: 'POST',
-                data: { keep_count: keepCount },
-                dataType: 'json'
-            });
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            if (result.value.success) {
-                Swal.fire('Success!', result.value.message, 'success').then(() => {
-                    location.reload();
-                });
-            } else {
-                Swal.fire('Error', result.value.message, 'error');
-            }
-        }
-    });
+    } catch (error) {
+        window.shopsuiteApp?.showToast?.('Error', 'Failed to clean backups', 'error') || alert('Error cleaning backups');
+    }
 }
 </script>
 
-<?= view('layouts/bootstrap5_footer') ?>
+<?= view('layouts/modern_footer') ?>
