@@ -81,7 +81,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                 <?php if ($category === 'sales' && in_array($selected_type, ['summary', 'detailed'])): ?>
                 <div class="report-options" style="margin-top: var(--space-4);">
                     <label style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); cursor: pointer;">
-                        <input type="checkbox" name="show_quantity" value="1" <?= ($this->request->getPost('show_quantity') ?? '1') === '1' ? 'checked' : '' ?>>
+                        <input type="checkbox" name="show_quantity" value="1" <?= ($_POST['show_quantity'] ?? '1') === '1' ? 'checked' : '' ?>>
                         <span>Show Quantity Purchased column</span>
                     </label>
                 </div>
