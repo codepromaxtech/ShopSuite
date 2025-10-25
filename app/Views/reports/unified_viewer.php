@@ -166,9 +166,13 @@ echo view('layouts/modern_header', ['title' => $title]);
                     // Display condition debug
                     echo "\n=== DISPLAY CONDITION ===\n";
                     echo "isset(report_data): " . (isset($report_data) ? 'YES' : 'NO') . "\n";
-                    echo "is_array(report_data): " . (is_array($report_data) ? 'YES' : 'NO') . "\n";
-                    echo "count(report_data): " . (isset($report_data) ? count($report_data) : 'N/A') . "\n";
-                    echo "Condition passes: " . ((isset($report_data) && is_array($report_data) && count($report_data) > 0) ? 'YES - SHOULD SHOW' : 'NO - WILL NOT SHOW') . "\n";
+                    if (isset($report_data)) {
+                        echo "is_array(report_data): " . (is_array($report_data) ? 'YES' : 'NO') . "\n";
+                        echo "count(report_data): " . count($report_data) . "\n";
+                        echo "Condition passes: " . ((is_array($report_data) && count($report_data) > 0) ? 'YES - SHOULD SHOW' : 'NO - WILL NOT SHOW') . "\n";
+                    } else {
+                        echo "report_data is not set - report not generated\n";
+                    }
                 }
             ?></pre>
         </div>
