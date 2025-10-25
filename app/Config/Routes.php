@@ -16,17 +16,14 @@ $routes->add('no_access/index/(:segment)/(:segment)', 'No_access::index/$1/$2');
 
 // Unified Report Routes (must come BEFORE wildcard routes)
 $routes->add('reports/sales', 'Reports::sales');
-$routes->post('reports/sales/export', 'Reports::export/sales');
 $routes->add('reports/products', 'Reports::products');
-$routes->post('reports/products/export', 'Reports::export/products');
 $routes->add('reports/customers', 'Reports::customers');
-$routes->post('reports/customers/export', 'Reports::export/customers');
 $routes->add('reports/suppliers', 'Reports::suppliers');
-$routes->post('reports/suppliers/export', 'Reports::export/suppliers');
 $routes->add('reports/employees', 'Reports::employees');
-$routes->post('reports/employees/export', 'Reports::export/employees');
 $routes->add('reports/financial', 'Reports::financial');
-$routes->post('reports/financial/export', 'Reports::export/financial');
+
+// Export routes - must come BEFORE legacy wildcards
+$routes->post('reports/(:segment)/export', 'Reports::export/$1');
 
 // Legacy Report Routes (wildcards)
 $routes->add('reports/summary_(:any)/(:any)/(:any)', 'Reports::Summary_$1/$2/$3/$4');
