@@ -193,6 +193,19 @@ echo view('layouts/modern_header', ['title' => $title]);
     <!-- Report Results -->
     <?php if (isset($report_data) && is_array($report_data) && count($report_data) > 0): ?>
     <div class="report-results card">
+        <!-- Report Header (for print/PDF) -->
+        <div class="report-header print-only" style="display: none;">
+            <div style="text-align: center; margin-bottom: var(--space-6);">
+                <h1 style="margin: 0; font-size: 24px; color: var(--text-primary);"><?= $config->company ?? 'Company Name' ?></h1>
+                <p style="margin: var(--space-2) 0 0 0; color: var(--text-secondary);"><?= $config->address ?? '' ?></p>
+            </div>
+            <hr style="border: 0; border-top: 2px solid var(--border-color); margin: var(--space-4) 0;">
+            <div style="margin-bottom: var(--space-4);">
+                <h2 style="margin: 0 0 var(--space-2) 0; font-size: 20px;"><?= $category_config['title'] ?> - <?= $type_config['label'] ?></h2>
+                <p style="margin: 0; color: var(--text-secondary);"><?= $report_subtitle ?? '' ?></p>
+            </div>
+        </div>
+        
         <div class="card-header">
             <h3>
                 <i class="bi bi-graph-up"></i> 
@@ -380,11 +393,56 @@ echo view('layouts/modern_header', ['title' => $title]);
 
 /* Print Styles */
 @media print {
+    /* Hide UI elements */
     .report-config-panel,
     .page-header,
     .btn,
-    .card-actions {
+    .card-actions,
+    .breadcrumbs,
+    .card-header,
+    .debug-info {
         display: none !important;
+    }
+    
+    /* Show print-only elements */
+    .print-only {
+        display: block !important;
+    }
+    
+    /* Reset card styles for print */
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    
+    /* Table formatting */
+    .modern-table {
+        page-break-inside: auto;
+    }
+    
+    .modern-table tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+    
+    .modern-table thead {
+        display: table-header-group;
+    }
+    
+    .modern-table tfoot {
+        display: table-footer-group;
+        font-weight: bold;
+        border-top: 2px solid #000;
+    }
+    
+    /* Page setup */
+    @page {
+        margin: 1.5cm;
+    }
+    
+    body {
+        background: white !important;
     }
 }
 </style>
@@ -423,7 +481,7 @@ function exportReport(format) {
     // Create temporary form for export
     const exportForm = document.createElement('form');
     exportForm.method = 'POST';
-    exportForm.action = '<?= current_url() ?>/export';
+    exportForm.action = '<?= base_url("reports/{$category}/export") ?>';
     
     for (let [key, value] of formData.entries()) {
         const input = document.createElement('input');

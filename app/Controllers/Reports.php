@@ -220,9 +220,17 @@ class Reports extends Secure_Controller
                     $data['debug_info']['data_keys'] = is_array($reportData) ? array_keys($reportData) : 'not an array';
                     $data['debug_info']['data_summary_count'] = isset($reportData['summary']) ? count($reportData['summary']) : 'no summary key';
                     
+                    // Get summary/totals if method exists
+                    $summaryData = null;
+                    if (method_exists($model, 'getSummaryData')) {
+                        $summaryData = $model->getSummaryData($filters);
+                        $data['debug_info']['summary_totals'] = 'Fetched';
+                    }
+                    
                     log_message('debug', 'Report data generated: ' . json_encode(array_keys($reportData)));
                     
                     $data['report_data'] = $reportData;
+                    $data['summary_data'] = $summaryData;
                     $data['view_mode'] = $viewMode;
                     $data['chart_type'] = $chartType;
                     $data['report_subtitle'] = $this->_get_subtitle_report($filters);
@@ -245,6 +253,106 @@ class Reports extends Secure_Controller
         }
         
         echo view('reports/unified_viewer', $data);
+    }
+    
+    /**
+     * Export unified report to PDF or Excel
+     */
+    public function export(string $category): void
+    {
+        $format = $this->request->getPost('export');
+        $reportType = $this->request->getPost('report_type');
+        
+        $reportsConfig = config('Reports');
+        $categoryConfig = $reportsConfig->categories[$category] ?? null;
+        $typeConfig = $categoryConfig['types'][$reportType] ?? null;
+        
+        if (!$typeConfig) {
+            show_404();
+            return;
+        }
+        
+        // Get filters and generate report
+        $filters = $this->getFiltersFromRequest();
+        $modelName = 'App\\Models\\Reports\\' . $typeConfig['model'];
+        
+        if (!class_exists($modelName)) {
+            show_404();
+            return;
+        }
+        
+        $model = model($modelName);
+        $reportData = $model->getData($filters);
+        $summaryData = method_exists($model, 'getSummaryData') ? $model->getSummaryData($filters) : null;
+        
+        // Get report title and subtitle
+        $title = $categoryConfig['title'] . ' - ' . $typeConfig['label'];
+        $subtitle = $this->_get_subtitle_report($filters);
+        
+        if ($format === 'excel') {
+            $this->exportToExcel($title, $subtitle, $reportData, $summaryData);
+        } elseif ($format === 'pdf') {
+            $this->exportToPDF($title, $subtitle, $reportData, $summaryData, $typeConfig);
+        }
+    }
+    
+    /**
+     * Export to Excel
+     */
+    private function exportToExcel(string $title, string $subtitle, array $data, ?array $summary): void
+    {
+        $filename = preg_replace('/[^A-Za-z0-9_\-]/', '_', $title) . '_' . date('Y-m-d') . '.csv';
+        
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        
+        $output = fopen('php://output', 'w');
+        
+        // Title rows
+        fputcsv($output, [$title]);
+        fputcsv($output, [$subtitle]);
+        fputcsv($output, []); // Empty row
+        
+        if (!empty($data)) {
+            // Headers
+            fputcsv($output, array_keys($data[0]));
+            
+            // Data rows
+            foreach ($data as $row) {
+                fputcsv($output, $row);
+            }
+            
+            // Summary row
+            if ($summary) {
+                fputcsv($output, []); // Empty row
+                fputcsv($output, array_merge(['TOTAL'], array_slice($summary, 1)));
+            }
+        }
+        
+        fclose($output);
+        exit;
+    }
+    
+    /**
+     * Export to PDF
+     */
+    private function exportToPDF(string $title, string $subtitle, array $data, ?array $summary, array $typeConfig): void
+    {
+        // For now, render HTML that can be printed to PDF
+        // TODO: Integrate with a PDF library like TCPDF or DomPDF
+        
+        $html = view('reports/export_pdf', [
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'report_data' => $data,
+            'summary_data' => $summary,
+            'type_config' => $typeConfig
+        ]);
+        
+        // Set headers for PDF-friendly print
+        header('Content-Type: text/html; charset=utf-8');
+        echo $html;
+        exit;
     }
     
     /**

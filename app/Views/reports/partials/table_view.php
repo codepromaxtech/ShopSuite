@@ -9,7 +9,7 @@
     <?php 
     // Handle both formats: direct array or array with 'summary' key
     $tableData = $report_data['summary'] ?? $report_data;
-    $totalsData = $report_data['totals'] ?? null;
+    $totalsData = $summary_data ?? null; // Use summary_data from controller
     ?>
     
     <?php if (!empty($tableData) && is_array($tableData)): ?>
