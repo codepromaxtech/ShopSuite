@@ -14,6 +14,9 @@ $routes->post('login', 'Login::index');
 $routes->add('no_access/index/(:segment)', 'No_access::index/$1');
 $routes->add('no_access/index/(:segment)/(:segment)', 'No_access::index/$1/$2');
 
+// Main Reports Dashboard
+$routes->add('reports', 'Reports::index');
+
 // Unified Report Routes (must come BEFORE wildcard routes)
 $routes->add('reports/sales', 'Reports::sales');
 $routes->add('reports/products', 'Reports::products');
