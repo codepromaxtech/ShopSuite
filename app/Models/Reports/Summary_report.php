@@ -117,34 +117,37 @@ abstract class Summary_report extends Report
             $builder->where('sales.sale_time BETWEEN ' . $this->db->escape(rawurldecode($inputs['start_date'])) . ' AND ' . $this->db->escape(rawurldecode($inputs['end_date'])));
         }
 
-        if ($inputs['location_id'] != 'all') {
+        if (isset($inputs['location_id']) && $inputs['location_id'] != 'all') {
             $builder->where('sales_items.item_location', $inputs['location_id']);
         }
 
-        if ($inputs['sale_type'] == 'complete') {
+        if (isset($inputs['sale_type']) && $inputs['sale_type'] == 'complete') {
             $builder->where('sales.sale_status', COMPLETED);
             $builder->groupStart();
             $builder->where('sales.sale_type', SALE_TYPE_POS);
             $builder->orWhere('sales.sale_type', SALE_TYPE_INVOICE);
             $builder->orWhere('sales.sale_type', SALE_TYPE_RETURN);
             $builder->groupEnd();
-        } elseif ($inputs['sale_type'] == 'sales') {
+        } elseif (isset($inputs['sale_type']) && $inputs['sale_type'] == 'sales') {
             $builder->where('sales.sale_status', COMPLETED);
             $builder->groupStart();
             $builder->where('sales.sale_type', SALE_TYPE_POS);
             $builder->orWhere('sales.sale_type', SALE_TYPE_INVOICE);
             $builder->groupEnd();
-        } elseif ($inputs['sale_type'] == 'quotes') {
+        } elseif (isset($inputs['sale_type']) && $inputs['sale_type'] == 'quotes') {
             $builder->where('sales.sale_status', SUSPENDED);
             $builder->where('sales.sale_type', SALE_TYPE_QUOTE);
-        } elseif ($inputs['sale_type'] == 'work_orders') {
+        } elseif (isset($inputs['sale_type']) && $inputs['sale_type'] == 'work_orders') {
             $builder->where('sales.sale_status', SUSPENDED);
             $builder->where('sales.sale_type', SALE_TYPE_WORK_ORDER);
-        } elseif ($inputs['sale_type'] == 'canceled') {
+        } elseif (isset($inputs['sale_type']) && $inputs['sale_type'] == 'canceled') {
             $builder->where('sales.sale_status', CANCELED);
-        } elseif ($inputs['sale_type'] == 'returns') {
+        } elseif (isset($inputs['sale_type']) && $inputs['sale_type'] == 'returns') {
             $builder->where('sales.sale_status', COMPLETED);
             $builder->where('sales.sale_type', SALE_TYPE_RETURN);
+        } elseif (isset($inputs['sale_type']) && is_numeric($inputs['sale_type'])) {
+            // Handle numeric sale types (0=POS, 1=Invoice, 2=Work Order, 3=Quote, 4=Return)
+            $builder->where('sales.sale_type', (int)$inputs['sale_type']);
         }
     }
 
