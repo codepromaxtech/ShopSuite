@@ -332,9 +332,12 @@ class Reports extends BaseConfig
             'label' => 'Sale Type',
             'type' => 'select',
             'options' => [
-                'all' => 'All',
-                'sales' => 'Sales Only',
-                'returns' => 'Returns Only'
+                'all' => 'All Types',
+                '0' => 'POS Sales',
+                '1' => 'Invoices',
+                '2' => 'Work Orders',
+                '3' => 'Quotes',
+                '4' => 'Returns'
             ],
             'required' => false,
             'default' => 'all'
