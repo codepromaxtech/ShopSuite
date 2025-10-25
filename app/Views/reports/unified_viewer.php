@@ -187,7 +187,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <?php endif; ?>
     
     <!-- Report Results -->
-    <?php if (isset($report_data) && !empty($report_data)): ?>
+    <?php if (isset($report_data) && is_array($report_data) && count($report_data) > 0): ?>
     <div class="report-results card">
         <div class="card-header">
             <h3>

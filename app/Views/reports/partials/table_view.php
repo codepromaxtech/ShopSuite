@@ -6,20 +6,26 @@
 ?>
 
 <div class="report-table-container">
-    <?php if (isset($report_data['summary']) && !empty($report_data['summary'])): ?>
+    <?php 
+    // Handle both formats: direct array or array with 'summary' key
+    $tableData = $report_data['summary'] ?? $report_data;
+    $totalsData = $report_data['totals'] ?? null;
+    ?>
+    
+    <?php if (!empty($tableData) && is_array($tableData)): ?>
         <div class="table-responsive">
             <table class="modern-table">
                 <thead>
                     <tr>
-                        <?php if (!empty($report_data['summary'])): ?>
-                            <?php foreach (array_keys((array)$report_data['summary'][0]) as $column): ?>
+                        <?php if (!empty($tableData)): ?>
+                            <?php foreach (array_keys((array)$tableData[0]) as $column): ?>
                                 <th><?= ucwords(str_replace('_', ' ', $column)) ?></th>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($report_data['summary'] as $row): ?>
+                    <?php foreach ($tableData as $row): ?>
                         <tr>
                             <?php foreach ((array)$row as $value): ?>
                                 <td><?= is_numeric($value) ? number_format($value, 2) : htmlspecialchars($value) ?></td>
@@ -27,10 +33,10 @@
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
-                <?php if (isset($report_data['totals'])): ?>
+                <?php if ($totalsData): ?>
                 <tfoot>
                     <tr class="total-row">
-                        <?php foreach ((array)$report_data['totals'] as $total): ?>
+                        <?php foreach ((array)$totalsData as $total): ?>
                             <td><strong><?= is_numeric($total) ? number_format($total, 2) : htmlspecialchars($total) ?></strong></td>
                         <?php endforeach; ?>
                     </tr>

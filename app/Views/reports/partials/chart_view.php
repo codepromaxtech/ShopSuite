@@ -12,8 +12,8 @@ $chartType = $chart_type ?? 'bar';
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-// Prepare chart data
-const reportData = <?= json_encode($report_data['summary'] ?? []) ?>;
+// Prepare chart data - handle both formats
+const reportData = <?= json_encode($report_data['summary'] ?? $report_data) ?>;
 
 // Extract labels and values
 const labels = reportData.map(item => Object.values(item)[0]); // First column as labels
