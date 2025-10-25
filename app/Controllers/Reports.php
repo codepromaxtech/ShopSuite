@@ -188,7 +188,7 @@ class Reports extends Secure_Controller
         ];
         
         // If form submitted, generate report
-        if ($this->request->getMethod() === 'post') {
+        if (strtolower($this->request->getMethod()) === 'post') {
             $filters = $this->getFiltersFromRequest();
             $viewMode = $this->request->getPost('view_mode') ?? 'table';
             $chartType = $this->request->getPost('chart_type') ?? ($typeConfig['default_chart'] ?? 'bar');
