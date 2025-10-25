@@ -127,7 +127,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </form>
     
     <!-- Debug Info (remove after testing) -->
-    <?php if (ENVIRONMENT === 'development'): ?>
+    <?php if (ENVIRONMENT === 'development' && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST'): ?>
     <div class="card" style="background: #f0f9ff; border: 1px solid #bae6fd;">
         <div class="card-body">
             <h4 style="margin: 0 0 var(--space-2) 0; color: #0369a1;">Debug Info:</h4>
