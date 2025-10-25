@@ -74,9 +74,9 @@ $requiredFilters = $typeConfig['filters'] ?? [];
                     <?php elseif ($filterConfig['source'] === 'stock_locations'): ?>
                         <!-- Stock Locations -->
                         <option value="all">All Locations</option>
-                        <?php foreach ($locations as $location): ?>
-                            <option value="<?= $location->location_id ?>" <?= ($_POST[$filterKey] ?? '') == $location->location_id ? 'selected' : '' ?>>
-                                <?= $location->name ?>
+                        <?php foreach ($locations as $locationId => $locationName): ?>
+                            <option value="<?= $locationId ?>" <?= ($_POST[$filterKey] ?? '') == $locationId ? 'selected' : '' ?>>
+                                <?= $locationName ?>
                             </option>
                         <?php endforeach; ?>
                         

@@ -183,7 +183,7 @@ class Reports extends Secure_Controller
             'selected_type' => $selectedType,
             'type_config' => $typeConfig,
             'filter_configs' => $reportsConfig->filters,
-            'locations' => $this->stock_location->get_all()->getResult(),
+            'locations' => $this->stock_location->get_allowed_locations('reports'),
             'categories' => [] // TODO: Load categories
         ];
         
