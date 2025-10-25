@@ -322,10 +322,6 @@ echo view('layouts/modern_header', ['title' => $title]);
     gap: var(--space-2);
 }
 
-.view-mode-toggle input[type="radio"] {
-    display: none;
-}
-
 .view-mode-toggle label {
     display: flex;
     align-items: center;
@@ -337,9 +333,18 @@ echo view('layouts/modern_header', ['title' => $title]);
     cursor: pointer;
     transition: all var(--transition-fast);
     font-weight: var(--font-medium);
+    background: var(--bg-primary);
 }
 
-.view-mode-toggle input[type="radio"]:checked + label {
+.view-mode-toggle input[type="radio"] {
+    margin-right: var(--space-2);
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-600);
+}
+
+.view-mode-toggle label:has(input[type="radio"]:checked) {
     background: var(--primary-600);
     border-color: var(--primary-600);
     color: white;
@@ -347,6 +352,11 @@ echo view('layouts/modern_header', ['title' => $title]);
 
 .view-mode-toggle label:hover {
     border-color: var(--primary-400);
+    background: var(--bg-secondary);
+}
+
+.view-mode-toggle label:has(input[type="radio"]:checked):hover {
+    background: var(--primary-700);
 }
 
 /* Report Actions */
