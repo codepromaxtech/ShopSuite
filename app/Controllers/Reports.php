@@ -328,18 +328,58 @@ class Reports extends Secure_Controller
         fputcsv($output, []); // Empty row
         
         if (!empty($data)) {
-            // Headers
-            fputcsv($output, array_keys($data[0]));
+            // Get column order from first row
+            $dataKeys = array_keys($data[0]);
             
-            // Data rows
+            // Headers with proper formatting
+            $headers = array_map(function($key) {
+                $name = str_replace('_', ' ', $key);
+                $name = ucwords($name);
+                // Improve specific column names
+                $replacements = [
+                    'Sale Date' => 'Date',
+                    'Sale Time' => 'Date/Time',
+                    'Items Purchased' => 'Quantity',
+                    'Quantity Purchased' => 'Quantity',
+                    'Trans Amount' => 'Amount',
+                    'Trans Payments' => 'Payments',
+                    'Trans Refunded' => 'Refunded',
+                    'Trans Due' => 'Due',
+                    'Trans Sales' => 'Sales Count',
+                    'Trans Group' => 'Group',
+                    'Trans Type' => 'Type',
+                    'Type Code' => 'Type',
+                    'Employee Name' => 'Employee',
+                    'Customer Name' => 'Customer',
+                    'Payment Type' => 'Payment Method'
+                ];
+                return $replacements[$name] ?? $name;
+            }, $dataKeys);
+            fputcsv($output, $headers);
+            
+            // Data rows in proper order
             foreach ($data as $row) {
-                fputcsv($output, $row);
+                $orderedRow = [];
+                foreach ($dataKeys as $key) {
+                    $orderedRow[] = $row[$key] ?? '';
+                }
+                fputcsv($output, $orderedRow);
             }
             
             // Summary row
             if ($summary) {
                 fputcsv($output, []); // Empty row
-                fputcsv($output, array_merge(['TOTAL'], array_slice($summary, 1)));
+                $summaryRow = [];
+                $first = true;
+                foreach ($dataKeys as $key) {
+                    if ($first) {
+                        $summaryRow[] = 'TOTAL';
+                        $first = false;
+                    } else {
+                        $summaryRow[] = $summary[$key] ?? '';
+                    }
+                }
+                fputcsv($output, $summaryRow);
             }
         }
         

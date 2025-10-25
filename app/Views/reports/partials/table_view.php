@@ -18,8 +18,31 @@
                 <thead>
                     <tr>
                         <?php if (!empty($tableData)): ?>
-                            <?php foreach (array_keys((array)$tableData[0]) as $column): ?>
-                                <th><?= ucwords(str_replace('_', ' ', $column)) ?></th>
+                            <?php 
+                            foreach (array_keys((array)$tableData[0]) as $column):
+                                $name = str_replace('_', ' ', $column);
+                                $name = ucwords($name);
+                                // Improve specific column names
+                                $replacements = [
+                                    'Sale Date' => 'Date',
+                                    'Sale Time' => 'Date/Time',
+                                    'Items Purchased' => 'Quantity',
+                                    'Quantity Purchased' => 'Quantity',
+                                    'Trans Amount' => 'Amount',
+                                    'Trans Payments' => 'Payments',
+                                    'Trans Refunded' => 'Refunded',
+                                    'Trans Due' => 'Due',
+                                    'Trans Sales' => 'Sales Count',
+                                    'Trans Group' => 'Group',
+                                    'Trans Type' => 'Type',
+                                    'Type Code' => 'Type',
+                                    'Employee Name' => 'Employee',
+                                    'Customer Name' => 'Customer',
+                                    'Payment Type' => 'Payment Method'
+                                ];
+                                $displayName = $replacements[$name] ?? $name;
+                            ?>
+                                <th><?= $displayName ?></th>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </tr>
