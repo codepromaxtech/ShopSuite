@@ -217,6 +217,12 @@ class Reports extends Secure_Controller
                     $data['debug_info']['step'] = 'Calling getData()';
                     log_message('debug', 'Generating report: ' . $modelName . ' with filters: ' . json_encode($filters));
                     
+                    // Call create() first if method exists (for reports using temp tables)
+                    if (method_exists($model, 'create')) {
+                        $model->create($filters);
+                        $data['debug_info']['temp_tables'] = 'Created';
+                    }
+                    
                     $reportData = $model->getData($filters);
                     $data['debug_info']['step'] = 'getData() returned';
                     $data['debug_info']['data_keys'] = is_array($reportData) ? array_keys($reportData) : 'not an array';
