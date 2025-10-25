@@ -6,23 +6,23 @@
     <title><?= $title ?></title>
     <style>
         * {
-            margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
         body {
-            font-family: Arial, sans-serif;
-            padding: 20mm;
-            background: white;
-            color: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            font-size: 12px;
+            color: #1e293b;
+            background: #fff;
         }
         
         .header {
-            text-align: center;
             margin-bottom: 30px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 15px;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 20px;
         }
         
         .header h1 {
@@ -64,26 +64,27 @@
             font-size: 12px;
         }
         
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            font-size: 11px;
         }
         
         tbody tr:nth-child(even) {
             background: #fafafa;
         }
         
-        tfoot td {
-            font-weight: bold;
-            background: #e8e8e8;
-            border-top: 2px solid #000;
+        thead {
+            background: linear-gradient(to bottom, #2563eb, #1e40af);
+            color: white;
+        }
+        
+        thead th {
+            font-weight: 600;
+            text-align: left;
+            border-bottom: 2px solid #1e40af;
+            color: white !important;
         }
         
         .footer {
             margin-top: 30px;
             padding-top: 15px;
-            border-top: 1px solid #ddd;
             text-align: center;
             font-size: 10px;
             color: #666;
@@ -119,14 +120,45 @@
 <body>
     <!-- Header -->
     <div class="header">
-        <h1><?= config('App')->siteName ?? 'Company Name' ?></h1>
-        <p>Generated: <?= date('F d, Y H:i:s') ?></p>
+        <table style="width: 100%; border: none;">
+            <tr>
+                <td style="width: 60%; vertical-align: top; border: none;">
+                    <h1 style="margin: 0; font-size: 28px; color: #2563eb;">
+                        <?= config('ShopSuite')->settings['company'] ?? config('App')->siteName ?? 'ShopSuite ERP' ?>
+                    </h1>
+                    <p style="margin: 5px 0 0 0; font-size: 11px; line-height: 1.5;">
+                        <?php if (!empty(config('ShopSuite')->settings['address'])): ?>
+                            <strong>Address:</strong> <?= htmlspecialchars(config('ShopSuite')->settings['address']) ?><br>
+                        <?php endif; ?>
+                        <?php if (!empty(config('ShopSuite')->settings['phone'])): ?>
+                            <strong>Phone:</strong> <?= htmlspecialchars(config('ShopSuite')->settings['phone']) ?><br>
+                        <?php endif; ?>
+                        <?php if (!empty(config('ShopSuite')->settings['email'])): ?>
+                            <strong>Email:</strong> <?= htmlspecialchars(config('ShopSuite')->settings['email']) ?>
+                        <?php endif; ?>
+                    </p>
+                </td>
+                <td style="width: 40%; text-align: right; vertical-align: top; border: none;">
+                    <p style="margin: 0; font-size: 11px; line-height: 1.8;">
+                        <strong>Report Generated:</strong><br>
+                        <?= date('F d, Y') ?><br>
+                        <?= date('h:i A') ?><br>
+                        <br>
+                        <strong>Report ID:</strong> <?= strtoupper(substr(md5($title . time()), 0, 8)) ?>
+                    </p>
+                </td>
+            </tr>
+        </table>
     </div>
     
     <!-- Report Title -->
     <div class="report-title">
-        <h2><?= htmlspecialchars($title) ?></h2>
-        <p><?= htmlspecialchars($subtitle) ?></p>
+        <h2 style="color: #1e40af; border-bottom: 3px solid #2563eb; padding-bottom: 10px;">
+            <?= htmlspecialchars($title) ?>
+        </h2>
+        <p style="margin-top: 10px; padding: 10px; background: #eff6ff; border-left: 4px solid #2563eb;">
+            <strong>Report Period:</strong> <?= htmlspecialchars($subtitle) ?>
+        </p>
     </div>
     
     <!-- Report Data Table -->
@@ -173,8 +205,22 @@
     
     <!-- Footer -->
     <div class="footer">
-        <p>&copy; <?= date('Y') ?> <?= config('App')->siteName ?? 'Company Name' ?>. All rights reserved.</p>
-        <p>Page <?= 1 ?> of <?= 1 ?></p>
+        <table style="width: 100%; border: none;">
+            <tr>
+                <td style="width: 50%; text-align: left; border: none;">
+                    <p style="margin: 0; font-size: 10px;">
+                        &copy; <?= date('Y') ?> <?= config('ShopSuite')->settings['company'] ?? config('App')->siteName ?? 'ShopSuite ERP' ?>. All rights reserved.<br>
+                        <span style="color: #666;">Powered by ShopSuite v4.0</span>
+                    </p>
+                </td>
+                <td style="width: 50%; text-align: right; border: none;">
+                    <p style="margin: 0; font-size: 10px;">
+                        <strong>Report Type:</strong> <?= htmlspecialchars($title) ?><br>
+                        <span style="color: #666;">Printed: <?= date('M d, Y h:i A') ?></span>
+                    </p>
+                </td>
+            </tr>
+        </table>
     </div>
     
     <script>
