@@ -5,7 +5,19 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+
+// Load the system's routing file first
+if (is_file(SYSTEMPATH . 'Config/Routes.php')) {
+    require SYSTEMPATH . 'Config/Routes.php';
+}
+
+// Set default namespace
+$routes->setDefaultNamespace('App\Controllers');
 $routes->setDefaultController('Login');
+$routes->setDefaultMethod('index');
+$routes->setTranslateURIDashes(false);
+$routes->set404Override();
+// Note: Auto-routing is configured in app/Config/Feature.php
 
 $routes->get('/', 'Login::index');
 $routes->get('login', 'Login::index');
