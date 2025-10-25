@@ -199,7 +199,7 @@ class Detailed_sales extends Report
                 MAX(discount_type) AS discount_type,
                 MAX(sale_status) AS sale_status');
 
-            if (count($inputs['definition_ids']) > 0) {
+            if (isset($inputs['definition_ids']) && count($inputs['definition_ids']) > 0) {
                 $format = $this->db->escape(dateformat_mysql());
                 $builder->select('GROUP_CONCAT(DISTINCT CONCAT_WS(\'_\', definition_id, attribute_value) ORDER BY definition_id SEPARATOR \'|\') AS attribute_values');
                 $builder->select("GROUP_CONCAT(DISTINCT CONCAT_WS('_', definition_id, DATE_FORMAT(attribute_date, $format)) SEPARATOR '|') AS attribute_dtvalues");
