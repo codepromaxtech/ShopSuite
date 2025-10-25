@@ -169,7 +169,8 @@ echo view('layouts/modern_header', ['title' => $title]);
                     if (isset($report_data)) {
                         echo "is_array(report_data): " . (is_array($report_data) ? 'YES' : 'NO') . "\n";
                         echo "count(report_data): " . count($report_data) . "\n";
-                        echo "Condition passes: " . ((is_array($report_data) && count($report_data) > 0) ? 'YES - SHOULD SHOW' : 'NO - WILL NOT SHOW') . "\n";
+                        echo "Condition passes: " . (is_array($report_data) ? 'YES - SHOULD SHOW' : 'NO - WILL NOT SHOW') . "\n";
+                        echo "Has data: " . (count($report_data) > 0 ? 'YES' : 'NO (will show empty state)') . "\n";
                     } else {
                         echo "report_data is not set - report not generated\n";
                     }
@@ -195,7 +196,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <?php endif; ?>
     
     <!-- Report Results -->
-    <?php if (isset($report_data) && is_array($report_data) && count($report_data) > 0): ?>
+    <?php if (isset($report_data) && is_array($report_data)): ?>
     <div class="report-results card">
         <!-- Report Header (for print/PDF) -->
         <div class="report-header print-only" style="display: none;">
