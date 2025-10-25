@@ -77,6 +77,16 @@ echo view('layouts/modern_header', ['title' => $title]);
                     ]) ?>
                 </div>
                 
+                <!-- Additional Options for Sales Reports -->
+                <?php if ($category === 'sales' && in_array($selected_type, ['summary', 'detailed'])): ?>
+                <div class="report-options" style="margin-top: var(--space-4);">
+                    <label style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); cursor: pointer;">
+                        <input type="checkbox" name="show_quantity" value="1" <?= ($this->request->getPost('show_quantity') ?? '1') === '1' ? 'checked' : '' ?>>
+                        <span>Show Quantity Purchased column</span>
+                    </label>
+                </div>
+                <?php endif; ?>
+                
                 <!-- View Mode (Table/Chart) -->
                 <?php if ($typeConfig['supports_chart']): ?>
                 <div class="view-mode-container">
@@ -84,19 +94,17 @@ echo view('layouts/modern_header', ['title' => $title]);
                         <i class="bi bi-eye"></i> View Mode
                     </label>
                     <div class="view-mode-toggle">
-                        <input type="radio" name="view_mode" value="table" id="viewTable" <?= (!isset($view_mode) || $view_mode === 'table') ? 'checked' : '' ?>>
-                        <label for="viewTable">
+                        <label>
+                            <input type="radio" name="view_mode" value="table" <?= ($view_mode ?? 'table') === 'table' ? 'checked' : '' ?>>
                             <i class="bi bi-table"></i> Table
                         </label>
-                        
-                        <input type="radio" name="view_mode" value="chart" id="viewChart" <?= (isset($view_mode) && $view_mode === 'chart') ? 'checked' : '' ?>>
-                        <label for="viewChart">
-                            <i class="bi bi-bar-chart"></i> Chart
+                        <label>
+                            <input type="radio" name="view_mode" value="chart" <?= ($view_mode ?? 'table') === 'chart' ? 'checked' : '' ?>>
+                            <i class="bi bi-bar-chart-fill"></i> Chart
                         </label>
                     </div>
                     
-                    <!-- Chart Type (shown only when chart mode selected) -->
-                    <div id="chartTypeContainer" style="display: <?= (isset($view_mode) && $view_mode === 'chart') ? 'block' : 'none' ?>; margin-top: var(--space-4);">
+                    <div class="chart-type-selector" style="display: <?= ($view_mode ?? 'table') === 'chart' ? 'block' : 'none' ?>; margin-top: var(--space-3);">
                         <label class="form-label">Chart Type</label>
                         <select name="chart_type" class="form-control">
                             <?php foreach ($typeConfig['chart_types'] ?? ['bar'] as $chartType): ?>

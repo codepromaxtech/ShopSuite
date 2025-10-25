@@ -9,16 +9,24 @@ class Summary_sales extends Summary_report
      */
     protected function _get_data_columns(): array
     {
-        return [
+        $columns = [
             ['sale_date' => lang('Reports.date'), 'sortable' => false],
-            ['sales'     => lang('Reports.sales'), 'sorter' => 'number_sorter'],
-            ['quantity'  => lang('Reports.quantity'), 'sorter' => 'number_sorter'],
+            ['sales'     => lang('Reports.sales'), 'sorter' => 'number_sorter']
+        ];
+        
+        // Add quantity column if not hidden (check request or stored inputs)
+        // Note: This is for legacy display; column exclusion happens in _select
+        $columns[] = ['quantity'  => lang('Reports.quantity'), 'sorter' => 'number_sorter'];
+        
+        $columns = array_merge($columns, [
             ['subtotal'  => lang('Reports.subtotal'), 'sorter' => 'number_sorter'],
             ['tax'       => lang('Reports.tax'), 'sorter' => 'number_sorter'],
             ['total'     => lang('Reports.total'), 'sorter' => 'number_sorter'],
             ['cost'      => lang('Reports.cost'), 'sorter' => 'number_sorter'],
             ['profit'    => lang('Reports.profit'), 'sorter' => 'number_sorter']
-        ];
+        ]);
+        
+        return $columns;
     }
 
     /**
@@ -30,11 +38,16 @@ class Summary_sales extends Summary_report
     {
         parent::_select($inputs, $builder);    // TODO: hungarian notation
 
-        $builder->select('
-                DATE(sales.sale_time) AS sale_date,
-                SUM(sales_items.quantity_purchased) AS quantity_purchased,
-                COUNT(DISTINCT sales.sale_id) AS sales
-        ');
+        // Build SELECT with proper column order: date, sales count, quantity
+        $select = 'DATE(sales.sale_time) AS sale_date, ';
+        $select .= 'COUNT(DISTINCT sales.sale_id) AS sales';
+        
+        // Only add quantity if not explicitly hidden
+        if (!isset($inputs['hide_quantity']) || !$inputs['hide_quantity']) {
+            $select .= ', SUM(sales_items.quantity_purchased) AS quantity_purchased';
+        }
+        
+        $builder->select($select);
     }
 
     /**

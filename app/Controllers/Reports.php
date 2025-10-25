@@ -405,6 +405,12 @@ class Reports extends Secure_Controller
             $filters['employee_id'] = $this->request->getPost('employee_id');
         }
         
+        // Display options
+        $showQuantity = $this->request->getPost('show_quantity');
+        if ($showQuantity !== '1') {
+            $filters['hide_quantity'] = true;
+        }
+        
         return $filters;
     }
 
