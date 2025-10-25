@@ -193,16 +193,32 @@ class Reports extends Secure_Controller
             $viewMode = $this->request->getPost('view_mode') ?? 'table';
             $chartType = $this->request->getPost('chart_type') ?? ($typeConfig['default_chart'] ?? 'bar');
             
+            // Debug: Store execution info
+            $data['debug_info'] = [
+                'step' => 'Started',
+                'filters' => $filters,
+                'model_name' => null,
+                'exception' => null
+            ];
+            
             // Load appropriate model
             $modelName = 'App\\Models\\Reports\\' . $typeConfig['model'];
+            $data['debug_info']['model_name'] = $modelName;
+            $data['debug_info']['step'] = 'Model name set';
             
             if (class_exists($modelName)) {
+                $data['debug_info']['step'] = 'Model class exists';
                 $model = model($modelName);
+                $data['debug_info']['step'] = 'Model instantiated';
                 
                 try {
+                    $data['debug_info']['step'] = 'Calling getData()';
                     log_message('debug', 'Generating report: ' . $modelName . ' with filters: ' . json_encode($filters));
                     
                     $reportData = $model->getData($filters);
+                    $data['debug_info']['step'] = 'getData() returned';
+                    $data['debug_info']['data_keys'] = is_array($reportData) ? array_keys($reportData) : 'not an array';
+                    $data['debug_info']['data_summary_count'] = isset($reportData['summary']) ? count($reportData['summary']) : 'no summary key';
                     
                     log_message('debug', 'Report data generated: ' . json_encode(array_keys($reportData)));
                     
@@ -211,13 +227,18 @@ class Reports extends Secure_Controller
                     $data['chart_type'] = $chartType;
                     $data['report_subtitle'] = $this->_get_subtitle_report($filters);
                     $data['auto_submit'] = true;
+                    $data['debug_info']['step'] = 'Report data set - SUCCESS';
                     
                 } catch (\Exception $e) {
+                    $data['debug_info']['step'] = 'Exception caught';
+                    $data['debug_info']['exception'] = $e->getMessage();
+                    $data['debug_info']['trace'] = $e->getTraceAsString();
                     log_message('error', 'Report generation error: ' . $e->getMessage());
                     log_message('error', 'Stack trace: ' . $e->getTraceAsString());
                     $data['error'] = 'Failed to generate report: ' . $e->getMessage();
                 }
             } else {
+                $data['debug_info']['step'] = 'Model class NOT found';
                 log_message('error', 'Report model not found: ' . $modelName);
                 $data['error'] = 'Report model not found: ' . $typeConfig['model'];
             }

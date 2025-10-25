@@ -140,6 +140,26 @@ echo view('layouts/modern_header', ['title' => $title]);
                 echo "Report Data Set: " . (isset($report_data) ? 'YES' : 'NO') . "\n";
                 if (isset($report_data)) {
                     echo "Report Data Keys: " . implode(', ', array_keys($report_data)) . "\n";
+                    if (isset($report_data['summary'])) {
+                        echo "Summary Records: " . count($report_data['summary']) . "\n";
+                    }
+                }
+                
+                // Show execution flow
+                if (isset($debug_info)) {
+                    echo "\n=== EXECUTION DEBUG ===\n";
+                    echo "Last Step: " . ($debug_info['step'] ?? 'unknown') . "\n";
+                    echo "Model Name: " . ($debug_info['model_name'] ?? 'not set') . "\n";
+                    echo "Filters: " . print_r($debug_info['filters'] ?? [], true);
+                    if (isset($debug_info['data_keys'])) {
+                        echo "Data Keys: " . (is_array($debug_info['data_keys']) ? implode(', ', $debug_info['data_keys']) : $debug_info['data_keys']) . "\n";
+                    }
+                    if (isset($debug_info['data_summary_count'])) {
+                        echo "Summary Count: " . $debug_info['data_summary_count'] . "\n";
+                    }
+                    if (isset($debug_info['exception'])) {
+                        echo "\n!!! EXCEPTION !!!\n" . $debug_info['exception'] . "\n";
+                    }
                 }
             ?></pre>
         </div>
