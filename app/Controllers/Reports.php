@@ -167,8 +167,10 @@ class Reports extends Secure_Controller
             return;
         }
         
-        // Get selected report type from query or use first one
-        $selectedType = $this->request->getGet('type') ?? array_key_first($categoryConfig['types']);
+        // Get selected report type from POST (form submit), GET (dropdown change), or use first one
+        $selectedType = $this->request->getPost('report_type') 
+                     ?? $this->request->getGet('type') 
+                     ?? array_key_first($categoryConfig['types']);
         $typeConfig = $categoryConfig['types'][$selectedType] ?? null;
         
         if (!$typeConfig) {
@@ -370,14 +372,16 @@ class Reports extends Secure_Controller
             $filters['end_date'] = $this->request->getPost('end_date');
         }
         
-        // Location
-        if ($this->request->getPost('location')) {
-            $filters['location_id'] = $this->request->getPost('location');
+        // Location (only add if not 'all')
+        $location = $this->request->getPost('location');
+        if ($location && $location !== 'all') {
+            $filters['location_id'] = $location;
         }
         
-        // Sale type
-        if ($this->request->getPost('sale_type')) {
-            $filters['sale_type'] = $this->request->getPost('sale_type');
+        // Sale type (only add if not 'all')
+        $saleType = $this->request->getPost('sale_type');
+        if ($saleType && $saleType !== 'all') {
+            $filters['sale_type'] = $saleType;
         }
         
         // Category
