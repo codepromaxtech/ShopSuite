@@ -84,7 +84,7 @@ class Inventory_summary extends Report
      */
     public function getSummaryData(array $inputs): array
     {
-        $return = [    // TODO: This variable name should be refactored to reflect what it is... perhaps summary_data
+        $summary_data = [
             'total_inventory_value'   => 0,
             'total_quantity'          => 0,
             'total_low_sell_quantity' => 0,
@@ -92,13 +92,13 @@ class Inventory_summary extends Report
         ];
 
         foreach ($inputs as $input) {
-            $return['total_inventory_value'] += $input['sub_total_value'];
-            $return['total_quantity'] += $input['quantity'];
-            $return['total_low_sell_quantity'] += $input['low_sell_quantity'];
-            $return['total_retail'] += $input['unit_price'] * $input['quantity'];
+            $summary_data['total_inventory_value'] += $input['sub_total_value'];
+            $summary_data['total_quantity'] += $input['quantity'];
+            $summary_data['total_low_sell_quantity'] += $input['low_sell_quantity'];
+            $summary_data['total_retail'] += $input['unit_price'] * $input['quantity'];
         }
 
-        return $return;
+        return $summary_data;
     }
 
     /**
