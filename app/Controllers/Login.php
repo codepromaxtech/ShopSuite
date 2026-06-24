@@ -74,4 +74,14 @@ class Login extends BaseController
 
         return redirect()->to('home');
     }
+
+    /**
+     * @return RedirectResponse
+     */
+    public function getLogout(): RedirectResponse
+    {
+        $this->employee = model(Employee::class);
+        $this->employee->logout();
+        return redirect()->to('login');
+    }
 }

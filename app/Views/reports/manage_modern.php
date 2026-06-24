@@ -23,12 +23,12 @@ echo view('layouts/modern_header', ['title' => $title]);
 </div>
 
 <!-- Reports Categories Grid -->
-<div class="config-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: var(--space-6);">
+<div class="config-grid u-display-grid_grid-template-columns-rep-1">
     
     <!-- Sales Reports -->
     <div class="config-category-card">
         <div class="config-category-header">
-            <div class="config-category-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <div class="config-category-icon" >
                 <i class="bi bi-currency-dollar"></i>
             </div>
             <div class="config-category-title">
@@ -45,8 +45,8 @@ echo view('layouts/modern_header', ['title' => $title]);
                 <span><strong>Unified Sales Reports</strong> - All in one place!</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
-            <div style="border-top: 1px solid var(--border-color); margin: var(--space-2) 0; padding-top: var(--space-2);">
-                <small style="color: var(--text-tertiary); padding: 0 var(--space-4); display: block; margin-bottom: var(--space-2);">Legacy Reports:</small>
+            <div class="u-border-top-1pxsolidborder-color_margin">
+                <small class="u-color-text-tertiary_padding-0space-4_d">Legacy Reports:</small>
             </div>
             <a href="<?= base_url('reports/summary_sales') ?>" class="config-link config-link-legacy">
                 <i class="bi bi-graph-up"></i>
@@ -74,7 +74,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <!-- Product Reports -->
     <div class="config-category-card">
         <div class="config-category-header">
-            <div class="config-category-icon" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+            <div class="config-category-icon" >
                 <i class="bi bi-box-seam-fill"></i>
             </div>
             <div class="config-category-title">
@@ -109,7 +109,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <!-- Customer Reports -->
     <div class="config-category-card">
         <div class="config-category-header">
-            <div class="config-category-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+            <div class="config-category-icon" >
                 <i class="bi bi-people-fill"></i>
             </div>
             <div class="config-category-title">
@@ -139,7 +139,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <!-- Supplier Reports -->
     <div class="config-category-card">
         <div class="config-category-header">
-            <div class="config-category-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <div class="config-category-icon" >
                 <i class="bi bi-building"></i>
             </div>
             <div class="config-category-title">
@@ -169,7 +169,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <!-- Employee Reports -->
     <div class="config-category-card">
         <div class="config-category-header">
-            <div class="config-category-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+            <div class="config-category-icon" >
                 <i class="bi bi-person-workspace"></i>
             </div>
             <div class="config-category-title">
@@ -199,7 +199,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <!-- Inventory Reports -->
     <div class="config-category-card">
         <div class="config-category-header">
-            <div class="config-category-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+            <div class="config-category-icon" >
                 <i class="bi bi-boxes"></i>
             </div>
             <div class="config-category-title">
@@ -227,167 +227,6 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<style>
-/* Config Category Cards (from config page) */
-.config-category-card {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-normal);
-}
 
-.config-category-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-.config-category-header {
-    padding: var(--space-6);
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.config-category-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: var(--radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.config-category-icon i {
-    font-size: 32px;
-    color: white;
-}
-
-.config-category-title h3 {
-    font-size: var(--text-lg);
-    font-weight: var(--font-semibold);
-    color: var(--text-primary);
-    margin: 0 0 var(--space-1) 0;
-}
-
-.config-category-title p {
-    font-size: var(--text-sm);
-    color: var(--text-tertiary);
-    margin: 0;
-}
-
-.config-category-links {
-    padding: var(--space-2);
-}
-
-.config-link {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-4);
-    color: var(--text-primary);
-    text-decoration: none;
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast);
-}
-
-.config-link:hover {
-    background: var(--bg-secondary);
-    color: var(--primary-600);
-    transform: translateX(4px);
-}
-
-.config-link i:first-child {
-    font-size: 20px;
-    color: var(--text-tertiary);
-    transition: color var(--transition-fast);
-}
-
-.config-link:hover i:first-child {
-    color: var(--primary-600);
-}
-
-.config-link span {
-    flex: 1;
-    font-weight: var(--font-medium);
-}
-
-.config-link i:last-child {
-    font-size: 14px;
-    color: var(--text-tertiary);
-}
-
-/* Featured Link (New Unified Reports) */
-.config-link-featured {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
-    border: 2px solid var(--primary-600);
-    font-weight: var(--font-semibold);
-}
-
-.config-link-featured:hover {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%);
-    border-color: var(--primary-700);
-    transform: translateX(8px);
-}
-
-.config-link-featured i:first-child {
-    color: var(--primary-600) !important;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-/* Legacy Links (Old Reports) */
-.config-link-legacy {
-    opacity: 0.7;
-    font-size: var(--text-sm);
-}
-
-.config-link-legacy:hover {
-    opacity: 1;
-}
-
-/* NEW Badge */
-.badge-new {
-    display: inline-block;
-    padding: 2px 8px;
-    font-size: 10px;
-    font-weight: var(--font-bold);
-    text-transform: uppercase;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-    border-radius: 4px;
-    margin-left: var(--space-2);
-    animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-2px); }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .config-grid {
-        grid-template-columns: 1fr !important;
-    }
-}
-
-/* Dark Mode */
-[data-theme="dark"] .config-category-card {
-    background: var(--bg-elevated);
-    border-color: var(--border-color);
-}
-
-[data-theme="dark"] .config-link:hover {
-    background: var(--bg-secondary);
-}
-</style>
 
 <?= view('layouts/modern_footer') ?>

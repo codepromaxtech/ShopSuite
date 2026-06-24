@@ -10,7 +10,7 @@ class Roles extends Secure_Controller
 
     public function __construct()
     {
-        parent::__construct('roles', 'config', 'roles');
+        parent::__construct('roles', null, 'office');
         $this->role = model(Role::class);
     }
 

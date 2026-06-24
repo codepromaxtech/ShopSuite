@@ -46,13 +46,12 @@ document.addEventListener('DOMContentLoaded', function() {
             formatter: (value, row) => {
                 return `
                     <div class="d-flex align-items-center">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
-                             style="width: 32px; height: 32px; font-size: 14px;">
+                        <div class=" rounded-circle d-flex align-items-center justify-content-center me-2 u-width-32px_height-32px_font-size-14px">
                             ${value?.charAt(0)?.toUpperCase() || '?'}
                         </div>
                         <div>
                             <div class="fw-bold">${value || '-'}</div>
-                            ${row.phone_number ? `<small class="text-muted">${row.phone_number}</small>` : ''}
+                            ${row.phone_number ? `<small class="text-secondary">${row.phone_number}</small>` : ''}
                         </div>
                     </div>
                 `;
@@ -78,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return `
                     <div>
                         <div>${date.toLocaleDateString()}</div>
-                        <small class="text-muted">${date.toLocaleTimeString()}</small>
+                        <small class="text-secondary">${date.toLocaleTimeString()}</small>
                     </div>
                 `;
             }

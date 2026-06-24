@@ -14,7 +14,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                 <i class="bi bi-shield-lock me-2"></i>
                 Roles & Permissions
             </h3>
-            <small class="text-muted">Manage user roles and module access permissions</small>
+            <small class="text-secondary">Manage user roles and module access permissions</small>
         </div>
         <div class="col-auto">
             <button class="btn btn-primary" onclick="openModal('roles/view/-1', 'Create New Role')">
@@ -29,7 +29,7 @@ echo view('layouts/modern_header', ['title' => $title]);
             <div class="col-xl-3 col-lg-4 col-md-6">
                 <div class="card h-100 role-card <?= $role->is_system_role ? 'border-primary' : '' ?>" data-role-id="<?= $role->role_id ?>">
                     <?php if ($role->is_system_role): ?>
-                        <div class="card-header bg-primary text-white py-2">
+                        <div class="card-header  py-2">
                             <small><i class="bi bi-shield-check me-1"></i>System Role</small>
                         </div>
                     <?php endif; ?>
@@ -38,7 +38,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h5 class="card-title mb-0"><?= esc($role->role_name) ?></h5>
                             <div class="dropdown">
-                                <button class="btn btn-sm btn-link text-muted p-0" data-bs-toggle="dropdown">
+                                <button class="btn btn-sm btn-link text-secondary p-0" data-bs-toggle="dropdown">
                                     <i class="bi bi-three-dots-vertical"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -64,17 +64,17 @@ echo view('layouts/modern_header', ['title' => $title]);
                             </div>
                         </div>
                         
-                        <p class="card-text text-muted small mb-3">
+                        <p class="card-text text-secondary small mb-3">
                             <?= esc($role->role_description) ?>
                         </p>
                         
                         <div class="d-flex gap-3 mb-3">
                             <div>
-                                <div class="text-muted small">Permissions</div>
+                                <div class="text-secondary small">Permissions</div>
                                 <div class="fw-bold"><?= $role->permission_count ?></div>
                             </div>
                             <div>
-                                <div class="text-muted small">Users</div>
+                                <div class="text-secondary small">Users</div>
                                 <div class="fw-bold"><?= $role->employee_count ?></div>
                             </div>
                         </div>
@@ -98,21 +98,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<style>
-.role-card {
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
 
-.role-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-}
-
-.role-card.border-primary {
-    border-width: 2px;
-}
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

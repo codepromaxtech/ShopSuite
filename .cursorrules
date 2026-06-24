@@ -1,0 +1,7 @@
+# ShopSuite Project Rules
+
+## CSS and Styling
+- **No Inline CSS**: Do not write inline `style=""` attributes in any PHP, HTML, or JS files.
+- **No In-file `<style>` Blocks**: Do not include `<style>` blocks inside views or templates (except where absolutely necessary for critical booting like early error pages that cannot load external assets).
+- **External CSS Only**: All CSS should be written in external stylesheets located in `public/css/` (e.g., `modern-pages.css`, `design-system.css`, `components.css`).
+- **Semantic Variables**: Use the centralized semantic variables from `design-system.css` for any new spacing, typography, and color tokens.

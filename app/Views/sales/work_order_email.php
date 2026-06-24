@@ -19,7 +19,7 @@
 <head>
     <meta charset="utf-8">
     <title><?= lang('Sales.work_order') ?></title>
-    <link rel="stylesheet" href="<?= base_url('css/invoice_email.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('css/invoice_email.min.css') ?>">
 </head>
 
 <body>
@@ -130,7 +130,7 @@
         <div id="terms">
             <div id="sale_return_policy">
                 <h5>
-                    <span style="padding: 4%;"><?= empty($comments) ? '' : lang('Sales.comments') . esc(": $comments") ?></span>
+                    <span class="u-padding-4pct"><?= empty($comments) ? '' : lang('Sales.comments') . esc(": $comments") ?></span>
                 </h5>
             </div>
         </div>

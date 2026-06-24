@@ -99,23 +99,4 @@ const chart = new Chart(ctx, {
 });
 </script>
 
-<style>
-.report-chart-container {
-    padding: var(--space-6);
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-canvas {
-    max-height: 500px;
-}
-
-@media (max-width: 768px) {
-    .report-chart-container {
-        padding: var(--space-4);
-        min-height: 300px;
-    }
-}
-</style>

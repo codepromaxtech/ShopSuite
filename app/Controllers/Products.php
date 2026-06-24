@@ -937,7 +937,7 @@ class Products extends Secure_Controller
         $items_to_update = $this->request->getPost('item_ids');
         $item_data = [];
 
-        foreach ($_POST as $key => $value) {
+        foreach ($this->request->getPost() as $key => $value) {
             // This field is nullable, so treat it differently
             if ($key === 'supplier_id' && $value !== '') {
                 $item_data[$key] = $value;

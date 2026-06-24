@@ -38,7 +38,7 @@ class Kint
     | RichRenderer Settings
     |--------------------------------------------------------------------------
     */
-    public string $richTheme = 'aante-light.css';
+    public string $richTheme = 'aante-light.min.css';
     public bool $richFolder  = false;
 
     /**

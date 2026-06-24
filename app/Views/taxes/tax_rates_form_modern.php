@@ -35,7 +35,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 
 <?= form_open("taxes/save/$tax_rate_id", ['id' => 'tax_rate_form', 'class' => 'modern-form']) ?>
 
-<div style="display: grid; grid-template-columns: 1fr 400px; gap: var(--space-6); max-width: 1400px;">
+<div class="u-display-grid_grid-template-columns-1fr">
     <!-- Main Form -->
     <div class="card">
         <div class="card-header">
@@ -125,7 +125,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                     <span><?= $is_new ? 'Create' : 'Update' ?> Tax Rate</span>
                 </button>
                 
-                <a href="<?= base_url('taxes') ?>" class="btn btn-secondary btn-block" style="margin-top: var(--space-3);">
+                <a href="<?= base_url('taxes') ?>" class="btn btn-secondary btn-block mt-space-3">
                     <i class="bi bi-x-circle"></i>
                     <span>Cancel</span>
                 </a>
@@ -133,7 +133,7 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
 
         <!-- Help Card -->
-        <div class="card" style="margin-top: var(--space-4);">
+        <div class="card u-margin-top-space-4">
             <div class="card-header">
                 <h3 class="card-header-title">
                     <i class="bi bi-info-circle"></i>
@@ -141,17 +141,17 @@ echo view('layouts/modern_header', ['title' => $title]);
                 </h3>
             </div>
             <div class="card-body">
-                <div style="font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.6;">
-                    <p style="margin-bottom: var(--space-3);"><strong>Tax Code:</strong> The general tax code identifier</p>
-                    <p style="margin-bottom: var(--space-3);"><strong>Tax Category:</strong> The category this rate applies to</p>
-                    <p style="margin-bottom: var(--space-3);"><strong>Jurisdiction:</strong> Geographic area this rate applies to</p>
-                    <p style="margin-bottom: 0;"><strong>Tax Rate:</strong> The percentage to be applied</p>
+                <div class="u-font-size-text-sm_color-text-secondary-2">
+                    <p class="u-margin-bottom-space-3"><strong>Tax Code:</strong> The general tax code identifier</p>
+                    <p class="u-margin-bottom-space-3"><strong>Tax Category:</strong> The category this rate applies to</p>
+                    <p class="u-margin-bottom-space-3"><strong>Jurisdiction:</strong> Geographic area this rate applies to</p>
+                    <p class="u-margin-bottom-0"><strong>Tax Rate:</strong> The percentage to be applied</p>
                 </div>
             </div>
         </div>
 
         <!-- Preview Card -->
-        <div class="card" style="margin-top: var(--space-4);">
+        <div class="card u-margin-top-space-4">
             <div class="card-header">
                 <h3 class="card-header-title">
                     <i class="bi bi-calculator"></i>
@@ -159,14 +159,14 @@ echo view('layouts/modern_header', ['title' => $title]);
                 </h3>
             </div>
             <div class="card-body">
-                <div style="text-align: center;">
-                    <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: var(--space-2);">
+                <div class="text-center">
+                    <div class="u-font-size-text-xs_color-text-tertiary_">
                         Tax on $100.00
                     </div>
-                    <div id="tax_preview" style="font-size: var(--text-3xl); font-weight: var(--font-bold); color: var(--primary-600);">
+                    <div class="u-font-size-text-3xl_font-weight-font-bo-1" id="tax_preview">
                         $0.00
                     </div>
-                    <div id="total_preview" style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);">
+                    <div class="u-font-size-text-sm_color-text-secondary-3" id="total_preview">
                         Total: $100.00
                     </div>
                 </div>
@@ -177,36 +177,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 
 <?= form_close() ?>
 
-<style>
-.input-group {
-    display: flex;
-    align-items: stretch;
-}
 
-.input-group .form-control {
-    flex: 1;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-.input-group-text {
-    display: flex;
-    align-items: center;
-    padding: var(--space-2) var(--space-4);
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-left: none;
-    border-top-right-radius: var(--radius-md);
-    border-bottom-right-radius: var(--radius-md);
-    font-weight: var(--font-semibold);
-    color: var(--text-primary);
-}
-
-[data-theme="dark"] .input-group-text {
-    background: var(--bg-secondary);
-    border-color: var(--border-color);
-}
-</style>
 
 <script>
 // Form submission

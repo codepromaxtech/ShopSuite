@@ -355,8 +355,8 @@
             <?= form_label(lang('Items.image'), 'items_image', ['class' => 'control-label col-xs-3']) ?>
             <div class="col-xs-8">
                 <div class="fileinput <?= $logo_exists ? 'fileinput-exists' : 'fileinput-new' ?>" data-provides="fileinput">
-                    <div class="fileinput-new thumbnail" style="width: 100px; height: 100px;"></div>
-                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 100px; max-height: 100px;">
+                    <div class="fileinput-new thumbnail u-width-100px_height-100px"></div>
+                    <div class="fileinput-preview fileinput-exists thumbnail u-max-width-100px_max-height-100px">
                         <img data-src="holder.js/100%x100%" alt="<?= lang('Items.image') ?>"
                             src="<?= $image_path ?>"
                             style="max-height: 100%; max-width: 100%;">

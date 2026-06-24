@@ -43,11 +43,7 @@ $request = Services::request();
     <?= view('partial/header_js') ?>
     <?= view('partial/lang_lines') ?>
 
-    <style>
-        html {
-            overflow: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="<?= base_url('css/modern-pages.min.css') ?>">
 </head>
 
 <body>
@@ -58,13 +54,13 @@ $request = Services::request();
                     <div id="liveclock"><?= date($config['dateformat'] . ' ' . $config['timeformat']) ?></div>
                 </div>
 
-                <div class="navbar-right" style="margin: 0;">
+                <div class="navbar-right u-margin-0">
                     <?= anchor("home/changePassword/$user_info->person_id", "$user_info->first_name $user_info->last_name", ['class' => 'modal-dlg', 'data-btn-submit' => lang('Common.submit'), 'title' => lang('Employees.change_password')]) ?>
                     <span>&nbsp;|&nbsp;</span>
                     <?= anchor('home/logout', lang('Login.logout')) ?>
                 </div>
 
-                <div class="navbar-center" style="text-align: center;">
+                <div class="navbar-center text-center">
                     <strong><?= esc($config['company']) ?></strong>
                 </div>
             </div>

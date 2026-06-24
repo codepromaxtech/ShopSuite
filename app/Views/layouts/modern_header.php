@@ -13,14 +13,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <!-- Design System CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/design-system.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('css/components.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('css/layout.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('css/design-system.min.css') ?>?v=<?= filemtime(FCPATH . 'css/design-system.min.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('css/components.min.css') ?>?v=<?= filemtime(FCPATH . 'css/components.min.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('css/layout.min.css') ?>?v=<?= filemtime(FCPATH . 'css/layout.min.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('css/modern-pages.min.css') ?>?v=<?= filemtime(FCPATH . 'css/modern-pages.min.css') ?>">
     
     <!-- Additional Page-Specific CSS -->
     <?php if (isset($extra_css)): ?>
         <?php foreach ($extra_css as $css): ?>
-            <link rel="stylesheet" href="<?= base_url($css) ?>">
+            <link rel="stylesheet" href="<?= base_url($css) ?>?v=<?= filemtime(FCPATH . $css) ?>">
         <?php endforeach; ?>
     <?php endif; ?>
     
@@ -36,7 +37,7 @@
         <aside class="sidebar">
             <!-- Logo -->
             <div class="sidebar-logo">
-                <img src="<?= base_url('images/logo.svg') ?>" alt="ShopSuite" class="sidebar-logo-img" onerror="this.style.display='none'">
+                <img src="<?= base_url('images/logo.png') ?>" alt="ShopSuite" class="sidebar-logo-img" onerror="this.style.display='none'">
                 <span class="sidebar-logo-text">ShopSuite</span>
             </div>
             
@@ -275,7 +276,7 @@
                             </svg>
                         </button>
                         
-                        <div class="dropdown-menu dropdown-menu-right" id="userDropdown" style="display: none;">
+                        <div class="dropdown-menu dropdown-menu-right d-none" id="userDropdown">
                             <a href="<?= base_url('employees/view/' . (session()->get('person_id') ?? '1')) ?>" class="dropdown-item">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -290,7 +291,7 @@
                                 Settings
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a href="<?= base_url('login/logout') ?>" class="dropdown-item">
+                            <a href="<?= base_url('home/logout') ?>" class="dropdown-item">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                 </svg>

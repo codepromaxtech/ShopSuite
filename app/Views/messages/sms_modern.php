@@ -14,7 +14,7 @@ echo view('layouts/modern_header', ['title' => $title]);
         <div class="col-lg-6 col-md-8">
             <!-- Card -->
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header ">
                     <h5 class="mb-0">
                         <i class="bi bi-chat-dots me-2"></i>
                         <?= lang('Messages.sms_send') ?>

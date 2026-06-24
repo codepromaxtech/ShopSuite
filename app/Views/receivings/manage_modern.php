@@ -32,7 +32,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 </div>
 
 <div class="card">
-    <div class="card-body" style="padding: 0;">
+    <div class="card-body u-padding-0">
         <div id="receivingsTable"></div>
     </div>
 </div>
@@ -66,7 +66,7 @@ function initializeDataTable() {
                 field: 'items_purchased', 
                 title: 'Items',
                 sortable: true,
-                render: (value) => `<span style="font-weight: var(--font-medium);">${value}</span>`
+                render: (value) => `<span class="u-font-weight-font-medium">${value}</span>`
             },
             { field: 'payment_type', title: 'Payment', sortable: true },
             { 
@@ -75,7 +75,7 @@ function initializeDataTable() {
                 sortable: true,
                 render: (value) => {
                     const formatted = parseFloat(value).toFixed(2);
-                    return `<span style="color: var(--success-600); font-weight: var(--font-semibold);">$${formatted}</span>`;
+                    return `<span class="u-color-success-600_font-weight-font-sem">$${formatted}</span>`;
                 }
             }
         ],

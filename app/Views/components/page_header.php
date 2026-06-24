@@ -20,7 +20,7 @@ $actions = $actions ?? [];
             <?= esc($title) ?>
         </h2>
         <?php if ($subtitle): ?>
-            <p class="text-muted mb-0"><?= esc($subtitle) ?></p>
+            <p class="text-secondary mb-0"><?= esc($subtitle) ?></p>
         <?php endif; ?>
     </div>
     <div class="col-md-4 text-md-end">

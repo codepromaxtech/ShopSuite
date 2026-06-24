@@ -7,7 +7,7 @@
  */
 ?>
 
-<div style="border: 1px solid #990000; padding-left: 20px; margin: 0 0 10px 0;">
+<div class="ci-error-box">
 
     <h4>A PHP Error was encountered</h4>
 
@@ -23,7 +23,7 @@
 
             <?php if (isset($error['file']) && strpos($error['file'], realpath(ROOTPATH)) !== 0): ?>
 
-                <p style="margin-left: 10px;">
+                <p class="u-margin-left-10px">
                     File: <?= $error['file'] ?><br>
                     Line: <?= $error['line'] ?><br>
                     Function: <?= $error['function'] ?>

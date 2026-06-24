@@ -41,7 +41,7 @@
 
         <div class="form-group form-group-sm">
             <?= form_label(lang('Taxes.tax_rate'), 'tax_rate', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-5 input-group" style="padding-left: 15px;">
+            <div class="col-xs-5 input-group u-padding-left-15px">
                 <?= form_input([
                     'name'  => 'tax_rate',
                     'id'    => 'tax_rate',

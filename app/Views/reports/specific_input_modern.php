@@ -22,7 +22,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<div style="display: grid; grid-template-columns: 1fr 400px; gap: var(--space-6); max-width: 1400px;">
+<div class="u-display-grid_grid-template-columns-1fr">
     <!-- Main Form -->
     <div class="card">
         <div class="card-header">
@@ -69,7 +69,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                 </div>
                 
                 <!-- Quick Date Buttons -->
-                <div style="margin-top: var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                <div class="u-margin-top-space-4_display-flex_flex-w">
                     <button type="button" class="btn btn-sm btn-outline" onclick="setDateRange('today')">
                         <i class="bi bi-calendar-day"></i> Today
                     </button>
@@ -135,7 +135,7 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
 
         <!-- Selection Info -->
-        <div class="card" style="margin-top: var(--space-4);">
+        <div class="card u-margin-top-space-4">
             <div class="card-header">
                 <h3 class="card-header-title">
                     <i class="bi bi-info-circle"></i>
@@ -143,16 +143,16 @@ echo view('layouts/modern_header', ['title' => $title]);
                 </h3>
             </div>
             <div class="card-body">
-                <div style="font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.6;">
-                    <div style="margin-bottom: var(--space-3);">
-                        <strong style="color: var(--text-primary);">Selected:</strong>
-                        <div id="selected_display" style="margin-top: var(--space-1); font-weight: var(--font-semibold); color: var(--primary-600);">
+                <div class="u-font-size-text-sm_color-text-secondary-2">
+                    <div class="u-margin-bottom-space-3">
+                        <strong class="u-color-text-primary">Selected:</strong>
+                        <div class="u-margin-top-space-1_font-weight-font-se" id="selected_display">
                             None selected
                         </div>
                     </div>
-                    <div style="margin-bottom: var(--space-3);">
-                        <strong style="color: var(--text-primary);">Date Range:</strong>
-                        <div id="date_display" style="margin-top: var(--space-1); font-family: monospace;">
+                    <div class="u-margin-bottom-space-3">
+                        <strong class="u-color-text-primary">Date Range:</strong>
+                        <div class="u-margin-top-space-1_font-family-monospa" id="date_display">
                             <?= date('Y-m-01') ?> to <?= date('Y-m-d') ?>
                         </div>
                     </div>
@@ -161,14 +161,14 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
 
         <!-- Quick Tips -->
-        <div class="card" style="margin-top: var(--space-4); background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);">
+        <div class="card u-margin-top-space-4-1">
             <div class="card-body">
-                <div style="display: flex; gap: var(--space-3);">
-                    <div style="flex-shrink: 0;">
-                        <i class="bi bi-lightbulb-fill" style="font-size: 24px; color: var(--info-600);"></i>
+                <div class="u-display-flex_gap-space-3">
+                    <div class="u-flex-shrink-0">
+                        <i class="bi bi-lightbulb-fill u-font-size-24px_color-info-600"></i>
                     </div>
-                    <div style="font-size: var(--text-sm); color: var(--text-secondary);">
-                        <strong style="color: var(--info-700); display: block; margin-bottom: var(--space-2);">Quick Tip</strong>
+                    <div class="u-font-size-text-sm_color-text-secondary">
+                        <strong class="u-color-info-700_display-block_margin-bo">Quick Tip</strong>
                         This report provides detailed transaction history for the selected entity including all sales, payments, and related activities.
                     </div>
                 </div>
@@ -177,19 +177,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<style>
-.form-label-small {
-    font-size: var(--text-xs);
-    font-weight: var(--font-medium);
-    color: var(--text-tertiary);
-    margin-bottom: var(--space-1);
-    display: block;
-}
 
-[data-theme="dark"] .card[style*="background: linear-gradient"] {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%) !important;
-}
-</style>
 
 <script>
 // Date range presets

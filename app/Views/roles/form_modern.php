@@ -55,14 +55,14 @@ echo view('layouts/modern_header', ['title' => $title]);
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-2">
         <!-- Role Information -->
-        <div class="card" style="margin-bottom: var(--space-6);">
+        <div class="card u-margin-bottom-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">Role Information</h3>
             </div>
             <div class="card-body">
                 <?php if ($is_system): ?>
-                    <div class="alert alert-info" style="margin-bottom: var(--space-4);">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle; margin-right: var(--space-2);">
+                    <div class="alert alert-info u-margin-bottom-space-4">
+                        <svg class="u-display-inline-block_vertical-align-mi" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         This is a system role. The name cannot be changed.
@@ -95,7 +95,7 @@ echo view('layouts/modern_header', ['title' => $title]);
         <div class="card">
             <div class="card-header">
                 <h3 class="card-header-title">Module Permissions</h3>
-                <div style="display: flex; gap: var(--space-2);">
+                <div class="u-display-flex_gap-space-2">
                     <button type="button" class="btn btn-sm btn-outline" onclick="selectAllPermissions()">
                         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -112,11 +112,11 @@ echo view('layouts/modern_header', ['title' => $title]);
             </div>
             <div class="card-body">
                 <?php foreach ($all_permissions as $module): ?>
-                    <div class="permission-module" style="margin-bottom: var(--space-6);">
-                        <div style="border-bottom: 2px solid var(--border-primary); padding-bottom: var(--space-2); margin-bottom: var(--space-4);">
-                            <h4 style="font-size: var(--text-lg); font-weight: var(--font-semibold); margin: 0;">
+                    <div class="permission-module u-margin-bottom-space-6">
+                        <div class="u-border-bottom-2pxsolidborder-primary_p">
+                            <h4 class="u-font-size-text-lg_font-weight-font-sem">
                                 <?= lang('Module.' . $module['module_id']) ?>
-                                <span style="color: var(--text-tertiary); font-size: var(--text-sm); font-weight: var(--font-normal);">(<?= count($module['permissions']) ?> permissions)</span>
+                                <span class="u-color-text-tertiary_font-size-text-sm_">(<?= count($module['permissions']) ?> permissions)</span>
                             </h4>
                         </div>
                         
@@ -127,7 +127,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                                 $current_menu = $current_permissions[$perm->permission_id] ?? 'home';
                                 ?>
                                 <div class="permission-item" style="padding: var(--space-3); border: 1px solid var(--border-primary); border-radius: var(--radius-md); <?= $is_checked ? 'background: var(--primary-50); border-color: var(--primary-300);' : '' ?>">
-                                    <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
+                                    <label class="u-display-flex_align-items-center_gap-sp">
                                         <input class="permission-checkbox" 
                                                type="checkbox" 
                                                name="perm_enabled[<?= esc($perm->permission_id) ?>]"
@@ -136,11 +136,11 @@ echo view('layouts/modern_header', ['title' => $title]);
                                                data-permission-id="<?= esc($perm->permission_id) ?>"
                                                <?= $is_checked ? 'checked' : '' ?>
                                                style="width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-weight: var(--font-semibold); flex-grow: 1;"><?= esc($perm->permission_id) ?></span>
+                                        <span class="u-font-weight-font-semibold_flex-grow-1"><?= esc($perm->permission_id) ?></span>
                                     </label>
                                     
                                     <div class="permission-menu-group" style="margin-top: var(--space-2); <?= $is_checked ? '' : 'display: none;' ?>">
-                                        <label class="form-label" style="font-size: var(--text-xs);">Menu Group</label>
+                                        <label class="form-label u-font-size-text-xs">Menu Group</label>
                                         <select class="form-control form-select menu-group-select" 
                                                 name="permissions[<?= esc($perm->permission_id) ?>]"
                                                 data-permission-id="<?= esc($perm->permission_id) ?>">
@@ -169,7 +169,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                     <?= $is_new ? 'Create' : 'Update' ?> Role
                 </button>
                 
-                <a href="<?= base_url('roles') ?>" class="btn btn-outline btn-block" style="margin-top: var(--space-3);">
+                <a href="<?= base_url('roles') ?>" class="btn btn-outline btn-block mt-space-3">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -179,16 +179,16 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
         
         <!-- Permission Summary -->
-        <div class="card" style="margin-top: var(--space-6);">
+        <div class="card u-margin-top-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">Permission Summary</h3>
             </div>
             <div class="card-body">
-                <div style="text-align: center;">
-                    <div style="font-size: var(--text-4xl); font-weight: var(--font-bold); color: var(--primary-600);" id="selected_count">
+                <div class="text-center">
+                    <div class="u-font-size-text-4xl_font-weight-font-bo" id="selected_count">
                         <?= count($current_permissions) ?>
                     </div>
-                    <div style="color: var(--text-secondary); font-size: var(--text-sm);">
+                    <div class="u-color-text-secondary_font-size-text-sm">
                         Selected Permissions
                     </div>
                 </div>
@@ -199,19 +199,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 
 <?= form_close() ?>
 
-<style>
-.permission-item {
-    transition: all var(--transition-normal);
-}
 
-.permission-item:hover {
-    border-color: var(--primary-400) !important;
-}
-
-.permission-checkbox:checked + span {
-    color: var(--primary-700);
-}
-</style>
 
 <script>
 // Track permission selection

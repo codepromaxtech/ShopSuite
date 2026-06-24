@@ -35,7 +35,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <div class="stat-card">
         <div class="stat-card-header">
             <div class="stat-card-title">Total Bundles</div>
-            <div class="stat-card-icon" style="background: var(--primary-100);">
+            <div class="stat-card-icon u-background-primary-100">
                 <svg width="24" height="24" fill="none" stroke="var(--primary-600)" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                 </svg>
@@ -47,7 +47,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <div class="stat-card">
         <div class="stat-card-header">
             <div class="stat-card-title">Active Bundles</div>
-            <div class="stat-card-icon" style="background: var(--success-100);">
+            <div class="stat-card-icon u-background-success-100">
                 <svg width="24" height="24" fill="none" stroke="var(--success-600)" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
@@ -59,7 +59,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <div class="stat-card">
         <div class="stat-card-header">
             <div class="stat-card-title">Total Value</div>
-            <div class="stat-card-icon" style="background: var(--warning-100);">
+            <div class="stat-card-icon u-background-warning-100">
                 <svg width="24" height="24" fill="none" stroke="var(--warning-600)" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
@@ -73,7 +73,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <div class="card-header">
         <h3 class="card-header-title">All Item Kits</h3>
     </div>
-    <div class="card-body" style="padding: 0;">
+    <div class="card-body u-padding-0">
         <div id="itemKitsTable"></div>
     </div>
 </div>
@@ -100,8 +100,8 @@ function initializeDataTable() {
                 sortable: true,
                 render: (data, row) => {
                     return `<div>
-                        <div style="font-weight: var(--font-semibold);">${data || ''}</div>
-                        <div style="font-size: var(--text-sm); color: var(--text-secondary);">${row.item_kit_number || ''}</div>
+                        <div class="u-font-weight-font-semibold">${data || ''}</div>
+                        <div class="u-font-size-text-sm_color-text-secondary">${row.item_kit_number || ''}</div>
                     </div>`;
                 }
             },

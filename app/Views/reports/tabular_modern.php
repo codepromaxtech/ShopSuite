@@ -38,18 +38,18 @@ echo view('layouts/modern_header', ['title' => $page_title]);
 
 <!-- Summary Cards -->
 <?php if (!empty($summary_data)): ?>
-<div class="stats-grid" style="margin-bottom: var(--space-6);">
+<div class="stats-grid u-margin-bottom-space-6">
     <?php $colors = ['primary', 'success', 'warning', 'info']; $index = 0; ?>
     <?php foreach ($summary_data as $key => $value): ?>
-        <div class="stat-card" style="background: linear-gradient(135deg, var(--<?= $colors[$index % 4] ?>-500) 0%, var(--<?= $colors[$index % 4] ?>-600) 100%);">
-            <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
-                <i class="bi bi-<?= $index === 0 ? 'calculator' : ($index === 1 ? 'graph-up' : ($index === 2 ? 'currency-dollar' : 'bar-chart')) ?>" style="color: white;"></i>
+        <div class="stat-card" >
+            <div class="stat-card-icon u-background-rgba255-255-255-02">
+                <i class="bi bi-<?= $index === 0 ? 'calculator' : ($index === 1 ? 'graph-up' : ($index === 2 ? 'currency-dollar' : 'bar-chart')) ?>" ></i>
             </div>
             <div class="stat-card-content">
-                <div class="stat-card-label" style="color: rgba(255,255,255,0.9); text-transform: capitalize;">
+                <div class="stat-card-label u-color-rgba255-255-255-09_text-transfor">
                     <?= esc(str_replace('_', ' ', $key)) ?>
                 </div>
-                <div class="stat-card-value" style="color: white;">
+                <div class="stat-card-value" >
                     <?= esc($value) ?>
                 </div>
             </div>
@@ -61,10 +61,10 @@ echo view('layouts/modern_header', ['title' => $page_title]);
 
 <!-- Report Table -->
 <div class="card">
-    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4);">
+    <div class="card-header u-display-flex_justify-content-space-bet-3">
         <div>
-            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">Report Data</h2>
-            <p style="margin: var(--space-1) 0 0 0; font-size: var(--text-sm); color: var(--text-tertiary);">
+            <h2 class="u-margin-0_font-size-text-lg_font-weight">Report Data</h2>
+            <p class="u-margin-space-1000_font-size-text-sm_co">
                 <?= !empty($data) ? count($data) : '0' ?> records found
             </p>
         </div>
@@ -73,7 +73,7 @@ echo view('layouts/modern_header', ['title' => $page_title]);
             <input type="text" placeholder="Search in table..." id="tableSearch" onkeyup="filterReportTable()">
         </div>
     </div>
-    <div class="card-body" style="padding: 0;">
+    <div class="card-body u-padding-0">
         <div class="table-responsive">
             <table class="data-table" id="report_table">
                 <thead>
@@ -81,7 +81,7 @@ echo view('layouts/modern_header', ['title' => $page_title]);
                         <?php foreach ($headers as $index => $header): ?>
                             <th onclick="sortTable(<?= $index ?>)" style="cursor: pointer;">
                                 <?= esc($header) ?>
-                                <i class="bi bi-arrow-down-up" style="font-size: 12px; opacity: 0.5;"></i>
+                                <i class="bi bi-arrow-down-up u-font-size-12px_opacity-05"></i>
                             </th>
                         <?php endforeach; ?>
                     </tr>
@@ -116,23 +116,7 @@ echo view('layouts/modern_header', ['title' => $page_title]);
     </div>
 </div>
 
-<style>
-@media print {
-    .page-header-actions,
-    .search-box,
-    .btn,
-    button {
-        display: none !important;
-    }
-    .card {
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
-    }
-    .stat-card {
-        break-inside: avoid;
-    }
-}
-</style>
+
 
 <script>
 // Export functionality

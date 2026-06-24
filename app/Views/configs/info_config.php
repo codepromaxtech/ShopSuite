@@ -34,8 +34,8 @@
                 <?= form_label(lang('Config.company_logo'), 'company_logo', ['class' => 'control-label col-xs-2']) ?>
                 <div class="col-xs-6">
                     <div class="fileinput <?= $logo_exists ? 'fileinput-exists' : 'fileinput-new' ?>" data-provides="fileinput">
-                        <div class="fileinput-new thumbnail" style="width: 200px; height: 200px;"></div>
-                        <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 200px;">
+                        <div class="fileinput-new thumbnail u-width-200px_height-200px"></div>
+                        <div class="fileinput-preview fileinput-exists thumbnail u-max-width-200px_max-height-200px">
                             <img data-src="holder.js/100%x100%" alt="<?= lang('Config.company_logo') ?>" src="<?php if ($logo_exists) echo base_url('uploads/' . $config['company_logo']); else echo '' ?>" style="max-height: 100%; max-width: 100%;">
                         </div>
                         <div>

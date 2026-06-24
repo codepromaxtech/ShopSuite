@@ -20,7 +20,7 @@ $errorId = uniqid('error', true);
 
     <title><?= esc($title) ?></title>
     <style>
-        <?= preg_replace('#[\r\n\t ]+#', ' ', file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'debug.css')) ?>
+        <?= preg_replace('#[\r\n\t ]+#', ' ', file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'debug.min.css')) ?>
     </style>
 
     <script type="text/javascript">
@@ -234,7 +234,7 @@ $errorId = uniqid('error', true);
                 <table>
                     <tbody>
                         <tr>
-                            <td style="width: 10em">Path</td>
+                            <td class="u-width-10em">Path</td>
                             <td><?= esc($request->getUri()) ?></td>
                         </tr>
                         <tr>
@@ -246,7 +246,7 @@ $errorId = uniqid('error', true);
                             <td><?= esc($request->getIPAddress()) ?></td>
                         </tr>
                         <tr>
-                            <td style="width: 10em">Is AJAX Request?</td>
+                            <td class="u-width-10em">Is AJAX Request?</td>
                             <td><?= $request->isAJAX() ? 'yes' : 'no' ?></td>
                         </tr>
                         <tr>
@@ -277,7 +277,7 @@ $errorId = uniqid('error', true);
 
                     <h3>$<?= esc($var) ?></h3>
 
-                    <table style="width: 100%">
+                    <table class="u-width-100pct-1">
                         <thead>
                             <tr>
                                 <th>Key</th>
@@ -353,7 +353,7 @@ $errorId = uniqid('error', true);
             <div class="content" id="response">
                 <table>
                     <tr>
-                        <td style="width: 15em">Response Status</td>
+                        <td class="u-width-15em">Response Status</td>
                         <td><?= esc($response->getStatusCode() . ' - ' . $response->getReasonPhrase()) ?></td>
                     </tr>
                 </table>
@@ -413,7 +413,7 @@ $errorId = uniqid('error', true);
                             <td><?= esc(static::describeMemory(memory_get_usage(true))) ?></td>
                         </tr>
                         <tr>
-                            <td style="width: 12em">Peak Memory Usage:</td>
+                            <td class="u-width-12em">Peak Memory Usage:</td>
                             <td><?= esc(static::describeMemory(memory_get_peak_usage(true))) ?></td>
                         </tr>
                         <tr>

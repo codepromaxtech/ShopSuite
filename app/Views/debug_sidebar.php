@@ -10,7 +10,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 
 <div class="container-fluid py-4">
     <div class="card">
-        <div class="card-header bg-danger text-white">
+        <div class="card-header bg-danger text-inverse">
             <h4 class="mb-0">🐛 DEBUG: Sidebar Data Check</h4>
         </div>
         <div class="card-body">

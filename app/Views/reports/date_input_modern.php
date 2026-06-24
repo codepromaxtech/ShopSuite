@@ -29,7 +29,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 <?php endif; ?>
 
-<div style="display: grid; grid-template-columns: 1fr 400px; gap: var(--space-6); max-width: 1400px;">
+<div class="u-display-grid_grid-template-columns-1fr">
     <!-- Main Form -->
     <div class="card">
         <div class="card-header">
@@ -56,7 +56,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                 </div>
                 
                 <!-- Quick Date Buttons -->
-                <div style="margin-top: var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                <div class="u-margin-top-space-4_display-flex_flex-w">
                     <button type="button" class="btn btn-sm btn-outline" onclick="setDateRange('today')">
                         <i class="bi bi-calendar-day"></i> Today
                     </button>
@@ -150,7 +150,7 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
 
         <!-- Info Card -->
-        <div class="card" style="margin-top: var(--space-4);">
+        <div class="card u-margin-top-space-4">
             <div class="card-header">
                 <h3 class="card-header-title">
                     <i class="bi bi-info-circle"></i>
@@ -158,16 +158,16 @@ echo view('layouts/modern_header', ['title' => $title]);
                 </h3>
             </div>
             <div class="card-body">
-                <div style="font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.6;">
-                    <div style="margin-bottom: var(--space-3);">
-                        <strong style="color: var(--text-primary);">Date Range:</strong>
-                        <div id="date_display" style="margin-top: var(--space-1); font-family: monospace;">
+                <div class="u-font-size-text-sm_color-text-secondary-2">
+                    <div class="u-margin-bottom-space-3">
+                        <strong class="u-color-text-primary">Date Range:</strong>
+                        <div class="u-margin-top-space-1_font-family-monospa" id="date_display">
                             <?= date('Y-m-01') ?> to <?= date('Y-m-d') ?>
                         </div>
                     </div>
-                    <div style="margin-bottom: var(--space-3);">
-                        <strong style="color: var(--text-primary);">Output Formats:</strong>
-                        <ul style="margin: var(--space-2) 0 0 var(--space-4); padding: 0;">
+                    <div class="u-margin-bottom-space-3">
+                        <strong class="u-color-text-primary">Output Formats:</strong>
+                        <ul class="u-margin-space-200space-4_padding-0">
                             <li>View on screen</li>
                             <li>Export to Excel/CSV</li>
                             <li>Export to PDF</li>
@@ -179,14 +179,14 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
 
         <!-- Quick Tips -->
-        <div class="card" style="margin-top: var(--space-4); background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);">
+        <div class="card u-margin-top-space-4-1">
             <div class="card-body">
-                <div style="display: flex; gap: var(--space-3);">
-                    <div style="flex-shrink: 0;">
-                        <i class="bi bi-lightbulb" style="font-size: 24px; color: var(--info-600);"></i>
+                <div class="u-display-flex_gap-space-3">
+                    <div class="u-flex-shrink-0">
+                        <i class="bi bi-lightbulb u-font-size-24px_color-info-600"></i>
                     </div>
-                    <div style="font-size: var(--text-sm); color: var(--text-secondary);">
-                        <strong style="color: var(--info-700); display: block; margin-bottom: var(--space-2);">Quick Tip</strong>
+                    <div class="u-font-size-text-sm_color-text-secondary">
+                        <strong class="u-color-info-700_display-block_margin-bo">Quick Tip</strong>
                         Use the quick date buttons for common date ranges, or select custom dates for specific periods.
                     </div>
                 </div>
@@ -195,19 +195,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<style>
-.form-label-small {
-    font-size: var(--text-xs);
-    font-weight: var(--font-medium);
-    color: var(--text-tertiary);
-    margin-bottom: var(--space-1);
-    display: block;
-}
 
-[data-theme="dark"] .card[style*="background: linear-gradient"] {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%) !important;
-}
-</style>
 
 <script>
 // Date range presets

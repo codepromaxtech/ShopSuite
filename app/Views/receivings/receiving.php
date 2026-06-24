@@ -106,15 +106,15 @@ if (isset($success)) {
     <table class="sales_table_100" id="register">
         <thead>
             <tr>
-                <th style="width: 5%;"><?= lang('Common.delete') ?></th>
-                <th style="width: 15%;"><?= lang('Sales.item_number') ?></th>
-                <th style="width: 23%;"><?= lang(ucfirst($controller_name) . '.item_name') ?></th>
-                <th style="width: 10%;"><?= lang(ucfirst($controller_name) . '.cost') ?></th>
-                <th style="width: 8%;"><?= lang(ucfirst($controller_name) . '.quantity') ?></th>
-                <th style="width: 10%;"><?= lang(ucfirst($controller_name) . '.ship_pack') ?></th>
-                <th style="width: 14%;"><?= lang(ucfirst($controller_name) . '.discount') ?></th>
-                <th style="width: 10%;"><?= lang(ucfirst($controller_name) . '.total') ?></th>
-                <th style="width: 5%;"><?= lang(ucfirst($controller_name) . '.update') ?></th>
+                <th class="u-width-5pct"><?= lang('Common.delete') ?></th>
+                <th class="u-width-15pct"><?= lang('Sales.item_number') ?></th>
+                <th class="u-width-23pct"><?= lang(ucfirst($controller_name) . '.item_name') ?></th>
+                <th class="u-width-10pct"><?= lang(ucfirst($controller_name) . '.cost') ?></th>
+                <th class="u-width-8pct"><?= lang(ucfirst($controller_name) . '.quantity') ?></th>
+                <th class="u-width-10pct"><?= lang(ucfirst($controller_name) . '.ship_pack') ?></th>
+                <th class="u-width-14pct"><?= lang(ucfirst($controller_name) . '.discount') ?></th>
+                <th class="u-width-10pct"><?= lang(ucfirst($controller_name) . '.total') ?></th>
+                <th class="u-width-5pct"><?= lang(ucfirst($controller_name) . '.update') ?></th>
             </tr>
         </thead>
 
@@ -135,7 +135,7 @@ if (isset($success)) {
                     <tr>
                         <td><?= anchor("$controller_name/deleteItem/$line", '<span class="glyphicon glyphicon-trash"></span>') ?></td>
                         <td><?= esc($item['item_number']) ?></td>
-                        <td style="text-align: center;">
+                        <td class="text-center">
                             <?= esc($item['name'] . ' ' . implode(' ', [$item['attribute_values'], $item['attribute_dtvalues']])) ?><br>
                             <?= '[' . to_quantity_decimals($item['in_stock']) . ' in ' . $item['stock_name'] . ']' ?>
                             <?= form_hidden('location', (string)$item['item_location']) ?>
@@ -205,9 +205,9 @@ if (isset($success)) {
                     <tr>
                         <?php if ($item['allow_alt_description'] == 1) {    // TODO: ===?
                         ?>
-                            <td style="color: #2F4F4F;"><?= lang('Sales.description_abbrv') . ':' ?></td>
+                            <td ><?= lang('Sales.description_abbrv') . ':' ?></td>
                         <?php } ?>
-                        <td colspan="2" style="text-align: left;">
+                        <td colspan="2" class="text-left">
                             <?php
                             if ($item['allow_alt_description'] == 1) {    // TODO: ===?
                                 echo form_input([
@@ -247,25 +247,25 @@ if (isset($success)) {
 
             <table class="sales_table_100">
                 <tr>
-                    <th style="width: 55%;"><?= lang(ucfirst($controller_name) . '.supplier') ?></th>
-                    <th style="width: 45%; text-align: right;"><?= esc($supplier) ?></th>
+                    <th class="u-width-55pct"><?= lang(ucfirst($controller_name) . '.supplier') ?></th>
+                    <th class="u-width-45pct_text-align-right"><?= esc($supplier) ?></th>
                 </tr>
                 <?php if (!empty($supplier_email)) { ?>
                     <tr>
-                        <th style="width: 55%;"><?= lang(ucfirst($controller_name) . '.supplier_email') ?></th>
-                        <th style="width: 45%; text-align: right;"><?= esc($supplier_email) ?></th>
+                        <th class="u-width-55pct"><?= lang(ucfirst($controller_name) . '.supplier_email') ?></th>
+                        <th class="u-width-45pct_text-align-right"><?= esc($supplier_email) ?></th>
                     </tr>
                 <?php } ?>
                 <?php if (!empty($supplier_address)) { ?>
                     <tr>
-                        <th style="width: 55%;"><?= lang(ucfirst($controller_name) . '.supplier_address') ?></th>
-                        <th style="width: 45%; text-align: right;"><?= esc($supplier_address) ?></th>
+                        <th class="u-width-55pct"><?= lang(ucfirst($controller_name) . '.supplier_address') ?></th>
+                        <th class="u-width-45pct_text-align-right"><?= esc($supplier_address) ?></th>
                     </tr>
                 <?php } ?>
                 <?php if (!empty($supplier_location)) { ?>
                     <tr>
-                        <th style="width: 55%;"><?= lang(ucfirst($controller_name) . '.supplier_location') ?></th>
-                        <th style="width: 45%; text-align: right;"><?= esc($supplier_location) ?></th>
+                        <th class="u-width-55pct"><?= lang(ucfirst($controller_name) . '.supplier_location') ?></th>
+                        <th class="u-width-45pct_text-align-right"><?= esc($supplier_location) ?></th>
                     </tr>
                 <?php } ?>
             </table>
@@ -285,7 +285,7 @@ if (isset($success)) {
             <?= form_open("$controller_name/selectSupplier", ['id' => 'select_supplier_form', 'class' => 'form-horizontal']) ?>
 
             <div class="form-group" id="select_customer">
-                <label id="supplier_label" for="supplier" class="control-label" style="margin-bottom: 1em; margin-top: -1em;">
+                <label id="supplier_label" for="supplier" class="control-label u-margin-bottom-1em_margin-top--1em">
                     <?= lang(ucfirst($controller_name) . '.select_supplier') ?>
                 </label>
                 <?= form_input([
@@ -308,11 +308,11 @@ if (isset($success)) {
         <table class="sales_table_100" id="sale_totals">
             <tr>
                 <?php if ($mode != 'requisition') { ?>
-                    <th style="width: 55%;"><?= lang('Sales.total') ?></th>
-                    <th style="width: 45%; text-align: right;"><?= to_currency($total) ?></th>
+                    <th class="u-width-55pct"><?= lang('Sales.total') ?></th>
+                    <th class="u-width-45pct_text-align-right"><?= to_currency($total) ?></th>
                 <?php } else { ?>
-                    <th style="width: 55%;"></th>
-                    <th style="width: 45%; text-align: right;"></th>
+                    <th class="u-width-55pct"></th>
+                    <th class="u-width-45pct_text-align-right"></th>
                 <?php } ?>
             </tr>
         </table>

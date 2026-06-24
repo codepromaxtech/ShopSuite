@@ -25,14 +25,14 @@
             <div class="drop-zone-hint">
                 or click to browse
             </div>
-            <input type="file" id="file_path" name="file_path" accept=".csv" style="display: none;">
+            <input type="file" id="file_path" name="file_path" accept=".csv" class="d-none">
         </div>
         
         <!-- CSV Preview Container -->
-        <div id="preview-container" style="display: none;"></div>
+        <div id="preview-container" class="d-none"></div>
         
         <!-- Import Options -->
-        <div id="import-options" style="display: none;" class="mt-4">
+        <div id="import-options" class="mt-4 d-none">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="card-title mb-3">

@@ -23,12 +23,12 @@ echo view('layouts/modern_header', ['title' => $title]);
 </div>
 
 <!-- Configuration Categories Grid -->
-<div class="config-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: var(--space-6); margin-bottom: var(--space-8);">
+<div class="config-grid u-display-grid_grid-template-columns-rep">
     
     <!-- General Settings -->
     <div class="config-category-card">
         <div class="config-category-header">
-            <div class="config-category-icon" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+            <div class="config-category-icon" >
                 <i class="bi bi-gear-fill"></i>
             </div>
             <div class="config-category-title">
@@ -63,7 +63,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <!-- Sales Settings -->
     <div class="config-category-card">
         <div class="config-category-header">
-            <div class="config-category-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <div class="config-category-icon" >
                 <i class="bi bi-cart-check-fill"></i>
             </div>
             <div class="config-category-title">
@@ -98,7 +98,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <!-- Inventory Settings -->
     <div class="config-category-card">
         <div class="config-category-header">
-            <div class="config-category-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <div class="config-category-icon" >
                 <i class="bi bi-box-seam-fill"></i>
             </div>
             <div class="config-category-title">
@@ -133,7 +133,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <!-- System & Security -->
     <div class="config-category-card">
         <div class="config-category-header">
-            <div class="config-category-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+            <div class="config-category-icon" >
                 <i class="bi bi-shield-lock-fill"></i>
             </div>
             <div class="config-category-title">
@@ -177,28 +177,28 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
     <div class="quick-actions-grid">
         <a href="<?= base_url('backups/create') ?>" class="quick-action-card">
-            <div class="quick-action-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+            <div class="quick-action-icon" >
                 <i class="bi bi-cloud-download"></i>
             </div>
             <h4>Backup Database</h4>
             <p>Create a system backup</p>
         </a>
         <button class="quick-action-card" onclick="clearCache()">
-            <div class="quick-action-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <div class="quick-action-icon" >
                 <i class="bi bi-arrow-clockwise"></i>
             </div>
             <h4>Clear Cache</h4>
             <p>Refresh system cache</p>
         </button>
         <a href="<?= base_url('logs') ?>" class="quick-action-card">
-            <div class="quick-action-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <div class="quick-action-icon" >
                 <i class="bi bi-file-earmark-text"></i>
             </div>
             <h4>View Logs</h4>
             <p>Check system logs</p>
         </a>
         <a href="<?= base_url('config/system') ?>" class="quick-action-card">
-            <div class="quick-action-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+            <div class="quick-action-icon" >
                 <i class="bi bi-info-circle"></i>
             </div>
             <h4>System Info</h4>
@@ -207,216 +207,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<style>
-/* Config Category Cards */
-.config-category-card {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-normal);
-}
 
-.config-category-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-.config-category-header {
-    padding: var(--space-6);
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.config-category-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: var(--radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.config-category-icon i {
-    font-size: 32px;
-    color: white;
-}
-
-.config-category-title h3 {
-    font-size: var(--text-lg);
-    font-weight: var(--font-semibold);
-    color: var(--text-primary);
-    margin: 0 0 var(--space-1) 0;
-}
-
-.config-category-title p {
-    font-size: var(--text-sm);
-    color: var(--text-tertiary);
-    margin: 0;
-}
-
-.config-category-links {
-    padding: var(--space-2);
-}
-
-.config-link {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-4);
-    color: var(--text-primary);
-    text-decoration: none;
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast);
-}
-
-.config-link:hover {
-    background: var(--bg-secondary);
-    color: var(--primary-600);
-    transform: translateX(4px);
-}
-
-.config-link i:first-child {
-    font-size: 20px;
-    color: var(--text-tertiary);
-    transition: color var(--transition-fast);
-}
-
-.config-link:hover i:first-child {
-    color: var(--primary-600);
-}
-
-.config-link span {
-    flex: 1;
-    font-weight: var(--font-medium);
-}
-
-.config-link i:last-child {
-    font-size: 14px;
-    color: var(--text-tertiary);
-}
-
-/* Quick Actions */
-.quick-actions-container {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
-    box-shadow: var(--shadow-sm);
-}
-
-.quick-actions-header {
-    margin-bottom: var(--space-6);
-}
-
-.quick-actions-header h2 {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--text-xl);
-    font-weight: var(--font-semibold);
-    color: var(--text-primary);
-    margin: 0 0 var(--space-2) 0;
-}
-
-.quick-actions-header h2 i {
-    color: var(--warning-600);
-}
-
-.quick-actions-header p {
-    font-size: var(--text-sm);
-    color: var(--text-tertiary);
-    margin: 0;
-}
-
-.quick-actions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--space-4);
-}
-
-.quick-action-card {
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    padding: var(--space-5);
-    text-align: center;
-    text-decoration: none;
-    color: var(--text-primary);
-    transition: all var(--transition-normal);
-    cursor: pointer;
-    display: block;
-}
-
-.quick-action-card:hover {
-    border-color: var(--primary-300);
-    box-shadow: var(--shadow-sm);
-    transform: translateY(-2px);
-}
-
-.quick-action-icon {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto var(--space-4) auto;
-    border-radius: var(--radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.quick-action-icon i {
-    font-size: 32px;
-    color: white;
-}
-
-.quick-action-card h4 {
-    font-size: var(--text-base);
-    font-weight: var(--font-semibold);
-    color: var(--text-primary);
-    margin: 0 0 var(--space-2) 0;
-}
-
-.quick-action-card p {
-    font-size: var(--text-sm);
-    color: var(--text-tertiary);
-    margin: 0;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .config-grid {
-        grid-template-columns: 1fr !important;
-    }
-    
-    .quick-actions-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    }
-}
-
-/* Dark Mode */
-[data-theme="dark"] .config-category-card,
-[data-theme="dark"] .quick-actions-container {
-    background: var(--bg-elevated);
-    border-color: var(--border-color);
-}
-
-[data-theme="dark"] .config-link:hover {
-    background: var(--bg-secondary);
-}
-
-[data-theme="dark"] .quick-action-card {
-    background: var(--bg-secondary);
-    border-color: var(--border-color);
-}
-
-[data-theme="dark"] .quick-action-card:hover {
-    border-color: var(--primary-600);
-}
-</style>
 
 <script>
 async function clearCache() {

@@ -9,17 +9,11 @@ use App\Models\Customer;
 $this->dinner_table = model(Dinner_table::class);
 ?>
 
-<style>
-    @media (min-width: 768px) {
-        .modal-dlg .modal-dialog {
-            width: 750px !important;
-        }
-    }
-</style>
+
 
 <table id="suspended_sales_table" class="table table-striped table-hover">
     <thead>
-        <tr style="background-color: #ccc;">
+        <tr class="u-background-">
             <th><?= lang('Sales.suspended_doc_id') ?></th>
             <th><?= lang('Sales.date') ?></th>
             <?php if ($config['dinner_table_enable']) { ?>

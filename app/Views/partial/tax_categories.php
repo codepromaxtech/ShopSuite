@@ -14,7 +14,7 @@ foreach ($tax_categories as $key => $category) {
     ++$i;
 ?>
 
-    <div class="form-group form-group-sm" style="display: block;">
+    <div class="form-group form-group-sm u-display-block">
         <?= form_label(lang('Taxes.tax_category') . " $i", "tax_category_$i", ['class' => 'control-label col-xs-2']) ?>
         <div class="col-xs-3">
             <?php $form_data = [
@@ -37,9 +37,9 @@ foreach ($tax_categories as $key => $category) {
             echo form_input($form_data);
             ?>
         </div>
-        <span class="add_tax_category glyphicon glyphicon-plus" style="padding-top: 0.5em;"></span>
+        <span class="add_tax_category glyphicon glyphicon-plus u-padding-top-05em"></span>
         <span>&nbsp;&nbsp;</span>
-        <span class="remove_tax_category glyphicon glyphicon-minus" style="padding-top: 0.5em;"></span>
+        <span class="remove_tax_category glyphicon glyphicon-minus u-padding-top-05em"></span>
         <?= form_hidden('tax_category_id[]', (string)$tax_category_id) ?>
     </div>
 

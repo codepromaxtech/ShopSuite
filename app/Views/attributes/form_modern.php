@@ -52,7 +52,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-2">
         <!-- Basic Information -->
-        <div class="card" style="margin-bottom: var(--space-6);">
+        <div class="card u-margin-bottom-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">Basic Information</h3>
             </div>
@@ -100,7 +100,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                     </div>
                 <?php endif; ?>
                 
-                <div class="form-group" id="definition_unit_container" style="display: none;">
+                <div class="form-group d-none" id="definition_unit_container">
                     <label for="definition_unit" class="form-label">Unit</label>
                     <input type="text" 
                            class="form-control" 
@@ -111,11 +111,11 @@ echo view('layouts/modern_header', ['title' => $title]);
                 </div>
                 
                 <?php if (!$is_category): ?>
-                    <div class="form-group" id="definition_flags_container" style="display: none;">
+                    <div class="form-group d-none" id="definition_flags_container">
                         <label class="form-label">Display Flags</label>
-                        <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                        <div class="u-display-flex_flex-direction-column_gap-1">
                             <?php foreach ($definition_flags as $flag_key => $flag_label): ?>
-                                <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
+                                <label class="u-display-flex_align-items-center_gap-sp">
                                     <input type="checkbox" 
                                            name="definition_flags[]" 
                                            value="<?= $flag_key ?>"
@@ -130,14 +130,14 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
         
         <!-- Dropdown/Checkbox Values -->
-        <div class="card" id="definition_values_container" style="display: none;">
+        <div class="card d-none" id="definition_values_container">
             <div class="card-header">
                 <h3 class="card-header-title">Dropdown/Checkbox Values</h3>
             </div>
             <div class="card-body">
                 <div class="form-group">
                     <label for="definition_value" class="form-label">Add Value</label>
-                    <div style="display: flex; gap: var(--space-2);">
+                    <div class="u-display-flex_gap-space-2">
                         <input type="text" 
                                class="form-control" 
                                id="definition_value" 
@@ -153,12 +153,12 @@ echo view('layouts/modern_header', ['title' => $title]);
                     <small class="form-text">Note: Cannot contain pipe (|) or underscore (_) characters</small>
                 </div>
                 
-                <div id="definition_list_group" style="margin-top: var(--space-4);">
+                <div class="u-margin-top-space-4" id="definition_list_group">
                     <!-- Values will be added here dynamically -->
                 </div>
                 
-                <div id="empty_values_state" style="padding: var(--space-8); text-align: center; color: var(--text-tertiary);">
-                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto var(--space-4);">
+                <div class="u-padding-space-8_text-align-center_colo" id="empty_values_state">
+                    <svg class="u-margin-0autospace-4" width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                     </svg>
                     <p>No values added yet</p>
@@ -178,7 +178,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                     <?= $is_new ? 'Create' : 'Update' ?> Attribute
                 </button>
                 
-                <a href="<?= base_url('attributes') ?>" class="btn btn-outline btn-block" style="margin-top: var(--space-3);">
+                <a href="<?= base_url('attributes') ?>" class="btn btn-outline btn-block mt-space-3">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -188,16 +188,16 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
         
         <!-- Attribute Type Info -->
-        <div class="card" style="margin-top: var(--space-6);">
+        <div class="card u-margin-top-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">Attribute Types</h3>
             </div>
             <div class="card-body">
-                <div style="font-size: var(--text-sm); color: var(--text-secondary);">
-                    <p style="margin-bottom: var(--space-2);"><strong>DROPDOWN:</strong> Select one value from a list</p>
-                    <p style="margin-bottom: var(--space-2);"><strong>CHECKBOX:</strong> Select multiple values</p>
-                    <p style="margin-bottom: var(--space-2);"><strong>DATE:</strong> Date picker input</p>
-                    <p style="margin-bottom: var(--space-2);"><strong>DECIMAL:</strong> Numeric value with unit</p>
+                <div class="u-font-size-text-sm_color-text-secondary">
+                    <p class="u-margin-bottom-space-2"><strong>DROPDOWN:</strong> Select one value from a list</p>
+                    <p class="u-margin-bottom-space-2"><strong>CHECKBOX:</strong> Select multiple values</p>
+                    <p class="u-margin-bottom-space-2"><strong>DATE:</strong> Date picker input</p>
+                    <p class="u-margin-bottom-space-2"><strong>DECIMAL:</strong> Numeric value with unit</p>
                     <p><strong>GROUP:</strong> Container for other attributes</p>
                 </div>
             </div>
@@ -207,39 +207,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 
 <?= form_close() ?>
 
-<style>
-.value-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-3);
-    border: 1px solid var(--border-primary);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--space-2);
-    background: var(--bg-surface);
-    transition: all var(--transition-fast);
-}
 
-.value-item:hover {
-    border-color: var(--primary-300);
-    background: var(--primary-50);
-}
-
-.value-item-text {
-    flex-grow: 1;
-    font-weight: var(--font-medium);
-}
-
-.value-item-remove {
-    color: var(--error-600);
-    cursor: pointer;
-    padding: var(--space-1);
-}
-
-.value-item-remove:hover {
-    color: var(--error-700);
-}
-</style>
 
 <script>
 let values = [];

@@ -9,23 +9,22 @@ echo view('layouts/modern_header', ['title' => $title]);
 ?>
 
 <!-- Page Header -->
-<div class="container-fluid py-3">
-    <div class="row align-items-center mb-3">
-        <div class="col">
-            <h3 class="mb-0">
+<div class="container-fluid py-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-header-title mb-0">
                 <i class="bi bi-list-check me-2"></i>
                 <?= lang('Module.attributes') ?>
             </h3>
-        </div>
-        <div class="col-auto">
             <button class="btn btn-primary" onclick="openModal('attributes/view/-1', 'Add New Attribute')">
                 <i class="bi bi-plus-circle me-1"></i>Add Attribute
             </button>
         </div>
+        <div class="card-body">
+            <!-- Table Container -->
+            <div id="dataTable-container"></div>
+        </div>
     </div>
-    
-    <!-- Table Container -->
-    <div id="dataTable-container"></div>
 </div>
 
 <script>
@@ -69,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formatter: (value) => {
                 if (!value) return '-';
                 const truncated = value.length > 40 ? value.substring(0, 40) + '...' : value;
-                return `<small class="text-muted">${truncated}</small>`;
+                return `<small class="text-secondary">${truncated}</small>`;
             }
         },
         {

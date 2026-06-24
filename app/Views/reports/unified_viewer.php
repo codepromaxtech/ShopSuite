@@ -20,7 +20,7 @@ echo view('layouts/modern_header', ['title' => $title]);
             </svg>
             <div>
                 <h1><?= $categoryConfig['title'] ?></h1>
-                <p style="font-size: var(--text-sm); color: var(--text-secondary); margin: 0;"><?= $categoryConfig['description'] ?></p>
+                <p class="u-font-size-text-sm_color-text-secondary-5"><?= $categoryConfig['description'] ?></p>
             </div>
         </div>
         
@@ -79,9 +79,9 @@ echo view('layouts/modern_header', ['title' => $title]);
                 
                 <!-- Additional Options for Sales Reports -->
                 <?php if ($category === 'sales' && in_array($selected_type, ['summary', 'detailed'])): ?>
-                <div class="report-options" style="margin-top: var(--space-4);">
-                    <label style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); cursor: pointer;">
-                        <input type="checkbox" name="show_quantity" value="1" <?= ($_POST['show_quantity'] ?? '1') === '1' ? 'checked' : '' ?>>
+                <div class="report-options u-margin-top-space-4">
+                    <label class="u-display-flex_align-items-center_gap-sp-1">
+                        <input type="checkbox" name="show_quantity" value="1" <?= (esc($_POST['show_quantity'] ?? '1')) === '1' ? 'checked' : '' ?>>
                         <span>Show Quantity Purchased column</span>
                     </label>
                 </div>
@@ -104,7 +104,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                         </label>
                     </div>
                     
-                    <div class="chart-type-selector" style="display: <?= ($view_mode ?? 'table') === 'chart' ? 'block' : 'none' ?>; margin-top: var(--space-3);">
+                    <div class="chart-type-selector" class="mt-space-3 <?= ($view_mode ?? 'table') === 'chart' ? 'd-block' : 'd-none' ?>">
                         <label class="form-label">Chart Type</label>
                         <select name="chart_type" class="form-control">
                             <?php foreach ($typeConfig['chart_types'] ?? ['bar'] as $chartType): ?>
@@ -136,12 +136,12 @@ echo view('layouts/modern_header', ['title' => $title]);
     
     <!-- Debug Info (remove after testing) -->
     <?php if (ENVIRONMENT === 'development' && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST'): ?>
-    <div class="card" style="background: #f0f9ff; border: 1px solid #bae6fd;">
+    <div class="card u-border-1pxsolidhexbae6fd">
         <div class="card-body">
-            <h4 style="margin: 0 0 var(--space-2) 0; color: #0369a1;">Debug Info:</h4>
-            <pre style="font-size: 12px; margin: 0;"><?php 
+            <h4 class="u-margin-00space-20">Debug Info:</h4>
+            <pre class="u-font-size-12px_margin-0"><?php 
                 echo "Request Method: " . strtoupper($_SERVER['REQUEST_METHOD']) . "\n";
-                echo "POST Data: " . print_r($_POST, true);
+                echo "POST Data: " . esc(print_r($_POST, true));
                 echo "\nCategory: {$category}\n";
                 echo "Selected Type: {$selected_type}\n";
                 echo "Model: " . ($type_config['model'] ?? 'not set') . "\n";
@@ -190,13 +190,13 @@ echo view('layouts/modern_header', ['title' => $title]);
     
     <!-- Error Display -->
     <?php if (isset($error)): ?>
-    <div class="card" style="border-left: 4px solid var(--danger-600);">
+    <div class="card u-border-left-4pxsoliddanger-600">
         <div class="card-body">
-            <div style="display: flex; align-items: center; gap: var(--space-3); color: var(--danger-600);">
-                <i class="bi bi-exclamation-triangle" style="font-size: 24px;"></i>
+            <div class="u-display-flex_align-items-center_gap-sp-2">
+                <i class="bi bi-exclamation-triangle u-font-size-24px"></i>
                 <div>
-                    <h3 style="margin: 0; color: var(--danger-600);">Error Generating Report</h3>
-                    <p style="margin: var(--space-2) 0 0 0; color: var(--text-secondary);"><?= $error ?></p>
+                    <h3 class="u-margin-0_color-danger-600">Error Generating Report</h3>
+                    <p class="u-margin-space-2000_color-text-secondary"><?= $error ?></p>
                 </div>
             </div>
         </div>
@@ -207,15 +207,15 @@ echo view('layouts/modern_header', ['title' => $title]);
     <?php if (isset($report_data) && is_array($report_data)): ?>
     <div class="report-results card">
         <!-- Report Header (for print/PDF) -->
-        <div class="report-header print-only" style="display: none;">
-            <div style="text-align: center; margin-bottom: var(--space-6);">
-                <h1 style="margin: 0; font-size: 24px; color: var(--text-primary);"><?= $config->company ?? 'Company Name' ?></h1>
-                <p style="margin: var(--space-2) 0 0 0; color: var(--text-secondary);"><?= $config->address ?? '' ?></p>
+        <div class="report-header print-only d-none">
+            <div class="u-text-align-center_margin-bottom-space">
+                <h1 class="u-margin-0_font-size-24px_color-text-pri"><?= $config->company ?? 'Company Name' ?></h1>
+                <p class="u-margin-space-2000_color-text-secondary"><?= $config->address ?? '' ?></p>
             </div>
-            <hr style="border: 0; border-top: 2px solid var(--border-color); margin: var(--space-4) 0;">
-            <div style="margin-bottom: var(--space-4);">
-                <h2 style="margin: 0 0 var(--space-2) 0; font-size: 20px;"><?= $category_config['title'] ?> - <?= $type_config['label'] ?></h2>
-                <p style="margin: 0; color: var(--text-secondary);"><?= $report_subtitle ?? '' ?></p>
+            <hr class="u-border-0_border-top-2pxsolidborder-col">
+            <div class="u-margin-bottom-space-4">
+                <h2 class="u-margin-00space-20_font-size-20px"><?= $category_config['title'] ?> - <?= $type_config['label'] ?></h2>
+                <p class="u-margin-0_color-text-secondary"><?= $report_subtitle ?? '' ?></p>
             </div>
         </div>
         
@@ -224,7 +224,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                 <i class="bi bi-graph-up"></i> 
                 <?= $typeConfig['label'] ?> Report
                 <?php if (isset($report_subtitle)): ?>
-                    <span style="font-size: var(--text-sm); color: var(--text-secondary); font-weight: normal;">
+                    <span class="u-font-size-text-sm_color-text-secondary-6">
                         <?= $report_subtitle ?>
                     </span>
                 <?php endif; ?>
@@ -250,222 +250,16 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
     <?php elseif (isset($report_data)): ?>
     <div class="card">
-        <div class="card-body" style="text-align: center; padding: var(--space-12);">
-            <i class="bi bi-inbox" style="font-size: 64px; color: var(--text-tertiary);"></i>
-            <h3 style="margin-top: var(--space-4); color: var(--text-secondary);">No Data Found</h3>
-            <p style="color: var(--text-tertiary);">No results match your filter criteria. Try adjusting the date range or filters.</p>
+        <div class="card-body u-text-align-center_padding-space-12">
+            <i class="bi bi-inbox u-font-size-64px_color-text-tertiary"></i>
+            <h3 class="u-margin-top-space-4_color-text-secondar">No Data Found</h3>
+            <p class="u-color-text-tertiary">No results match your filter criteria. Try adjusting the date range or filters.</p>
         </div>
     </div>
     <?php endif; ?>
 </div>
 
-<style>
-/* Unified Report Container */
-.unified-report-container {
-    display: grid;
-    gap: var(--space-6);
-    margin-bottom: var(--space-8);
-}
 
-/* Report Config Panel */
-.report-config-panel {
-    background: var(--bg-elevated);
-    position: sticky;
-    top: 20px;
-    z-index: 10;
-}
-
-.report-config-panel .card-header {
-    background: linear-gradient(135deg, <?= $categoryConfig['color'] ?? '#6366f1' ?> 0%, <?= $categoryConfig['color'] ?? '#6366f1' ?>dd 100%);
-    color: white;
-    padding: var(--space-4) var(--space-6);
-    border-bottom: none;
-}
-
-.report-config-panel .card-header h3 {
-    margin: 0;
-    font-size: var(--text-lg);
-    font-weight: var(--font-semibold);
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-}
-
-.report-config-panel .card-body {
-    padding: var(--space-6);
-}
-
-/* Form Groups */
-.form-group {
-    margin-bottom: var(--space-5);
-}
-
-.form-label {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-weight: var(--font-medium);
-    margin-bottom: var(--space-2);
-    color: var(--text-primary);
-}
-
-/* View Mode Toggle */
-.view-mode-container {
-    margin-top: var(--space-6);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--border-color);
-}
-
-.view-mode-toggle {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-2);
-}
-
-.view-mode-toggle label {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    padding: var(--space-3);
-    border: 2px solid var(--border-color);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    font-weight: var(--font-medium);
-    background: var(--bg-primary);
-}
-
-.view-mode-toggle input[type="radio"] {
-    margin-right: var(--space-2);
-    cursor: pointer;
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary-600);
-}
-
-.view-mode-toggle label:has(input[type="radio"]:checked) {
-    background: var(--primary-600);
-    border-color: var(--primary-600);
-    color: white;
-}
-
-.view-mode-toggle label:hover {
-    border-color: var(--primary-400);
-    background: var(--bg-secondary);
-}
-
-.view-mode-toggle label:has(input[type="radio"]:checked):hover {
-    background: var(--primary-700);
-}
-
-/* Report Actions */
-.report-actions {
-    display: flex;
-    gap: var(--space-3);
-    margin-top: var(--space-6);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--border-color);
-}
-
-.report-actions .btn-lg {
-    flex: 1;
-}
-
-/* Report Results */
-.report-results {
-    animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Card Actions */
-.card-actions {
-    display: flex;
-    gap: var(--space-2);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .report-config-panel {
-        position: relative;
-        top: 0;
-    }
-    
-    .report-actions {
-        flex-direction: column;
-    }
-    
-    .card-actions {
-        flex-direction: column;
-        width: 100%;
-    }
-}
-
-/* Print Styles */
-@media print {
-    /* Hide UI elements */
-    .report-config-panel,
-    .page-header,
-    .btn,
-    .card-actions,
-    .breadcrumbs,
-    .card-header,
-    .debug-info {
-        display: none !important;
-    }
-    
-    /* Show print-only elements */
-    .print-only {
-        display: block !important;
-    }
-    
-    /* Reset card styles for print */
-    .card {
-        box-shadow: none !important;
-        border: none !important;
-        padding: 0 !important;
-    }
-    
-    /* Table formatting */
-    .modern-table {
-        page-break-inside: auto;
-    }
-    
-    .modern-table tr {
-        page-break-inside: avoid;
-        page-break-after: auto;
-    }
-    
-    .modern-table thead {
-        display: table-header-group;
-    }
-    
-    .modern-table tfoot {
-        display: table-footer-group;
-        font-weight: bold;
-        border-top: 2px solid #000;
-    }
-    
-    /* Page setup */
-    @page {
-        margin: 1.5cm;
-    }
-    
-    body {
-        background: white !important;
-    }
-}
-</style>
 
 <script>
 // Report Type Change Handler

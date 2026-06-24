@@ -15,7 +15,7 @@ $barcode_lib = new Barcode_lib();
 <head>
     <meta charset="utf-8">
     <title><?= lang('Items.generate_barcodes') ?></title>
-    <link rel="stylesheet" href="<?= base_url() ?>css/barcode_font.css">
+    <link rel="stylesheet" href="<?= base_url() ?>css/barcode_font.min.css">
     <style>
         .barcode svg {
             height: <?= $barcode_config['barcode_height'] ?>px;

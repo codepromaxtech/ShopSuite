@@ -4,16 +4,16 @@
     dialog_support.init("a.modal-dlg");
 </script>
 
-<div class="jumbotron" style="max-width: 60%; margin: auto;">
+<div class="jumbotron u-max-width-60pct_margin-auto">
     <?= form_open("messages/send/", ['id' => 'send_sms_form', 'enctype' => 'multipart/form-data', 'method' => 'post', 'class' => 'form-horizontal']) ?>
         <fieldset>
 
-            <legend style="text-align: center;"><?= lang('Messages.sms_send') ?></legend>
+            <legend class="text-center"><?= lang('Messages.sms_send') ?></legend>
             <div class="form-group form-group-sm">
                 <label for="phone" class="col-xs-3 control-label"><?= lang('Messages.phone') ?></label>
                 <div class="col-xs-9">
                     <input class="form-control input-sm" type="text" name="phone" placeholder="<?= lang('Messages.phone_placeholder') ?>">
-                    <span class="help-block" style="text-align: center;"><?= lang('Messages.multiple_phones') ?></span>
+                    <span class="help-block text-center"><?= lang('Messages.multiple_phones') ?></span>
                 </div>
             </div>
 

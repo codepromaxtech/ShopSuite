@@ -1,0 +1,327 @@
+<?php return array (
+  'search' => 
+  array (
+    'Config/Services' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Config/Services.php',
+          1 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Config/Services.php',
+        ),
+      ),
+    ),
+    'Config/Registrar.php' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+        ),
+      ),
+    ),
+    'Helpers/kint_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Helpers/kint_helper.php',
+        ),
+      ),
+    ),
+    'Helpers/url_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Helpers/url_helper.php',
+          1 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Helpers/url_helper.php',
+        ),
+      ),
+    ),
+    'Helpers/form_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Helpers/form_helper.php',
+        ),
+      ),
+    ),
+    'Helpers/cookie_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Helpers/cookie_helper.php',
+        ),
+      ),
+    ),
+    'Helpers/tabular_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Helpers/tabular_helper.php',
+        ),
+      ),
+    ),
+    'Helpers/locale_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Helpers/locale_helper.php',
+        ),
+      ),
+    ),
+    'Helpers/security_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Helpers/security_helper.php',
+          1 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Helpers/security_helper.php',
+        ),
+      ),
+    ),
+    'Helpers/bootstrap5_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+        ),
+      ),
+    ),
+    'Helpers/filesystem_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Helpers/filesystem_helper.php',
+        ),
+      ),
+    ),
+    'Config/Events.php' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Config/Events.php',
+        ),
+      ),
+    ),
+    'Config/Filters.php' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Config/Filters.php',
+          1 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Config/Filters.php',
+        ),
+      ),
+    ),
+    'Helpers/array_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Helpers/array_helper.php',
+        ),
+      ),
+    ),
+    'Config/Routes.php' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Config/Routes.php',
+        ),
+      ),
+    ),
+    'Language/ar-EG/HTTP.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+        ),
+      ),
+    ),
+    'Language/ar/HTTP.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+        ),
+      ),
+    ),
+    'Language/en/HTTP.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Language/en/HTTP.php',
+        ),
+      ),
+    ),
+    'Config/Factory' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Config/Factory.php',
+        ),
+      ),
+    ),
+  ),
+  'findQualifiedNameFromPath' => 
+  array (
+    '/home/erp/ShopSuite/app/Config/Services.php' => 'Config\\Services',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Config/Factory.php' => 'CodeIgniter\\Config\\Factory',
+    '/home/erp/ShopSuite/app/Commands/AutoBackup.php' => 'App\\Commands\\AutoBackup',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Cache/ClearCache.php' => 'CodeIgniter\\Commands\\Cache\\ClearCache',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Cache/InfoCache.php' => 'CodeIgniter\\Commands\\Cache\\InfoCache',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/CreateDatabase.php' => 'CodeIgniter\\Commands\\Database\\CreateDatabase',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/Migrate.php' => 'CodeIgniter\\Commands\\Database\\Migrate',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/MigrateRefresh.php' => 'CodeIgniter\\Commands\\Database\\MigrateRefresh',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/MigrateRollback.php' => 'CodeIgniter\\Commands\\Database\\MigrateRollback',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/MigrateStatus.php' => 'CodeIgniter\\Commands\\Database\\MigrateStatus',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/Seed.php' => 'CodeIgniter\\Commands\\Database\\Seed',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/ShowTableInfo.php' => 'CodeIgniter\\Commands\\Database\\ShowTableInfo',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Encryption/GenerateKey.php' => 'CodeIgniter\\Commands\\Encryption\\GenerateKey',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/CellGenerator.php' => 'CodeIgniter\\Commands\\Generators\\CellGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/CommandGenerator.php' => 'CodeIgniter\\Commands\\Generators\\CommandGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ConfigGenerator.php' => 'CodeIgniter\\Commands\\Generators\\ConfigGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ControllerGenerator.php' => 'CodeIgniter\\Commands\\Generators\\ControllerGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/EntityGenerator.php' => 'CodeIgniter\\Commands\\Generators\\EntityGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/FilterGenerator.php' => 'CodeIgniter\\Commands\\Generators\\FilterGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/MigrationGenerator.php' => 'CodeIgniter\\Commands\\Generators\\MigrationGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ModelGenerator.php' => 'CodeIgniter\\Commands\\Generators\\ModelGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ScaffoldGenerator.php' => 'CodeIgniter\\Commands\\Generators\\ScaffoldGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/SeederGenerator.php' => 'CodeIgniter\\Commands\\Generators\\SeederGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/TestGenerator.php' => 'CodeIgniter\\Commands\\Generators\\TestGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ValidationGenerator.php' => 'CodeIgniter\\Commands\\Generators\\ValidationGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/cell.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/cell_view.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/command.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/config.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/controller.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/entity.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/filter.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/migration.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/model.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/seeder.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/test.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/validation.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Help.php' => 'CodeIgniter\\Commands\\Help',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Housekeeping/ClearDebugbar.php' => 'CodeIgniter\\Commands\\Housekeeping\\ClearDebugbar',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Housekeeping/ClearLogs.php' => 'CodeIgniter\\Commands\\Housekeeping\\ClearLogs',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/ListCommands.php' => 'CodeIgniter\\Commands\\ListCommands',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Server/Serve.php' => 'CodeIgniter\\Commands\\Server\\Serve',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Translation/LocalizationFinder.php' => 'CodeIgniter\\Commands\\Translation\\LocalizationFinder',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Translation/LocalizationSync.php' => 'CodeIgniter\\Commands\\Translation\\LocalizationSync',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/ConfigCheck.php' => 'CodeIgniter\\Commands\\Utilities\\ConfigCheck',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Environment.php' => 'CodeIgniter\\Commands\\Utilities\\Environment',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/FilterCheck.php' => 'CodeIgniter\\Commands\\Utilities\\FilterCheck',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Namespaces.php' => 'CodeIgniter\\Commands\\Utilities\\Namespaces',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Optimize.php' => 'CodeIgniter\\Commands\\Utilities\\Optimize',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/PhpIniCheck.php' => 'CodeIgniter\\Commands\\Utilities\\PhpIniCheck',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Publish.php' => 'CodeIgniter\\Commands\\Utilities\\Publish',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes.php' => 'CodeIgniter\\Commands\\Utilities\\Routes',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouteCollector.php' => 'CodeIgniter\\Commands\\Utilities\\Routes\\AutoRouteCollector',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouterImproved/AutoRouteCollector.php' => 'CodeIgniter\\Commands\\Utilities\\Routes\\AutoRouterImproved\\AutoRouteCollector',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouterImproved/ControllerMethodReader.php' => 'CodeIgniter\\Commands\\Utilities\\Routes\\AutoRouterImproved\\ControllerMethodReader',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/ControllerFinder.php' => 'CodeIgniter\\Commands\\Utilities\\Routes\\ControllerFinder',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/ControllerMethodReader.php' => 'CodeIgniter\\Commands\\Utilities\\Routes\\ControllerMethodReader',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/FilterCollector.php' => 'CodeIgniter\\Commands\\Utilities\\Routes\\FilterCollector',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/FilterFinder.php' => 'CodeIgniter\\Commands\\Utilities\\Routes\\FilterFinder',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/SampleURIGenerator.php' => 'CodeIgniter\\Commands\\Utilities\\Routes\\SampleURIGenerator',
+  ),
+  'getClassname' => 
+  array (
+    '/home/erp/ShopSuite/app/Config/Filters.php' => 'Config\\Filters',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Config/Filters.php' => 'CodeIgniter\\Config\\Filters',
+  ),
+  'listFiles' => 
+  array (
+    'Commands/' => 
+    array (
+      0 => '/home/erp/ShopSuite/app/Commands/AutoBackup.php',
+      1 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Cache/ClearCache.php',
+      2 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Cache/InfoCache.php',
+      3 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/CreateDatabase.php',
+      4 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/Migrate.php',
+      5 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/MigrateRefresh.php',
+      6 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/MigrateRollback.php',
+      7 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/MigrateStatus.php',
+      8 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/Seed.php',
+      9 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Database/ShowTableInfo.php',
+      10 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Encryption/GenerateKey.php',
+      11 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/CellGenerator.php',
+      12 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/CommandGenerator.php',
+      13 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ConfigGenerator.php',
+      14 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ControllerGenerator.php',
+      15 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/EntityGenerator.php',
+      16 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/FilterGenerator.php',
+      17 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/MigrationGenerator.php',
+      18 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ModelGenerator.php',
+      19 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ScaffoldGenerator.php',
+      20 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/SeederGenerator.php',
+      21 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/TestGenerator.php',
+      22 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ValidationGenerator.php',
+      23 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/cell.tpl.php',
+      24 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/cell_view.tpl.php',
+      25 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/command.tpl.php',
+      26 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/config.tpl.php',
+      27 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/controller.tpl.php',
+      28 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/entity.tpl.php',
+      29 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/filter.tpl.php',
+      30 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/migration.tpl.php',
+      31 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/model.tpl.php',
+      32 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/seeder.tpl.php',
+      33 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/test.tpl.php',
+      34 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/validation.tpl.php',
+      35 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Help.php',
+      36 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Housekeeping/ClearDebugbar.php',
+      37 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Housekeeping/ClearLogs.php',
+      38 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/ListCommands.php',
+      39 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Server/Serve.php',
+      40 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Translation/LocalizationFinder.php',
+      41 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Translation/LocalizationSync.php',
+      42 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/ConfigCheck.php',
+      43 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Environment.php',
+      44 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/FilterCheck.php',
+      45 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Namespaces.php',
+      46 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Optimize.php',
+      47 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/PhpIniCheck.php',
+      48 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Publish.php',
+      49 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes.php',
+      50 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouteCollector.php',
+      51 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouterImproved/AutoRouteCollector.php',
+      52 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouterImproved/ControllerMethodReader.php',
+      53 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/ControllerFinder.php',
+      54 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/ControllerMethodReader.php',
+      55 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/FilterCollector.php',
+      56 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/FilterFinder.php',
+      57 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/SampleURIGenerator.php',
+    ),
+  ),
+);

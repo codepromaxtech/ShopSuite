@@ -26,7 +26,7 @@ if (isset($error_message)) {
 
 echo view('partial/print_receipt', ['print_after_sale', $print_after_sale, 'selected_printer' => 'receipt_printer']) ?>
 
-<div class="print_hide" id="control_buttons" style="text-align: right;">
+<div class="print_hide text-right" id="control_buttons">
     <a href="javascript:printdoc();">
         <div class="btn btn-info btn-sm" id="show_print_button"><?= '<span class="glyphicon glyphicon-print">&nbsp;</span>' . lang('Common.print') ?></div>
     </a>
@@ -64,10 +64,10 @@ echo view('partial/print_receipt', ['print_after_sale', $print_after_sale, 'sele
 
     <table id="receipt_items">
         <tr>
-            <th style="width: 40%;"><?= lang('Items.item') ?></th>
-            <th style="width: 20%;"><?= lang('Common.price') ?></th>
-            <th style="width: 20%;"><?= lang('Sales.quantity') ?></th>
-            <th style="width: 15%; text-align: right;"><?= lang('Sales.total') ?></th>
+            <th class="u-width-40pct"><?= lang('Items.item') ?></th>
+            <th class="u-width-20pct"><?= lang('Common.price') ?></th>
+            <th class="u-width-20pct"><?= lang('Sales.quantity') ?></th>
+            <th class="u-width-15pct_text-align-right"><?= lang('Sales.total') ?></th>
         </tr>
 
         <?php foreach (array_reverse($cart, true) as $line => $item) { ?>
@@ -91,14 +91,14 @@ echo view('partial/print_receipt', ['print_after_sale', $print_after_sale, 'sele
             <?php } ?>
         <?php } ?>
         <tr>
-            <td colspan="3" style="text-align: right; border-top: 2px solid #000000;"><?= lang('Sales.total') ?></td>
-            <td style="border-top: 2px solid #000000;">
+            <td class="u-text-align-right_border-top-2pxsolidhe" colspan="3"><?= lang('Sales.total') ?></td>
+            <td class="u-border-top-2pxsolidhex000000">
                 <div class="total-value"><?= to_currency($total) ?></div>
             </td>
         </tr>
         <?php if ($mode != 'requisition') { ?>
             <tr>
-                <td colspan="3" style="text-align: right;"><?= lang('Sales.payment') ?></td>
+                <td colspan="3" class="text-right"><?= lang('Sales.payment') ?></td>
                 <td>
                     <div class="total-value"><?= esc($payment_type) ?></div>
                 </td>
@@ -106,14 +106,14 @@ echo view('partial/print_receipt', ['print_after_sale', $print_after_sale, 'sele
 
             <?php if (isset($amount_change)) { ?>
                 <tr>
-                    <td colspan="3" style="text-align: right;"><?= lang('Sales.amount_tendered') ?></td>
+                    <td colspan="3" class="text-right"><?= lang('Sales.amount_tendered') ?></td>
                     <td>
                         <div class="total-value"><?= to_currency($amount_tendered) ?></div>
                     </td>
                 </tr>
 
                 <tr>
-                    <td colspan="3" style="text-align: right;"><?= lang('Sales.change_due') ?></td>
+                    <td colspan="3" class="text-right"><?= lang('Sales.change_due') ?></td>
                     <td>
                         <div class="total-value"><?= $amount_change ?></div>
                     </td>

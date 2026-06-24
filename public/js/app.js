@@ -6,7 +6,7 @@
 class ShopSuiteApp {
     constructor() {
         this.settings = {
-            theme: 'light',
+            theme: 'dark',
             inputMode: 'regular',
             sidebarCollapsed: false
         };

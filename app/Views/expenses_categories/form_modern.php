@@ -86,7 +86,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                     <?= $is_new ? 'Create' : 'Update' ?> Category
                 </button>
                 
-                <a href="<?= base_url('expenses_categories') ?>" class="btn btn-outline btn-block" style="margin-top: var(--space-3);">
+                <a href="<?= base_url('expenses_categories') ?>" class="btn btn-outline btn-block mt-space-3">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -96,12 +96,12 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
         
         <!-- Info Card -->
-        <div class="card" style="margin-top: var(--space-6);">
+        <div class="card u-margin-top-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">About Categories</h3>
             </div>
             <div class="card-body">
-                <p style="font-size: var(--text-sm); color: var(--text-secondary); margin: 0;">
+                <p class="u-font-size-text-sm_color-text-secondary-5">
                     Expense categories help you organize and track different types of business expenses. 
                     Use meaningful names that clearly identify the type of expense.
                 </p>

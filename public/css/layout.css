@@ -170,11 +170,11 @@
     .sidebar {
         transform: translateX(-100%);
     }
-    
+
     .sidebar.open {
         transform: translateX(0);
     }
-    
+
     .sidebar-overlay {
         position: fixed;
         inset: 0;
@@ -182,7 +182,7 @@
         z-index: calc(var(--z-fixed) - 1);
         display: none;
     }
-    
+
     .sidebar-overlay.show {
         display: block;
         animation: fadeIn var(--transition-fast);
@@ -208,7 +208,7 @@
     transition: left var(--transition-base);
 }
 
-.sidebar.collapsed ~ .app-content .app-header {
+.sidebar.collapsed~.app-content .app-header {
     left: var(--sidebar-collapsed-width);
 }
 
@@ -375,7 +375,7 @@
     min-height: 100vh;
 }
 
-.sidebar.collapsed ~ .app-content {
+.sidebar.collapsed~.app-content {
     margin-left: var(--sidebar-collapsed-width);
 }
 
@@ -399,7 +399,7 @@
    PAGE HEADER
    ============================================ */
 .page-header {
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-4);
 }
 
 .page-header-top {
@@ -418,7 +418,7 @@
 }
 
 .page-header-title h1 {
-    font-size: var(--text-3xl);
+    font-size: var(--text-xl);
     font-weight: var(--font-bold);
     color: var(--text-primary);
     margin: 0;
@@ -537,7 +537,7 @@
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .toolbar-search {
         min-width: 100%;
     }

@@ -154,7 +154,7 @@
     width: 100%;
     height: var(--input-height);
     padding: var(--space-2) var(--space-3);
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
     font-family: inherit;
     line-height: var(--line-normal);
     color: var(--text-primary);
@@ -180,6 +180,30 @@
     color: var(--text-tertiary);
 }
 
+.form-control[type="file"] {
+    padding: 0;
+}
+
+.form-control[type="file"]::file-selector-button {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: none;
+    border-right: 1.5px solid var(--border-color);
+    padding: var(--space-2) var(--space-4);
+    margin-right: var(--space-3);
+    height: 100%;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.form-control[type="file"]::file-selector-button:hover {
+    background-color: var(--secondary-200);
+}
+
+[data-theme="dark"] .form-control[type="file"]::file-selector-button:hover {
+    background-color: var(--secondary-700);
+}
+
 textarea.form-control {
     height: auto;
     min-height: 100px;
@@ -203,8 +227,8 @@ textarea.form-control {
 }
 
 .form-check-input {
-    width: 20px;
-    height: 20px;
+    width: var(--space-5);
+    height: var(--space-5);
     cursor: pointer;
 }
 
@@ -281,7 +305,7 @@ textarea.form-control {
 }
 
 .card-header {
-    padding: var(--space-4) var(--space-6);
+    padding: var(--space-3) var(--space-4);
     border-bottom: 1px solid var(--divider-color);
     background-color: var(--bg-secondary);
 }
@@ -294,11 +318,11 @@ textarea.form-control {
 }
 
 .card-body {
-    padding: var(--space-6);
+    padding: var(--space-4);
 }
 
 .card-footer {
-    padding: var(--space-4) var(--space-6);
+    padding: var(--space-3) var(--space-4);
     border-top: 1px solid var(--divider-color);
     background-color: var(--bg-secondary);
 }
@@ -366,8 +390,8 @@ textarea.form-control {
 
 .alert-icon {
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: var(--space-5);
+    height: var(--space-5);
 }
 
 .alert-content {
@@ -525,8 +549,13 @@ textarea.form-control {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .modal {
@@ -547,6 +576,7 @@ textarea.form-control {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -568,8 +598,8 @@ textarea.form-control {
 }
 
 .modal-close {
-    width: 32px;
-    height: 32px;
+    width: var(--space-8);
+    height: var(--space-8);
     border-radius: var(--radius-lg);
     border: none;
     background: transparent;
@@ -687,8 +717,8 @@ textarea.form-control {
    LOADING SPINNER
    ============================================ */
 .spinner {
-    width: 24px;
-    height: 24px;
+    width: var(--space-6);
+    height: var(--space-6);
     border: 3px solid var(--border-color);
     border-top-color: var(--primary-600);
     border-radius: 50%;
@@ -696,18 +726,20 @@ textarea.form-control {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .spinner-sm {
-    width: 16px;
-    height: 16px;
+    width: var(--space-4);
+    height: var(--space-4);
     border-width: 2px;
 }
 
 .spinner-lg {
-    width: 40px;
-    height: 40px;
+    width: var(--space-10);
+    height: var(--space-10);
     border-width: 4px;
 }
 
@@ -726,20 +758,20 @@ textarea.form-control {
 }
 
 .avatar-sm {
-    width: 32px;
-    height: 32px;
+    width: var(--space-8);
+    height: var(--space-8);
     font-size: var(--text-xs);
 }
 
 .avatar-md {
-    width: 40px;
-    height: 40px;
+    width: var(--space-10);
+    height: var(--space-10);
     font-size: var(--text-sm);
 }
 
 .avatar-lg {
-    width: 56px;
-    height: 56px;
+    width: var(--space-14);
+    height: var(--space-14);
     font-size: var(--text-base);
 }
 
@@ -780,6 +812,7 @@ textarea.form-control {
         opacity: 0;
         transform: translateX(100%);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -788,8 +821,8 @@ textarea.form-control {
 
 .toast-icon {
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: var(--space-5);
+    height: var(--space-5);
 }
 
 .toast-content {
@@ -831,12 +864,22 @@ textarea.form-control {
 }
 
 @keyframes spinner-border {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
-.text-primary { color: var(--primary-600); }
-.text-danger { color: var(--error-600); }
-.text-muted { color: var(--text-tertiary); }
+.text-primary {
+    color: var(--primary-600);
+}
+
+.text-danger {
+    color: var(--error-600);
+}
+
+.text-muted {
+    color: var(--text-tertiary);
+}
 
 /* Bootstrap compatibility */
 .table-responsive {

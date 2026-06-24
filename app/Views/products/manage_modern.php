@@ -39,7 +39,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: var(--space-6);">
+<div class="stats-grid u-grid-template-columns-repeatauto-fit-m">
     <div class="stat-card">
         <div class="stat-card-header">
             <h3 class="stat-card-title">Total Products</h3>
@@ -55,7 +55,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <div class="stat-card">
         <div class="stat-card-header">
             <h3 class="stat-card-title">Low Stock</h3>
-            <div class="stat-card-icon" style="background-color: var(--warning-50); color: var(--warning-700);">
+            <div class="stat-card-icon u-background-color-warning-50_color-warn">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                 </svg>
@@ -67,7 +67,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     <div class="stat-card">
         <div class="stat-card-header">
             <h3 class="stat-card-title">Total Value</h3>
-            <div class="stat-card-icon" style="background-color: var(--success-50); color: var(--success-700);">
+            <div class="stat-card-icon u-background-color-success-50_color-succ">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
@@ -78,7 +78,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 </div>
 
 <div class="card">
-    <div class="card-body" style="padding: 0;">
+    <div class="card-body u-padding-0">
         <div id="itemsTable"></div>
     </div>
 </div>
@@ -133,7 +133,7 @@ function initializeDataTable() {
                 title: 'Name',
                 sortable: true,
                 render: (value, row) => {
-                    return `<span style="font-weight: var(--font-medium);">${value || '-'}</span>`;
+                    return `<span class="u-font-weight-font-medium">${value || '-'}</span>`;
                 }
             },
             { field: 'item_number', title: 'SKU/Barcode', sortable: true },
@@ -227,7 +227,7 @@ function deleteItem(item) {
 function importItems() {
     if (window.shopsuiteApp) {
         const modalHtml = `
-            <form id="import_form" enctype="multipart/form-data" style="padding: var(--space-4);">
+            <form class="u-padding-space-4" id="import_form" enctype="multipart/form-data">
                 <div class="form-group">
                     <label class="form-label">Select CSV File</label>
                     <input type="file" 
@@ -239,14 +239,14 @@ function importItems() {
                     <small class="form-text">Supported formats: CSV, Excel (.xlsx, .xls)</small>
                 </div>
                 
-                <div class="alert alert-info" style="margin-top: var(--space-3);">
+                <div class="alert alert-info u-margin-top-space-3">
                     <strong>CSV Format:</strong>
-                    <div style="font-size: var(--text-sm); margin-top: var(--space-2);">
+                    <div class="u-font-size-text-sm_margin-top-space-2">
                         Item Number, Name, Category, Cost Price, Unit Price, Quantity, Description, Reorder Level
                     </div>
                 </div>
                 
-                <div style="display: flex; gap: var(--space-2); margin-top: var(--space-4);">
+                <div class="u-display-flex_gap-space-2_margin-top-sp">
                     <button type="submit" class="btn btn-primary">
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>

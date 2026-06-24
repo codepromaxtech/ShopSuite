@@ -32,7 +32,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 </div>
 
 <div class="card">
-    <div class="card-body" style="padding: 0;">
+    <div class="card-body u-padding-0">
         <div id="suppliersTable"></div>
     </div>
 </div>
@@ -56,7 +56,7 @@ function initializeDataTable() {
                 field: 'company_name', 
                 title: 'Company',
                 sortable: true,
-                render: (value) => `<span style="font-weight: var(--font-medium);">${value || '-'}</span>`
+                render: (value) => `<span class="u-font-weight-font-medium">${value || '-'}</span>`
             },
             { field: 'agency_name', title: 'Agency', sortable: true },
             { field: 'category', title: 'Category', sortable: true },

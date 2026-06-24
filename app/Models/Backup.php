@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class Backup extends Model
 {
-    protected $table            = 'backups';
+    protected $table            = 'shopsuite_backups';
     protected $primaryKey       = 'backup_id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'object';
@@ -24,10 +24,10 @@ class Backup extends Model
      */
     public function get_all_backups()
     {
-        return $this->db->table('backups')
-            ->select('backups.*, people.first_name, people.last_name')
-            ->join('people', 'people.person_id = backups.created_by', 'left')
-            ->orderBy('backups.created_at', 'DESC')
+        return $this->db->table('shopsuite_backups')
+            ->select('shopsuite_backups.*, people.first_name, people.last_name')
+            ->join('shopsuite_people', 'shopsuite_people.person_id = shopsuite_backups.created_by', 'left')
+            ->orderBy('shopsuite_backups.created_at', 'DESC')
             ->get()
             ->getResult();
     }
@@ -72,9 +72,11 @@ class Backup extends Model
         exec($command, $output, $return_var);
 
         if ($return_var !== 0 || !file_exists($filepath)) {
+            $error_msg = 'Failed to create backup. Error: ' . implode("\n", $output);
+            log_message('error', $error_msg);
             return [
                 'success' => false,
-                'message' => 'Failed to create backup. Error: ' . implode("\n", $output)
+                'message' => 'Failed to create backup. Please check error logs.'
             ];
         }
 
@@ -148,9 +150,11 @@ class Backup extends Model
         exec($command, $output, $return_var);
 
         if ($return_var !== 0) {
+            $error_msg = 'Failed to restore backup. Error: ' . implode("\n", $output);
+            log_message('error', $error_msg);
             return [
                 'success' => false,
-                'message' => 'Failed to restore backup. Error: ' . implode("\n", $output)
+                'message' => 'Failed to restore backup. Please check error logs.'
             ];
         }
 

@@ -121,7 +121,7 @@ class Receiving_lib
     /**
      * @return void
      */
-    public function clear_mode(): void    // TODO: This function verb is inconsistent from the others.  Consider refactoring to remove_mode()
+    public function remove_mode(): void
     {
         $this->session->remove('recv_mode');
     }
@@ -160,7 +160,7 @@ class Receiving_lib
     /**
      * @return void
      */
-    public function clear_comment(): void    // TODO: This function verb is inconsistent from the others.  Consider refactoring to remove_comment()
+    public function remove_comment(): void
     {
         $this->session->remove('recv_comment');
     }
@@ -185,7 +185,7 @@ class Receiving_lib
     /**
      * @return void
      */
-    public function clear_reference(): void    // TODO: This function verb is inconsistent from the others.  Consider refactoring to remove_reference()
+    public function remove_reference(): void
     {
         $this->session->remove('recv_reference');
     }
@@ -386,9 +386,11 @@ class Receiving_lib
             $line['price'] = $price;
             $line['total'] = $this->get_item_total($quantity, $price, $discount, $discount_type, $receiving_quantity);
             $this->set_cart($items);
+
+            return true;
         }
 
-        return false;    // TODO: This function will always return false.
+        return false;
     }
 
     /**
@@ -418,7 +420,7 @@ class Receiving_lib
 
         $this->empty_cart();
         $this->remove_supplier();
-        $this->clear_comment();
+        $this->remove_comment();
 
         foreach ($this->receiving->get_receiving_items($receiving_id)->getResult() as $row) {
             $this->add_item($row->item_id, -$row->quantity_purchased, $row->item_location, $row->discount, $row->discount_type, $row->item_unit_price, $row->description, $row->serialnumber, $row->receiving_quantity, $receiving_id, true);
@@ -467,11 +469,11 @@ class Receiving_lib
      */
     public function clear_all(): void
     {
-        $this->clear_mode();
+        $this->remove_mode();
         $this->empty_cart();
         $this->remove_supplier();
-        $this->clear_comment();
-        $this->clear_reference();
+        $this->remove_comment();
+        $this->remove_reference();
     }
 
     /**

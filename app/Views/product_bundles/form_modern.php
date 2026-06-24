@@ -38,7 +38,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-2">
         <!-- Basic Information -->
-        <div class="card" style="margin-bottom: var(--space-6);">
+        <div class="card u-margin-bottom-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">Basic Information</h3>
             </div>
@@ -83,7 +83,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                     <?php if (!empty($item_kit_items)): ?>
                         <?php foreach ($item_kit_items as $index => $item): ?>
                             <div class="kit-item-row" data-index="<?= $index ?>">
-                                <div class="grid grid-cols-12 gap-3" style="align-items: end;">
+                                <div class="grid grid-cols-12 gap-3 u-align-items-end">
                                     <div class="col-span-6">
                                         <label class="form-label">Item</label>
                                         <input type="text" class="form-control" readonly value="<?= esc($item['name']) ?>">
@@ -98,7 +98,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                                         <input type="number" class="form-control" name="kit_sequence[]" value="<?= esc($item['kit_sequence']) ?>" min="0">
                                     </div>
                                     <div class="col-span-1">
-                                        <button type="button" class="btn btn-outline btn-sm" onclick="removeKitItem(this)" style="width: 100%;">
+                                        <button type="button" class="btn btn-outline btn-sm u-width-100pct" onclick="removeKitItem(this)">
                                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                             </svg>
@@ -110,12 +110,12 @@ echo view('layouts/modern_header', ['title' => $title]);
                     <?php endif; ?>
                 </div>
                 
-                <div id="empty_state" style="<?= !empty($item_kit_items) ? 'display: none;' : '' ?> padding: var(--space-8); text-align: center; color: var(--text-tertiary);">
-                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto var(--space-4);">
+                <div id="empty_state" class="p-space-8 text-center text-tertiary <?= !empty($item_kit_items) ? 'd-none' : '' ?>">
+                    <svg class="u-margin-0autospace-4" width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                     </svg>
                     <p>No items added to this kit yet</p>
-                    <button type="button" class="btn btn-primary" onclick="addKitItem()" style="margin-top: var(--space-3);">Add First Item</button>
+                    <button type="button" class="btn btn-primary u-margin-top-space-3" onclick="addKitItem()">Add First Item</button>
                 </div>
             </div>
         </div>
@@ -123,7 +123,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     
     <div class="lg:col-span-1">
         <!-- Pricing Options -->
-        <div class="card" style="margin-bottom: var(--space-6);">
+        <div class="card u-margin-bottom-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">Pricing Options</h3>
             </div>
@@ -153,7 +153,7 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
         
         <!-- Print Options -->
-        <div class="card" style="margin-bottom: var(--space-6);">
+        <div class="card u-margin-bottom-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">Print Options</h3>
             </div>
@@ -179,7 +179,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                     <?= $item_kit_info->item_kit_id ? 'Update' : 'Create' ?> Item Kit
                 </button>
                 
-                <a href="<?= base_url('product_bundles') ?>" class="btn btn-outline btn-block" style="margin-top: var(--space-3);">
+                <a href="<?= base_url('product_bundles') ?>" class="btn btn-outline btn-block mt-space-3">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -192,19 +192,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 
 <?= form_close() ?>
 
-<style>
-.kit-item-row {
-    padding: var(--space-4);
-    border: 1px solid var(--border-primary);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--space-3);
-    background: var(--bg-surface);
-}
 
-.kit-item-row:hover {
-    border-color: var(--primary-300);
-}
-</style>
 
 <script>
 let kitItemIndex = <?= count($item_kit_items ?? []) ?>;
@@ -212,12 +200,12 @@ let kitItemIndex = <?= count($item_kit_items ?? []) ?>;
 function addKitItem() {
     if (window.shopsuiteApp) {
         const modalHtml = `
-            <div style="padding: var(--space-4);">
+            <div class="u-padding-space-4">
                 <div class="form-group">
                     <label class="form-label">Search Item</label>
                     <input type="text" class="form-control" id="item_search_modal" placeholder="Search for item...">
                 </div>
-                <div id="item_search_results" style="max-height: 300px; overflow-y: auto; margin-top: var(--space-3);"></div>
+                <div class="u-max-height-300px_overflow-y-auto_margi" id="item_search_results"></div>
             </div>
         `;
         
@@ -248,11 +236,11 @@ function addKitItem() {
                         .then(data => {
                             const resultsDiv = document.getElementById('item_search_results');
                             if (data.length === 0) {
-                                resultsDiv.innerHTML = '<div style="padding: var(--space-4); text-align: center; color: var(--text-tertiary);">No items found</div>';
+                                resultsDiv.innerHTML = '<div class="u-padding-space-4_text-align-center_colo">No items found</div>';
                             } else {
                                 resultsDiv.innerHTML = data.map(item => `
-                                    <div class="search-result-item" onclick="selectKitItem(${item.value}, '${item.label.replace(/'/g, "\\'")}', this)" style="padding: var(--space-3); border-bottom: 1px solid var(--border-primary); cursor: pointer;">
-                                        <div style="font-weight: var(--font-semibold);">${item.label}</div>
+                                    <div class="search-result-item u-padding-space-3_border-bottom-1pxsolid" onclick="selectKitItem(${item.value}, '${item.label.replace(/'/g, "\\'")}', this)">
+                                        <div class="u-font-weight-font-semibold">${item.label}</div>
                                     </div>
                                 `).join('');
                             }
@@ -273,7 +261,7 @@ function selectKitItem(itemId, itemName, element) {
     itemRow.dataset.index = kitItemIndex++;
     
     itemRow.innerHTML = `
-        <div class="grid grid-cols-12 gap-3" style="align-items: end;">
+        <div class="grid grid-cols-12 gap-3 u-align-items-end">
             <div class="col-span-6">
                 <label class="form-label">Item</label>
                 <input type="text" class="form-control" readonly value="${itemName}">
@@ -288,7 +276,7 @@ function selectKitItem(itemId, itemName, element) {
                 <input type="number" class="form-control" name="kit_sequence[]" value="0" min="0">
             </div>
             <div class="col-span-1">
-                <button type="button" class="btn btn-outline btn-sm" onclick="removeKitItem(this)" style="width: 100%;">
+                <button type="button" class="btn btn-outline btn-sm u-width-100pct" onclick="removeKitItem(this)">
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                     </svg>

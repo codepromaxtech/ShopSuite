@@ -34,18 +34,18 @@ echo view('layouts/modern_header', ['title' => $page_title]);
 
 <!-- Summary Stats -->
 <?php if (!empty($summary_data)): ?>
-<div class="stats-grid" style="margin-bottom: var(--space-6);">
+<div class="stats-grid u-margin-bottom-space-6">
     <?php $colors = ['primary', 'success', 'warning', 'info']; $index = 0; ?>
     <?php foreach ($summary_data as $key => $value): ?>
-        <div class="stat-card" style="background: linear-gradient(135deg, var(--<?= $colors[$index % 4] ?>-500) 0%, var(--<?= $colors[$index % 4] ?>-600) 100%);">
-            <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
-                <i class="bi bi-<?= $index === 0 ? 'currency-dollar' : ($index === 1 ? 'graph-up' : ($index === 2 ? 'bar-chart' : 'pie-chart')) ?>" style="color: white;"></i>
+        <div class="stat-card" >
+            <div class="stat-card-icon u-background-rgba255-255-255-02">
+                <i class="bi bi-<?= $index === 0 ? 'currency-dollar' : ($index === 1 ? 'graph-up' : ($index === 2 ? 'bar-chart' : 'pie-chart')) ?>" ></i>
             </div>
             <div class="stat-card-content">
-                <div class="stat-card-label" style="color: rgba(255,255,255,0.9); text-transform: capitalize;">
+                <div class="stat-card-label u-color-rgba255-255-255-09_text-transfor">
                     <?= esc(str_replace('_', ' ', $key)) ?>
                 </div>
-                <div class="stat-card-value" style="color: white;">
+                <div class="stat-card-value" >
                     <?= esc($value) ?>
                 </div>
             </div>
@@ -57,14 +57,14 @@ echo view('layouts/modern_header', ['title' => $page_title]);
 
 <!-- Chart Container -->
 <div class="card">
-    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+    <div class="card-header u-display-flex_justify-content-space-bet-2">
         <div>
-            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">Visualization</h2>
-            <p style="margin: var(--space-1) 0 0 0; font-size: var(--text-sm); color: var(--text-tertiary);">
+            <h2 class="u-margin-0_font-size-text-lg_font-weight">Visualization</h2>
+            <p class="u-margin-space-1000_font-size-text-sm_co">
                 Interactive chart view
             </p>
         </div>
-        <div style="display: flex; gap: var(--space-2);">
+        <div class="u-display-flex_gap-space-2">
             <button class="btn btn-sm btn-outline" onclick="changeChartType('bar')">
                 <i class="bi bi-bar-chart"></i> Bar
             </button>
@@ -77,7 +77,7 @@ echo view('layouts/modern_header', ['title' => $page_title]);
         </div>
     </div>
     <div class="card-body">
-        <div style="position: relative; height: 400px;">
+        <div class="u-position-relative_height-400px">
             <canvas id="reportChart"></canvas>
         </div>
     </div>
@@ -85,14 +85,14 @@ echo view('layouts/modern_header', ['title' => $page_title]);
 
 <!-- Data Table -->
 <?php if (!empty($details) && !empty($headers)): ?>
-<div class="card" style="margin-top: var(--space-6);">
+<div class="card u-margin-top-space-6">
     <div class="card-header">
-        <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">
+        <h2 class="u-margin-0_font-size-text-lg_font-weight">
             <i class="bi bi-table"></i>
             Detailed Data
         </h2>
     </div>
-    <div class="card-body" style="padding: 0;">
+    <div class="card-body u-padding-0">
         <div class="table-responsive">
             <table class="data-table">
                 <thead>

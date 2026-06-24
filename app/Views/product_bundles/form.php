@@ -183,10 +183,10 @@
         <table id="item_kit_items" class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th style="width: 10%;"><?= lang('Common.delete') ?></th>
-                    <th style="width: 10%;"><?= lang('Item_kits.sequence') ?></th>
-                    <th style="width: 60%;"><?= lang('Item_kits.item') ?></th>
-                    <th style="width: 20%;"><?= lang('Item_kits.quantity') ?></th>
+                    <th class="u-width-10pct"><?= lang('Common.delete') ?></th>
+                    <th class="u-width-10pct"><?= lang('Item_kits.sequence') ?></th>
+                    <th class="u-width-60pct"><?= lang('Item_kits.item') ?></th>
+                    <th class="u-width-20pct"><?= lang('Item_kits.quantity') ?></th>
                 </tr>
             </thead>
             <tbody>

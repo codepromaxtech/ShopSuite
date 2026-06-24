@@ -32,7 +32,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 </div>
 
 <div class="card">
-    <div class="card-body" style="padding: 0;">
+    <div class="card-body u-padding-0">
         <div id="expensesTable"></div>
     </div>
 </div>
@@ -78,7 +78,7 @@ function initializeDataTable() {
                 sortable: true,
                 render: (value) => {
                     const formatted = parseFloat(value).toFixed(2);
-                    return `<span style="color: var(--danger-600); font-weight: var(--font-semibold);">$${formatted}</span>`;
+                    return `<span class="u-color-danger-600_font-weight-font-semi">$${formatted}</span>`;
                 }
             },
             { field: 'employee_name', title: 'Employee', sortable: true }

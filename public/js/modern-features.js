@@ -31,7 +31,7 @@ function toggleTheme() {
 
 // Initialize theme on load
 (function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-bs-theme', savedTheme);
     
     const icon = document.getElementById('theme-icon');

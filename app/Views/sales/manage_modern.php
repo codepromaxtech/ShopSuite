@@ -1,16 +1,17 @@
 <?php
 $title = 'Sales - ShopSuite';
-echo view('layouts/modern_header', ['title' => $title]);
+echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-compact.min.css']]);
 ?>
 
 <div class="page-header">
     <div class="page-header-top">
         <div class="page-header-title">
-                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                </svg>
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
             <div>
-                <h1>Sales</h1>
+                <h1>Sales History</h1>
+                <p class="page-header-desc">View and manage all completed sales</p>
             </div>
         </div>
         
@@ -33,8 +34,8 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: var(--space-6);">
-    <div class="stat-card">
+<div class="stats-grid manage-stats-grid">
+    <div class="stat-card card-hover">
         <div class="stat-card-header">
             <h3 class="stat-card-title">Total Sales</h3>
             <div class="stat-card-icon">
@@ -43,36 +44,36 @@ echo view('layouts/modern_header', ['title' => $title]);
                 </svg>
             </div>
         </div>
-        <div class="stat-card-value" id="totalSales">-</div>
+        <div class="stat-card-value" id="totalSales">—</div>
     </div>
     
-    <div class="stat-card">
+    <div class="stat-card card-hover">
         <div class="stat-card-header">
             <h3 class="stat-card-title">Today's Sales</h3>
-            <div class="stat-card-icon" style="background-color: var(--success-50); color: var(--success-700);">
+            <div class="stat-card-icon stat-icon-success">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
             </div>
         </div>
-        <div class="stat-card-value" id="todaysSales">-</div>
+        <div class="stat-card-value" id="todaysSales">—</div>
     </div>
     
-    <div class="stat-card">
+    <div class="stat-card card-hover">
         <div class="stat-card-header">
             <h3 class="stat-card-title">Total Revenue</h3>
-            <div class="stat-card-icon" style="background-color: var(--accent-50); color: var(--accent-700);">
+            <div class="stat-card-icon stat-icon-primary">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                 </svg>
             </div>
         </div>
-        <div class="stat-card-value" id="totalRevenue">-</div>
+        <div class="stat-card-value" id="totalRevenue">—</div>
     </div>
 </div>
 
 <div class="card">
-    <div class="card-body" style="padding: 0;">
+    <div class="card-body card-body-nopad">
         <div id="salesTable"></div>
     </div>
 </div>
@@ -102,7 +103,7 @@ function initializeDataTable() {
                 field: 'customer_name', 
                 title: 'Customer',
                 sortable: true,
-                render: (value) => value || 'Walk-in'
+                render: (value) => value || '<span class="text-tertiary">Walk-in</span>'
             },
             { 
                 field: 'items_purchased', 
@@ -112,7 +113,13 @@ function initializeDataTable() {
             { 
                 field: 'payment_type', 
                 title: 'Payment',
-                sortable: true
+                sortable: true,
+                render: (value) => {
+                    const method = value || 'Cash';
+                    const colors = { 'Cash': 'success', 'Card': 'primary', 'Mobile': 'warning' };
+                    const color = colors[method] || 'secondary';
+                    return `<span class="badge badge-${color}">${method}</span>`;
+                }
             },
             { 
                 field: 'sale_amount', 

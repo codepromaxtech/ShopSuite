@@ -5,101 +5,7 @@
  */
 ?>
 
-<style>
-.permission-module-card {
-    background: white;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-    transition: all 0.3s;
-}
-.permission-module-card:hover {
-    border-color: #0d6efd;
-    box-shadow: 0 4px 12px rgba(13,110,253,0.1);
-}
-.permission-module-card.disabled {
-    opacity: 0.5;
-    background: #f8f9fa;
-}
-.module-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #e9ecef;
-}
-.module-toggle {
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, #0d6efd, #0a58ca);
-    color: white;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    margin-right: 1rem;
-}
-.module-info {
-    flex-grow: 1;
-}
-.module-name {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #212529;
-    margin-bottom: 0.25rem;
-}
-.module-description {
-    font-size: 0.875rem;
-    color: #6c757d;
-}
-.crud-permissions {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.75rem;
-}
-.permission-checkbox {
-    display: flex;
-    align-items: center;
-    padding: 0.5rem 0.75rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-.permission-checkbox:hover {
-    background: #e9ecef;
-}
-.permission-checkbox input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    margin-right: 0.5rem;
-    cursor: pointer;
-}
-.permission-checkbox label {
-    margin: 0;
-    cursor: pointer;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #495057;
-}
-.permission-checkbox.checked {
-    background: #e7f1ff;
-    border: 1px solid #0d6efd;
-}
-.permission-icon {
-    margin-right: 0.25rem;
-}
-.menu-group-selector {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0.75rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    font-size: 0.875rem;
-}
-</style>
+
 
 <div class="alert alert-info mb-4">
     <i class="bi bi-info-circle me-2"></i>
@@ -147,7 +53,7 @@
     foreach ($module_categories as $category => $modules):
     ?>
         <div class="mb-4">
-            <h6 class="text-uppercase text-muted mb-3" style="font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px;">
+            <h6 class="text-uppercase text-secondary mb-3 u-font-size-085rem_font-weight-600_lette">
                 <?= $category ?>
             </h6>
             
@@ -174,7 +80,7 @@
                             <div class="module-name"><?= lang("Module.$module_id") ?></div>
                             <div class="module-description"><?= lang("Module.{$module_id}_desc") ?></div>
                         </div>
-                        <div class="form-check form-switch" style="font-size: 1.5rem;">
+                        <div class="form-check form-switch u-font-size-15rem">
                             <?= form_checkbox([
                                 'name' => "grant_$module_id",
                                 'id' => "grant_$module_id",

@@ -19,58 +19,58 @@ $stats = $stats ?? [];
 </div>
 
 <!-- Key Metrics -->
-<div class="stats-grid" style="margin-bottom: var(--space-8);">
+<div class="stats-grid u-margin-bottom-space-8">
     <!-- Today's Sales -->
-    <div class="stat-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
-            <i class="bi bi-cart-check" style="color: white;"></i>
+    <div class="stat-card" >
+        <div class="stat-card-icon u-background-rgba255-255-255-02">
+            <i class="bi bi-cart-check" ></i>
         </div>
         <div class="stat-card-content">
-            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Today's Sales</div>
-            <div class="stat-card-value" style="color: white;"><?= $stats['today_sales'] ?? 0 ?></div>
-            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">
+            <div class="stat-card-label u-color-rgba255-255-255-09">Today's Sales</div>
+            <div class="stat-card-value" ><?= $stats['today_sales'] ?? 0 ?></div>
+            <div class="u-font-size-text-xs_color-rgba255-255-25">
                 <i class="bi bi-clock"></i> Last 24 hours
             </div>
         </div>
     </div>
     
     <!-- Today's Revenue -->
-    <div class="stat-card" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
-        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
-            <i class="bi bi-currency-dollar" style="color: white;"></i>
+    <div class="stat-card" >
+        <div class="stat-card-icon u-background-rgba255-255-255-02">
+            <i class="bi bi-currency-dollar" ></i>
         </div>
         <div class="stat-card-content">
-            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Today's Revenue</div>
-            <div class="stat-card-value" style="color: white;">$<?= $stats['today_revenue'] ?? '0.00' ?></div>
-            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">
+            <div class="stat-card-label u-color-rgba255-255-255-09">Today's Revenue</div>
+            <div class="stat-card-value" >$<?= $stats['today_revenue'] ?? '0.00' ?></div>
+            <div class="u-font-size-text-xs_color-rgba255-255-25">
                 <i class="bi bi-graph-up"></i> This month: $<?= $stats['month_revenue'] ?? '0.00' ?>
             </div>
         </div>
     </div>
     
     <!-- Total Customers -->
-    <div class="stat-card" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
-        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
-            <i class="bi bi-people" style="color: white;"></i>
+    <div class="stat-card" >
+        <div class="stat-card-icon u-background-rgba255-255-255-02">
+            <i class="bi bi-people" ></i>
         </div>
         <div class="stat-card-content">
-            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Total Customers</div>
-            <div class="stat-card-value" style="color: white;"><?= number_format($stats['total_customers'] ?? 0) ?></div>
-            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">
+            <div class="stat-card-label u-color-rgba255-255-255-09">Total Customers</div>
+            <div class="stat-card-value" ><?= number_format($stats['total_customers'] ?? 0) ?></div>
+            <div class="u-font-size-text-xs_color-rgba255-255-25">
                 <i class="bi bi-person-plus"></i> Active customers
             </div>
         </div>
     </div>
     
     <!-- Inventory -->
-    <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
-            <i class="bi bi-box-seam" style="color: white;"></i>
+    <div class="stat-card" >
+        <div class="stat-card-icon u-background-rgba255-255-255-02">
+            <i class="bi bi-box-seam" ></i>
         </div>
         <div class="stat-card-content">
-            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Products in Stock</div>
-            <div class="stat-card-value" style="color: white;"><?= $stats['total_items'] ?? 0 ?></div>
-            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">
+            <div class="stat-card-label u-color-rgba255-255-255-09">Products in Stock</div>
+            <div class="stat-card-value" ><?= $stats['total_items'] ?? 0 ?></div>
+            <div class="u-font-size-text-xs_color-rgba255-255-25">
                 <?php if (($stats['low_stock'] ?? 0) > 0): ?>
                     <i class="bi bi-exclamation-triangle"></i> <?= $stats['low_stock'] ?> low stock
                 <?php else: ?>
@@ -82,18 +82,18 @@ $stats = $stats ?? [];
 </div>
 
 <!-- Main Content Grid -->
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); margin-bottom: var(--space-6);">
+<div class="u-display-grid_grid-template-columns-2fr">
     
     <!-- Sales Trend Chart -->
     <div class="card">
         <div class="card-header">
-            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">
+            <h2 class="u-margin-0_font-size-text-lg_font-weight">
                 <i class="bi bi-graph-up"></i>
                 Sales Trend (Last 7 Days)
             </h2>
         </div>
         <div class="card-body">
-            <div style="position: relative; height: 300px;">
+            <div class="u-position-relative_height-300px">
                 <canvas id="salesChart"></canvas>
             </div>
         </div>
@@ -102,30 +102,30 @@ $stats = $stats ?? [];
     <!-- Quick Actions -->
     <div class="card">
         <div class="card-header">
-            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">
+            <h2 class="u-margin-0_font-size-text-lg_font-weight">
                 <i class="bi bi-lightning-charge"></i>
                 Quick Actions
             </h2>
         </div>
         <div class="card-body">
-            <div style="display: flex; flex-direction: column; gap: var(--space-3);">
-                <button onclick="location.reload()" class="quick-action-btn" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); border: none; cursor: pointer;">
+            <div class="u-display-flex_flex-direction-column_gap">
+                <button onclick="location.reload()" class="quick-action-btn u-border-none_cursor-pointer">
                     <i class="bi bi-arrow-clockwise"></i>
                     <span>Refresh Dashboard</span>
                 </button>
-                <a href="<?= base_url('sales/register') ?>" class="quick-action-btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <a href="<?= base_url('sales/register') ?>" class="quick-action-btn" >
                     <i class="bi bi-cart-plus"></i>
                     <span>New Sale</span>
                 </a>
-                <a href="<?= base_url('customers/view/-1') ?>" class="quick-action-btn" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                <a href="<?= base_url('customers/view/-1') ?>" class="quick-action-btn" >
                     <i class="bi bi-person-plus"></i>
                     <span>Add Customer</span>
                 </a>
-                <a href="<?= base_url('products/view/-1') ?>" class="quick-action-btn" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                <a href="<?= base_url('products/view/-1') ?>" class="quick-action-btn" >
                     <i class="bi bi-box-seam"></i>
                     <span>Add Product</span>
                 </a>
-                <a href="<?= base_url('reports') ?>" class="quick-action-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                <a href="<?= base_url('reports') ?>" class="quick-action-btn" >
                     <i class="bi bi-file-earmark-bar-graph"></i>
                     <span>View Reports</span>
                 </a>
@@ -135,23 +135,23 @@ $stats = $stats ?? [];
 </div>
 
 <!-- Second Row -->
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-6);">
+<div class="u-display-grid_grid-template-columns-1fr-1">
     
     <!-- Recent Sales -->
     <div class="card">
-        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">
+        <div class="card-header u-display-flex_justify-content-space-bet">
+            <h2 class="u-margin-0_font-size-text-lg_font-weight">
                 <i class="bi bi-receipt"></i>
                 Recent Sales
             </h2>
             <a href="<?= base_url('sales') ?>" class="btn btn-sm btn-outline">View All</a>
         </div>
-        <div class="card-body" style="padding: 0;">
+        <div class="card-body u-padding-0">
             <?php if (!empty($stats['recent_sales'])): ?>
                 <div class="list-group">
                     <?php foreach ($stats['recent_sales'] as $sale): ?>
                         <div class="list-item">
-                            <div class="list-item-icon" style="background: var(--success-100); color: var(--success-600);">
+                            <div class="list-item-icon u-background-success-100_color-success-6">
                                 <i class="bi bi-receipt"></i>
                             </div>
                             <div class="list-item-content">
@@ -177,14 +177,14 @@ $stats = $stats ?? [];
     
     <!-- Top Products -->
     <div class="card">
-        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">
+        <div class="card-header u-display-flex_justify-content-space-bet">
+            <h2 class="u-margin-0_font-size-text-lg_font-weight">
                 <i class="bi bi-star"></i>
                 Top Products
             </h2>
             <a href="<?= base_url('products') ?>" class="btn btn-sm btn-outline">View All</a>
         </div>
-        <div class="card-body" style="padding: 0;">
+        <div class="card-body u-padding-0">
             <?php if (!empty($stats['top_products'])): ?>
                 <div class="list-group">
                     <?php foreach ($stats['top_products'] as $index => $product): ?>
@@ -210,8 +210,8 @@ $stats = $stats ?? [];
     
     <!-- Low Stock Alert -->
     <div class="card">
-        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin: 0; font-size: var(--text-lg); font-weight: var(--font-semibold);">
+        <div class="card-header u-display-flex_justify-content-space-bet">
+            <h2 class="u-margin-0_font-size-text-lg_font-weight">
                 <i class="bi bi-exclamation-triangle"></i>
                 Low Stock Alert
             </h2>
@@ -219,14 +219,14 @@ $stats = $stats ?? [];
         </div>
         <div class="card-body">
             <?php if (($stats['low_stock'] ?? 0) > 0): ?>
-                <div style="text-align: center; padding: var(--space-6) 0;">
-                    <div style="width: 80px; height: 80px; margin: 0 auto var(--space-4); background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-exclamation-triangle" style="font-size: 32px; color: white;"></i>
+                <div class="u-text-align-center_padding-space-60">
+                    <div class="u-width-80px_height-80px_margin-0autospa">
+                        <i class="bi bi-exclamation-triangle u-font-size-32px"></i>
                     </div>
-                    <div style="font-size: var(--text-3xl); font-weight: var(--font-bold); color: var(--danger-600); margin-bottom: var(--space-2);">
+                    <div class="u-font-size-text-3xl_font-weight-font-bo-2">
                         <?= $stats['low_stock'] ?>
                     </div>
-                    <div style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-4);">
+                    <div class="u-font-size-text-sm_color-text-secondary-4">
                         Products below reorder level
                     </div>
                     <a href="<?= base_url('reports/inventory_low') ?>" class="btn btn-danger btn-sm">
@@ -236,140 +236,15 @@ $stats = $stats ?? [];
                 </div>
             <?php else: ?>
                 <div class="empty-state-small">
-                    <i class="bi bi-check-circle" style="color: var(--success-600);"></i>
-                    <p style="color: var(--success-600);">All products well stocked!</p>
+                    <i class="bi bi-check-circle u-color-success-600"></i>
+                    <p class="u-color-success-600">All products well stocked!</p>
                 </div>
             <?php endif; ?>
         </div>
     </div>
 </div>
 
-<style>
-/* Quick Action Buttons */
-.quick-action-btn {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-4);
-    border-radius: var(--radius-md);
-    color: white;
-    text-decoration: none;
-    transition: all var(--transition-fast);
-    font-weight: var(--font-semibold);
-}
 
-.quick-action-btn:hover {
-    transform: translateX(4px);
-    box-shadow: var(--shadow-md);
-}
-
-.quick-action-btn i {
-    font-size: 24px;
-}
-
-/* List Groups */
-.list-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.list-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-4);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.list-item:last-child {
-    border-bottom: none;
-}
-
-.list-item-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.list-item-rank {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--primary-100);
-    color: var(--primary-700);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: var(--font-bold);
-    font-size: var(--text-sm);
-    flex-shrink: 0;
-}
-
-.list-item-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.list-item-title {
-    font-weight: var(--font-semibold);
-    color: var(--text-primary);
-    font-size: var(--text-sm);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.list-item-subtitle {
-    font-size: var(--text-xs);
-    color: var(--text-tertiary);
-    margin-top: 2px;
-}
-
-.list-item-value {
-    font-weight: var(--font-bold);
-    color: var(--text-primary);
-    font-size: var(--text-sm);
-    flex-shrink: 0;
-}
-
-.empty-state-small {
-    padding: var(--space-8) var(--space-4);
-    text-align: center;
-    color: var(--text-tertiary);
-}
-
-.empty-state-small i {
-    font-size: 48px;
-    opacity: 0.3;
-    margin-bottom: var(--space-2);
-}
-
-.empty-state-small p {
-    margin: 0;
-    font-size: var(--text-sm);
-}
-
-/* Responsive */
-@media (max-width: 1200px) {
-    div[style*="grid-template-columns: 2fr 1fr"] {
-        grid-template-columns: 1fr !important;
-    }
-    
-    div[style*="grid-template-columns: 1fr 1fr 1fr"] {
-        grid-template-columns: 1fr !important;
-    }
-}
-
-@media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: 1fr !important;
-    }
-}
-</style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 

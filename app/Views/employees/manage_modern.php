@@ -32,7 +32,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 </div>
 
 <div class="card">
-    <div class="card-body" style="padding: 0;">
+    <div class="card-body u-padding-0">
         <div id="employeesTable"></div>
     </div>
 </div>
@@ -59,10 +59,10 @@ function initializeDataTable() {
                 render: (value, row) => {
                     return `
                         <div class="flex items-center gap-3">
-                            <div class="avatar avatar-sm" style="background-color: var(--primary-100); color: var(--primary-700);">
+                            <div class="avatar avatar-sm u-background-color-primary-100_color-pri">
                                 ${(row.first_name?.charAt(0) || 'E').toUpperCase()}
                             </div>
-                            <span style="font-weight: var(--font-medium);">${value || '-'}</span>
+                            <span class="u-font-weight-font-medium">${value || '-'}</span>
                         </div>
                     `;
                 }

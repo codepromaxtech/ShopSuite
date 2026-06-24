@@ -55,7 +55,7 @@ if (isset($error_message)) {
 
 <?= view('partial/print_receipt', ['print_after_sale' => $print_after_sale, 'selected_printer' => 'invoice_printer']) ?>
 
-<div class="print_hide" id="control_buttons" style="text-align: right;">
+<div class="print_hide text-right" id="control_buttons">
     <a href="javascript:printdoc();">
         <div class="btn btn-info btn-sm" id="show_print_button"><?= '<span class="glyphicon glyphicon-print">&nbsp;</span>' . lang('Common.print') ?></div>
     </a>
@@ -141,21 +141,21 @@ if (isset($error_message)) {
                 <tr class="item-row">
                     <td><?= esc($item['item_number']) ?></td>
                     <?php if ($include_hsn): ?>
-                        <td style="text-align: center;"><?= esc($item['hsn_code']) ?></td>
+                        <td class="text-center"><?= esc($item['hsn_code']) ?></td>
                     <?php endif; ?>
                     <td class="item-name"><?= ($item['is_serialized'] || $item['allow_alt_description']) && !empty($item['description']) ? $item['description'] : $item['name'] . ' ' . $item['attribute_values'] ?></td>
-                    <td style="text-align: center;"><?= to_quantity_decimals($item['quantity']) ?></td>
+                    <td class="text-center"><?= to_quantity_decimals($item['quantity']) ?></td>
                     <td><?= to_currency($item['price']) ?></td>
-                    <td style="height: center;"><?= ($item['discount_type'] == FIXED) ? to_currency($item['discount']) : to_decimals($item['discount']) . '%' ?></td>
+                    <td class="u-height-center"><?= ($item['discount_type'] == FIXED) ? to_currency($item['discount']) : to_decimals($item['discount']) . '%' ?></td>
                     <?php if ($discount > 0): ?>
-                        <td style="text-align: center;"><?= to_currency($item['discounted_total'] / $item['quantity']) ?></td>
+                        <td class="text-center"><?= to_currency($item['discounted_total'] / $item['quantity']) ?></td>
                     <?php endif; ?>
-                    <td style="border-right: solid 1px; text-align: right;"><?= to_currency($item['discounted_total']) ?></td>
+                    <td class="u-border-right-solid1px_text-align-right"><?= to_currency($item['discounted_total']) ?></td>
                 </tr>
                 <?php if ($item['is_serialized']) { ?>
                     <tr class="item-row">
                         <td class="item-description" colspan="<?= $invoice_columns - 1 ?>"></td>
-                        <td style="text-align: center;"><?= $item['serialnumber']    // TODO: serialnumber does not match variable naming conventions for this project ?></td>
+                        <td class="text-center"><?= $item['serialnumber']    // TODO: serialnumber does not match variable naming conventions for this project ?></td>
                     </tr>
         <?php
                 }
@@ -224,9 +224,9 @@ if (isset($error_message)) {
         <div id="sale_return_policy">
             <h5>
                 <span><?= nl2br(esc($config['payment_message'])) ?></span>
-                <span style="padding: 4%;"><?= empty($comments) ? esc($config['invoice_default_comments']) : lang('Sales.comments') . ': ' . esc($comments) ?></span>
+                <span class="u-padding-4pct"><?= empty($comments) ? esc($config['invoice_default_comments']) : lang('Sales.comments') . ': ' . esc($comments) ?></span>
             </h5>
-            <div style="padding: 2%;"><?= nl2br(esc($config['return_policy'])) ?></div>
+            <div class="u-padding-2pct"><?= nl2br(esc($config['return_policy'])) ?></div>
         </div>
         <div id="barcode">
             <?= $barcode ?><br>

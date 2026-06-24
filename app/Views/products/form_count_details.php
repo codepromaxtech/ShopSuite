@@ -82,14 +82,14 @@ use App\Models\Inventory;
 
 <table id="items_count_details" class="table table-striped table-hover">
     <thead>
-        <tr style="background-color: #999 !important;">
+        <tr class="u-background-important">
             <th colspan="4"><?= lang('Items.inventory_data_tracking') ?></th>
         </tr>
         <tr>
-            <th style="width: 30%;"><?= lang('Items.inventory_date') ?></th>
-            <th style="width: 20%;"><?= lang('Items.inventory_employee') ?></th>
-            <th style="width: 20%;"><?= lang('Items.inventory_in_out_quantity') ?></th>
-            <th style="width: 30%;"><?= lang('Items.inventory_remarks') ?></th>
+            <th class="u-width-30pct"><?= lang('Items.inventory_date') ?></th>
+            <th class="u-width-20pct"><?= lang('Items.inventory_employee') ?></th>
+            <th class="u-width-20pct"><?= lang('Items.inventory_in_out_quantity') ?></th>
+            <th class="u-width-30pct"><?= lang('Items.inventory_remarks') ?></th>
         </tr>
     </thead>
     <tbody id="inventory_result">

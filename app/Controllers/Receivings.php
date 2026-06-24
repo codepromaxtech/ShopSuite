@@ -163,7 +163,7 @@ class Receivings extends Secure_Controller
         if ((!$stock_source || $stock_source == $this->receiving_lib->get_stock_source()) &&
             (!$stock_destination || $stock_destination == $this->receiving_lib->get_stock_destination())
         ) {
-            $this->receiving_lib->clear_reference();
+            $this->receiving_lib->remove_reference();
             $mode = $this->request->getPost('mode', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $this->receiving_lib->set_mode($mode);
         } elseif ($this->stock_location->is_allowed_location($stock_source, 'receivings')) {
@@ -349,7 +349,7 @@ class Receivings extends Secure_Controller
      */
     public function getRemoveSupplier(): void
     {
-        $this->receiving_lib->clear_reference();
+        $this->receiving_lib->remove_reference();
         $this->receiving_lib->remove_supplier();
 
         $this->_reload();    // TODO: Hungarian notation

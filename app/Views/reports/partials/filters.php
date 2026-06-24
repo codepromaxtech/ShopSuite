@@ -20,7 +20,7 @@ $requiredFilters = $typeConfig['filters'] ?? [];
                 <i class="bi bi-funnel"></i>
                 <?= $filterConfig['label'] ?>
                 <?php if ($filterConfig['required'] ?? false): ?>
-                    <span style="color: var(--danger-600);">*</span>
+                    <span class="u-color-danger-600">*</span>
                 <?php endif; ?>
             </label>
             
@@ -28,22 +28,22 @@ $requiredFilters = $typeConfig['filters'] ?? [];
                 <!-- Date Range Filter -->
                 <div class="date-range-inputs">
                     <div>
-                        <label style="font-size: var(--text-xs); color: var(--text-tertiary);">From</label>
+                        <label class="u-font-size-text-xs_color-text-tertiary">From</label>
                         <input 
                             type="date" 
                             name="start_date" 
                             class="form-control"
-                            value="<?= $_POST['start_date'] ?? date('Y-m-01') ?>"
+                            value="<?= esc($_POST['start_date'] ?? date('Y-m-01')) ?>"
                             <?= ($filterConfig['required'] ?? false) ? 'required' : '' ?>
                         >
                     </div>
                     <div>
-                        <label style="font-size: var(--text-xs); color: var(--text-tertiary);">To</label>
+                        <label class="u-font-size-text-xs_color-text-tertiary">To</label>
                         <input 
                             type="date" 
                             name="end_date" 
                             class="form-control"
-                            value="<?= $_POST['end_date'] ?? date('Y-m-d') ?>"
+                            value="<?= esc($_POST['end_date'] ?? date('Y-m-d')) ?>"
                             <?= ($filterConfig['required'] ?? false) ? 'required' : '' ?>
                         >
                     </div>
@@ -66,7 +66,7 @@ $requiredFilters = $typeConfig['filters'] ?? [];
                     <?php if (isset($filterConfig['options'])): ?>
                         <!-- Static Options -->
                         <?php foreach ($filterConfig['options'] as $value => $label): ?>
-                            <option value="<?= $value ?>" <?= ($_POST[$filterKey] ?? $filterConfig['default']) == $value ? 'selected' : '' ?>>
+                            <option value="<?= esc($value) ?>" <?= (esc($_POST[$filterKey] ?? $filterConfig['default'])) == $value ? 'selected' : '' ?>>
                                 <?= $label ?>
                             </option>
                         <?php endforeach; ?>
@@ -75,7 +75,7 @@ $requiredFilters = $typeConfig['filters'] ?? [];
                         <!-- Stock Locations -->
                         <option value="all">All Locations</option>
                         <?php foreach ($locations as $locationId => $locationName): ?>
-                            <option value="<?= $locationId ?>" <?= ($_POST[$filterKey] ?? '') == $locationId ? 'selected' : '' ?>>
+                            <option value="<?= esc($locationId) ?>" <?= (esc($_POST[$filterKey] ?? '')) == $locationId ? 'selected' : '' ?>>
                                 <?= $locationName ?>
                             </option>
                         <?php endforeach; ?>
@@ -84,7 +84,7 @@ $requiredFilters = $typeConfig['filters'] ?? [];
                         <!-- Categories -->
                         <option value="all">All Categories</option>
                         <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category->category_id ?>" <?= ($_POST[$filterKey] ?? '') == $category->category_id ? 'selected' : '' ?>>
+                            <option value="<?= esc($category->category_id) ?>" <?= (esc($_POST[$filterKey] ?? '')) == $category->category_id ? 'selected' : '' ?>>
                                 <?= $category->name ?>
                             </option>
                         <?php endforeach; ?>
@@ -106,7 +106,7 @@ $requiredFilters = $typeConfig['filters'] ?? [];
                         type="hidden" 
                         name="<?= $filterKey ?>" 
                         id="filter_<?= $filterKey ?>"
-                        value="<?= $_POST[$filterKey] ?? '' ?>"
+                        value="<?= esc($_POST[$filterKey] ?? '') ?>"
                     >
                     <div class="autocomplete-results" id="autocomplete_<?= $filterKey ?>"></div>
                 </div>
@@ -119,67 +119,7 @@ $requiredFilters = $typeConfig['filters'] ?? [];
     <?php endforeach; ?>
 </div>
 
-<style>
-/* Filters Container */
-.filters-container {
-    display: grid;
-    gap: var(--space-5);
-}
 
-/* Date Range Inputs */
-.date-range-inputs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-3);
-}
-
-.date-shortcuts {
-    display: flex;
-    gap: var(--space-2);
-    margin-top: var(--space-2);
-    flex-wrap: wrap;
-}
-
-/* Autocomplete */
-.autocomplete-container {
-    position: relative;
-}
-
-.autocomplete-results {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    margin-top: var(--space-1);
-    max-height: 300px;
-    overflow-y: auto;
-    z-index: 1000;
-    display: none;
-    box-shadow: var(--shadow-lg);
-}
-
-.autocomplete-results.active {
-    display: block;
-}
-
-.autocomplete-item {
-    padding: var(--space-3);
-    cursor: pointer;
-    border-bottom: 1px solid var(--border-color);
-    transition: background var(--transition-fast);
-}
-
-.autocomplete-item:hover {
-    background: var(--bg-secondary);
-}
-
-.autocomplete-item:last-child {
-    border-bottom: none;
-}
-</style>
 
 <script>
 // Date Range Shortcuts
@@ -257,7 +197,7 @@ async function searchAutocomplete(filterKey, source, query, resultsContainer, hi
         const results = await response.json();
         
         if (results.length === 0) {
-            resultsContainer.innerHTML = '<div class="autocomplete-item" style="color: var(--text-tertiary);">No results found</div>';
+            resultsContainer.innerHTML = '<div class="autocomplete-item u-color-text-tertiary">No results found</div>';
         } else {
             resultsContainer.innerHTML = results.map(item => 
                 `<div class="autocomplete-item" data-value="${item.value}" data-label="${item.label}">

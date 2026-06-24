@@ -27,48 +27,48 @@ echo view('layouts/modern_header', ['title' => $title]);
 </div>
 
 <!-- Stats Cards -->
-<div class="stats-grid" style="margin-bottom: var(--space-8);">
-    <div class="stat-card" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
-        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
-            <i class="bi bi-percent" style="color: white;"></i>
+<div class="stats-grid u-margin-bottom-space-8">
+    <div class="stat-card" >
+        <div class="stat-card-icon u-background-rgba255-255-255-02">
+            <i class="bi bi-percent" ></i>
         </div>
         <div class="stat-card-content">
-            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Tax Rates</div>
-            <div class="stat-card-value" style="color: white;"><?= count($tax_rates ?? []) ?></div>
-            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">Active rates</div>
+            <div class="stat-card-label u-color-rgba255-255-255-09">Tax Rates</div>
+            <div class="stat-card-value" ><?= count($tax_rates ?? []) ?></div>
+            <div class="u-font-size-text-xs_color-rgba255-255-25">Active rates</div>
         </div>
     </div>
     
-    <div class="stat-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
-            <i class="bi bi-tag" style="color: white;"></i>
+    <div class="stat-card" >
+        <div class="stat-card-icon u-background-rgba255-255-255-02">
+            <i class="bi bi-tag" ></i>
         </div>
         <div class="stat-card-content">
-            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Categories</div>
-            <div class="stat-card-value" style="color: white;"><?= count($tax_categories ?? []) ?></div>
-            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">Product types</div>
+            <div class="stat-card-label u-color-rgba255-255-255-09">Categories</div>
+            <div class="stat-card-value" ><?= count($tax_categories ?? []) ?></div>
+            <div class="u-font-size-text-xs_color-rgba255-255-25">Product types</div>
         </div>
     </div>
     
-    <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
-            <i class="bi bi-geo-alt" style="color: white;"></i>
+    <div class="stat-card" >
+        <div class="stat-card-icon u-background-rgba255-255-255-02">
+            <i class="bi bi-geo-alt" ></i>
         </div>
         <div class="stat-card-content">
-            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Jurisdictions</div>
-            <div class="stat-card-value" style="color: white;"><?= count($tax_jurisdictions ?? []) ?></div>
-            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">Geographic areas</div>
+            <div class="stat-card-label u-color-rgba255-255-255-09">Jurisdictions</div>
+            <div class="stat-card-value" ><?= count($tax_jurisdictions ?? []) ?></div>
+            <div class="u-font-size-text-xs_color-rgba255-255-25">Geographic areas</div>
         </div>
     </div>
     
-    <div class="stat-card" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
-        <div class="stat-card-icon" style="background: rgba(255,255,255,0.2);">
-            <i class="bi bi-code" style="color: white;"></i>
+    <div class="stat-card" >
+        <div class="stat-card-icon u-background-rgba255-255-255-02">
+            <i class="bi bi-code" ></i>
         </div>
         <div class="stat-card-content">
-            <div class="stat-card-label" style="color: rgba(255,255,255,0.9);">Tax Codes</div>
-            <div class="stat-card-value" style="color: white;"><?= count($tax_codes ?? []) ?></div>
-            <div style="font-size: var(--text-xs); color: rgba(255,255,255,0.8); margin-top: var(--space-1);">Identifiers</div>
+            <div class="stat-card-label u-color-rgba255-255-255-09">Tax Codes</div>
+            <div class="stat-card-value" ><?= count($tax_codes ?? []) ?></div>
+            <div class="u-font-size-text-xs_color-rgba255-255-25">Identifiers</div>
         </div>
     </div>
 </div>
@@ -122,11 +122,11 @@ echo view('layouts/modern_header', ['title' => $title]);
                 <table class="data-table" id="ratesTable">
                     <thead>
                         <tr>
-                            <th style="width: 30%;">Tax Code</th>
-                            <th style="width: 15%;">Rate</th>
-                            <th style="width: 20%;">Category</th>
-                            <th style="width: 20%;">Jurisdiction</th>
-                            <th style="width: 15%;">Actions</th>
+                            <th class="u-width-30pct">Tax Code</th>
+                            <th class="u-width-15pct">Rate</th>
+                            <th class="u-width-20pct">Category</th>
+                            <th class="u-width-20pct">Jurisdiction</th>
+                            <th class="u-width-15pct">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -135,7 +135,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                                 <tr>
                                     <td>
                                         <div class="table-cell-with-icon">
-                                            <div class="cell-icon" style="background: var(--primary-100); color: var(--primary-600);">
+                                            <div class="cell-icon u-background-primary-100_color-primary-6">
                                                 <i class="bi bi-percent"></i>
                                             </div>
                                             <div>
@@ -144,7 +144,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="badge" style="background: var(--primary-100); color: var(--primary-700); font-weight: 700; font-size: 14px; padding: 6px 12px;">
+                                        <span class="badge u-background-primary-100_color-primary-7">
                                             <?= number_format($tax['tax_rate'] ?? 0, 2) ?>%
                                         </span>
                                     </td>
@@ -231,135 +231,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<style>
-/* Tabs Container */
-.tabs-container {
-    overflow: hidden;
-}
 
-.tabs-header {
-    display: flex;
-    background: var(--bg-secondary);
-    border-bottom: 2px solid var(--border-color);
-    padding: var(--space-2);
-    gap: var(--space-2);
-    overflow-x: auto;
-}
-
-.tab-btn {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-5);
-    background: transparent;
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    font-weight: var(--font-medium);
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    white-space: nowrap;
-}
-
-.tab-btn:hover {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-}
-
-.tab-btn.active {
-    background: var(--primary-600);
-    color: white;
-}
-
-.tab-btn i {
-    font-size: 18px;
-}
-
-.tab-count {
-    padding: 2px 8px;
-    background: rgba(0,0,0,0.1);
-    border-radius: var(--radius-full);
-    font-size: var(--text-xs);
-    font-weight: var(--font-bold);
-}
-
-.tab-btn.active .tab-count {
-    background: rgba(255,255,255,0.2);
-    color: white;
-}
-
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-.tab-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--space-6);
-    border-bottom: 1px solid var(--border-color);
-    gap: var(--space-4);
-    flex-wrap: wrap;
-}
-
-.tab-header h2 {
-    margin: 0;
-    font-size: var(--text-xl);
-    font-weight: var(--font-semibold);
-    color: var(--text-primary);
-}
-
-.tab-header p {
-    margin: var(--space-1) 0 0 0;
-    font-size: var(--text-sm);
-    color: var(--text-tertiary);
-}
-
-.tab-actions {
-    display: flex;
-    gap: var(--space-3);
-    align-items: center;
-}
-
-.table-cell-with-icon {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-}
-
-.cell-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.cell-title {
-    font-weight: var(--font-semibold);
-    color: var(--text-primary);
-}
-
-.table-responsive {
-    overflow-x: auto;
-}
-
-/* Dark Mode */
-[data-theme="dark"] .tabs-header {
-    background: var(--bg-secondary);
-}
-
-[data-theme="dark"] .tab-btn:hover {
-    background: var(--bg-primary);
-}
-</style>
 
 <script>
 // Tab Switching

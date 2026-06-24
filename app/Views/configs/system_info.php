@@ -8,15 +8,7 @@ use Config\ShopSuite;
 
 ?>
 
-<style>
-    a:hover {
-        cursor: pointer;
-    }
 
-    hidden {
-        visibility: hidden;
-    }
-</style>
 
 <script type="text/javascript" src="js/clipboard.min.js"></script>
 
@@ -24,28 +16,28 @@ use Config\ShopSuite;
     <?= lang('Config.server_notice') ?>
     <div class="container">
         <div class="row">
-            <div class="col-sm-2" style="text-align: left;"><br>
+            <div class="col-sm-2 text-left"><br>
                 <strong>
-                    <p style="min-height: 14.7em;">General Info</p>
-                    <p style="min-height: 10.5em;">User Setup</p><br>
+                    <p class="u-min-height-147em">General Info</p>
+                    <p class="u-min-height-105em">User Setup</p><br>
                     <p>Permissions</p>
                 </strong>
             </div>
-            <div class="col-sm-8" id="issuetemplate" style="text-align: left;"><br>
+            <div class="col-sm-8 text-left" id="issuetemplate"><br>
                 <?= lang('Config.shopsuite_info') . ':' ?>
                 <?= esc(config('App')->application_version) ?> - <?= esc(substr(config(ShopSuite::class)->commit_sha1, 0, 6)) ?><br>
                 Language Code: <?= current_language_code() ?><br><br>
                 <div id="TimeError"></div>
                 Extensions & Modules:<br>
                 <?php
-                echo "&#187; GD: ", extension_loaded('gd') ? '<span style="color: green;">Enabled &#x2713</span>' : '<span style="color: red;">Disabled &#x2717</span>', '<br>';
-                echo "&#187; BC Math: ", extension_loaded('bcmath') ? '<span style="color: green;">Enabled &#x2713</span>' : '<span style="color: red">Disabled &#x2717</span>', '<br>';
-                echo "&#187; INTL: ", extension_loaded('intl') ? '<span style="color: green;">Enabled &#x2713</span>' : '<span style="color: red">Disabled &#x2717</span>', '<br>';
-                echo "&#187; OpenSSL: ", extension_loaded('openssl') ? '<span style="color: green;">Enabled &#x2713</span>' : '<span style="color: red">Disabled &#x2717</span>', '<br>';
-                echo "&#187; MBString: ", extension_loaded('mbstring') ? '<span style="color: green;">Enabled &#x2713</span>' : '<span style="color: red">Disabled &#x2717</span>', '<br>';
-                echo "&#187; Curl: ", extension_loaded('curl') ? '<span style="color: green;">Enabled &#x2713</span>' : '<span style="color: red">Disabled &#x2717</span>', '<br>';
-                echo "&#187; Json: ", extension_loaded('json') ? '<span style="color: green;">Enabled &#x2713</span>' : '<span style="color: red">Disabled &#x2717</span>', '<br><br>';
-                echo "&#187; Xml: ", extension_loaded('xml') ? '<span style="color: green;">Enabled &#x2713</span>' : '<span style="color: red">Disabled &#x2717</span>', '<br><br>';
+                echo "&#187; GD: ", extension_loaded('gd') ? '<span class="text-success">Enabled &#x2713</span>' : '<span class="text-danger">Disabled &#x2717</span>', '<br>';
+                echo "&#187; BC Math: ", extension_loaded('bcmath') ? '<span class="text-success">Enabled &#x2713</span>' : '<span class="text-danger">Disabled &#x2717</span>', '<br>';
+                echo "&#187; INTL: ", extension_loaded('intl') ? '<span class="text-success">Enabled &#x2713</span>' : '<span class="text-danger">Disabled &#x2717</span>', '<br>';
+                echo "&#187; OpenSSL: ", extension_loaded('openssl') ? '<span class="text-success">Enabled &#x2713</span>' : '<span class="text-danger">Disabled &#x2717</span>', '<br>';
+                echo "&#187; MBString: ", extension_loaded('mbstring') ? '<span class="text-success">Enabled &#x2713</span>' : '<span class="text-danger">Disabled &#x2717</span>', '<br>';
+                echo "&#187; Curl: ", extension_loaded('curl') ? '<span class="text-success">Enabled &#x2713</span>' : '<span class="text-danger">Disabled &#x2717</span>', '<br>';
+                echo "&#187; Json: ", extension_loaded('json') ? '<span class="text-success">Enabled &#x2713</span>' : '<span class="text-danger">Disabled &#x2717</span>', '<br><br>';
+                echo "&#187; Xml: ", extension_loaded('xml') ? '<span class="text-success">Enabled &#x2713</span>' : '<span class="text-danger">Disabled &#x2717</span>', '<br><br>';
                 ?>
                 User Configuration:<br>
                 .Browser:
@@ -95,16 +87,16 @@ use Config\ShopSuite;
                 $importCustomers = WRITEPATH . '/uploads/importCustomers.csv';    // TODO: This variable does not follow naming conventions for the project.
 
                 if (is_writable($logs)) {
-                    echo ' -  ' . substr(sprintf("%o", fileperms($logs)), -4) . ' |  ' . '<span style="color: green;">  Writable &#x2713 </span>';
+                    echo ' -  ' . substr(sprintf("%o", fileperms($logs)), -4) . ' |  ' . '<span class="text-success">  Writable &#x2713 </span>';
                 } else {
-                    echo ' -  ' . substr(sprintf("%o", fileperms($logs)), -4) . ' |  ' . '<span style="color: red;">    Not Writable &#x2717 </span>';
+                    echo ' -  ' . substr(sprintf("%o", fileperms($logs)), -4) . ' |  ' . '<span class="text-danger">    Not Writable &#x2717 </span>';
                 }
 
                 clearstatcache();
                 if (is_writable($logs) && substr(decoct(fileperms($logs)), -4) != 750) {
-                    echo ' | <span style="color: red;">Vulnerable or Incorrect Permissions &#x2717</span>';
+                    echo ' | <span class="text-danger">Vulnerable or Incorrect Permissions &#x2717</span>';
                 } else {
-                    echo ' | <span style="color: green;">Security Check Passed &#x2713</span>';
+                    echo ' | <span class="text-success">Security Check Passed &#x2713</span>';
                 }
                 clearstatcache();
                 ?>
@@ -112,17 +104,17 @@ use Config\ShopSuite;
                 &#187; [public/uploads:]
                 <?php
                 if (is_writable($uploads)) {
-                    echo ' -  ' . substr(sprintf("%o", fileperms($uploads)), -4) . ' |  ' . '<span style="color: green;">     Writable &#x2713 </span>';
+                    echo ' -  ' . substr(sprintf("%o", fileperms($uploads)), -4) . ' |  ' . '<span class="text-success">     Writable &#x2713 </span>';
                 } else {
-                    echo ' -  ' . substr(sprintf("%o", fileperms($uploads)), -4) . ' |  ' . '<span style="color: red;"> Not Writable &#x2717 </span>';
+                    echo ' -  ' . substr(sprintf("%o", fileperms($uploads)), -4) . ' |  ' . '<span class="text-danger"> Not Writable &#x2717 </span>';
                 }
 
                 clearstatcache();
 
                 if (is_writable($uploads) && substr(decoct(fileperms($uploads)), -4) != 750) {
-                    echo ' | <span style="color: red;">Vulnerable or Incorrect Permissions &#x2717</span>';
+                    echo ' | <span class="text-danger">Vulnerable or Incorrect Permissions &#x2717</span>';
                 } else {
-                    echo ' |  <span style="color: green;">Security Check Passed &#x2713 </span>';
+                    echo ' |  <span class="text-success">Security Check Passed &#x2713 </span>';
                 }
 
                 clearstatcache();
@@ -131,17 +123,17 @@ use Config\ShopSuite;
                 &#187; [public/uploads/item_pics:]
                 <?php
                 if (is_writable($images)) {
-                    echo ' -  ' . substr(sprintf("%o", fileperms($images)), -4) . ' |     ' . '<span style="color: green;"> Writable &#x2713 </span>';
+                    echo ' -  ' . substr(sprintf("%o", fileperms($images)), -4) . ' |     ' . '<span class="text-success"> Writable &#x2713 </span>';
                 } else {
-                    echo ' -  ' . substr(sprintf("%o", fileperms($images)), -4) . ' |     ' . '<span style="color: red;"> Not Writable &#x2717 </span>';
+                    echo ' -  ' . substr(sprintf("%o", fileperms($images)), -4) . ' |     ' . '<span class="text-danger"> Not Writable &#x2717 </span>';
                 }
 
                 clearstatcache();
 
                 if (substr(decoct(fileperms($images)), -4) != 750) {
-                    echo ' | <span style="color: red;">Vulnerable or Incorrect Permissions &#x2717</span>';
+                    echo ' | <span class="text-danger">Vulnerable or Incorrect Permissions &#x2717</span>';
                 } else {
-                    echo ' | <span style="color: green;">Security Check Passed &#x2713 </span>';
+                    echo ' | <span class="text-success">Security Check Passed &#x2713 </span>';
                 }
 
                 clearstatcache();
@@ -150,16 +142,16 @@ use Config\ShopSuite;
                 &#187; [importCustomers.csv:]
                 <?php
                 if (is_readable($importCustomers)) {
-                    echo ' -  ' . substr(sprintf("%o", fileperms($importCustomers)), -4) . ' |  ' . '<span style="color: green;">     Readable &#x2713 </span>';
+                    echo ' -  ' . substr(sprintf("%o", fileperms($importCustomers)), -4) . ' |  ' . '<span class="text-success">     Readable &#x2713 </span>';
                 } else {
-                    echo ' -  ' . substr(sprintf("%o", fileperms($importCustomers)), -4) . ' |  ' . '<span style="color: red;"> Not Readable &#x2717 </span>';
+                    echo ' -  ' . substr(sprintf("%o", fileperms($importCustomers)), -4) . ' |  ' . '<span class="text-danger"> Not Readable &#x2717 </span>';
                 }
                 clearstatcache();
 
                 if (!((substr(decoct(fileperms($importCustomers)), -4) == 640) || (substr(decoct(fileperms($importCustomers)), -4) == 660))) {
-                    echo ' | <span style="color: red;">Vulnerable or Incorrect Permissions &#x2717</span>';
+                    echo ' | <span class="text-danger">Vulnerable or Incorrect Permissions &#x2717</span>';
                 } else {
-                    echo ' | <span style="color: green;">Security Check Passed &#x2713 </span>';
+                    echo ' | <span class="text-success">Security Check Passed &#x2713 </span>';
                 }
                 clearstatcache();
                 ?>
@@ -170,26 +162,26 @@ use Config\ShopSuite;
                     && (substr(decoct(fileperms($images)), -4) == 750)
                     && ((substr(decoct(fileperms($importCustomers)), -4) == 640)
                         || (substr(decoct(fileperms($importCustomers)), -4) == 660)))) {
-                    echo '<br><span style="color: red;"><strong>' . lang('Config.security_issue') . '</strong> <br>' . lang('Config.perm_risk') . '</span><br>';
+                    echo '<br><span class="text-danger"><strong>' . lang('Config.security_issue') . '</strong> <br>' . lang('Config.perm_risk') . '</span><br>';
                 } else {
-                    echo '<br><span style="color: green;">' . lang('Config.no_risk') . '</strong> <br> </span>';
+                    echo '<br><span class="text-success">' . lang('Config.no_risk') . '</strong> <br> </span>';
                 }
 
                 if (substr(decoct(fileperms($logs)), -4) != 750) {
-                    echo '<br><span style="color: red;"> &#187; [writable/logs:] ' . lang('Config.is_writable') . '</span>';
+                    echo '<br><span class="text-danger"> &#187; [writable/logs:] ' . lang('Config.is_writable') . '</span>';
                 }
 
                 if (substr(decoct(fileperms($uploads)), -4) != 750) {
-                    echo '<br><span style="color: red;"> &#187; [writable/uploads:] ' . lang('Config.is_writable') . '</span>';
+                    echo '<br><span class="text-danger"> &#187; [writable/uploads:] ' . lang('Config.is_writable') . '</span>';
                 }
 
                 if (substr(decoct(fileperms($images)), -4) != 750) {
-                    echo '<br><span style="color: red;"> &#187; [writable/uploads/item_pics:] ' . lang('Config.is_writable') . '</span>';
+                    echo '<br><span class="text-danger"> &#187; [writable/uploads/item_pics:] ' . lang('Config.is_writable') . '</span>';
                 }
 
                 if (!((substr(decoct(fileperms($importCustomers)), -4) == 640)
                     || (substr(decoct(fileperms($importCustomers)), -4) == 660))) {
-                    echo '<br><span style="color: red;"> &#187; [importCustomers.csv:] ' . lang('Config.is_readable') . '</span>';
+                    echo '<br><span class="text-danger"> &#187; [importCustomers.csv:] ' . lang('Config.is_readable') . '</span>';
                 }
                 ?>
             </div>
@@ -197,7 +189,7 @@ use Config\ShopSuite;
     </div>
 </div>
 
-<div style="text-align: center;">
+<div class="text-center">
     <a class="copy" data-clipboard-action="copy" data-clipboard-target="#issuetemplate">Copy Info</a> | <a href="https://github.com/shopsuite/shopsuite/issues/new" target="_blank"> <?= lang('Config.report_an_issue') ?></a>
     <script type="text/javascript">
         var clipboard = new ClipboardJS('.copy');
@@ -212,7 +204,7 @@ use Config\ShopSuite;
 
         if ($('#timezone').html() !== $('#ostimezone').html()) {
             document.getElementById("timezone").innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            document.getElementById("TimeError").innerHTML = '<span style="color: red;"><?= lang('Config.timezone_error') ?></span><br><br><?= lang('Config.user_timezone') ?><div id="timezoneE" style="font-weight:600;"></div><br><?= lang('Config.os_timezone') ?><div id="ostimezoneE" style="font-weight:600;"><?= esc($config['timezone']) ?></div><br>';
+            document.getElementById("TimeError").innerHTML = '<span class="text-danger"><?= lang('Config.timezone_error') ?></span><br><br><?= lang('Config.user_timezone') ?><div id="timezoneE" class="font-semibold"></div><br><?= lang('Config.os_timezone') ?><div id="ostimezoneE" class="font-semibold"><?= esc($config['timezone']) ?></div><br>';
         }
     </script>
 </div>

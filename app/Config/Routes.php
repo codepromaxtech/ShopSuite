@@ -21,10 +21,13 @@ $routes->set404Override();
 
 $routes->get('/', 'Login::index');
 $routes->get('login', 'Login::index');
+$routes->get('login/logout', 'Login::getLogout');
 $routes->post('login', 'Login::index');
 
 $routes->add('no_access/index/(:segment)', 'No_access::index/$1');
 $routes->add('no_access/index/(:segment)/(:segment)', 'No_access::index/$1/$2');
+
+
 
 // Main Reports Dashboard
 $routes->add('reports', 'Reports::index');

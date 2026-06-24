@@ -22,7 +22,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<div style="display: grid; grid-template-columns: 1fr 400px; gap: var(--space-6); max-width: 1400px;">
+<div class="u-display-grid_grid-template-columns-1fr">
     <!-- Main Form -->
     <div class="card">
         <div class="card-header">
@@ -76,16 +76,16 @@ echo view('layouts/modern_header', ['title' => $title]);
             <!-- Export Options -->
             <div class="form-group">
                 <label class="form-label">Export Format</label>
-                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
-                    <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
+                <div class="u-display-flex_gap-space-3_flex-wrap-wra">
+                    <label class="u-display-flex_align-items-center_gap-sp">
                         <input type="radio" name="export_format" value="screen" checked>
                         <span>View on Screen</span>
                     </label>
-                    <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
+                    <label class="u-display-flex_align-items-center_gap-sp">
                         <input type="radio" name="export_format" value="excel">
                         <span>Export to Excel</span>
                     </label>
-                    <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
+                    <label class="u-display-flex_align-items-center_gap-sp">
                         <input type="radio" name="export_format" value="pdf">
                         <span>Export to PDF</span>
                     </label>
@@ -109,7 +109,7 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
 
         <!-- Report Info -->
-        <div class="card" style="margin-top: var(--space-4);">
+        <div class="card u-margin-top-space-4">
             <div class="card-header">
                 <h3 class="card-header-title">
                     <i class="bi bi-info-circle"></i>
@@ -117,42 +117,42 @@ echo view('layouts/modern_header', ['title' => $title]);
                 </h3>
             </div>
             <div class="card-body">
-                <div style="font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.8;">
-                    <div style="margin-bottom: var(--space-3);">
-                        <i class="bi bi-check-circle" style="color: var(--success-600);"></i>
-                        <strong style="margin-left: var(--space-2);">Current stock levels</strong>
+                <div class="u-font-size-text-sm_color-text-secondary-7">
+                    <div class="u-margin-bottom-space-3">
+                        <i class="bi bi-check-circle u-color-success-600"></i>
+                        <strong class="u-margin-left-space-2">Current stock levels</strong>
                     </div>
-                    <div style="margin-bottom: var(--space-3);">
-                        <i class="bi bi-check-circle" style="color: var(--success-600);"></i>
-                        <strong style="margin-left: var(--space-2);">Item costs & values</strong>
+                    <div class="u-margin-bottom-space-3">
+                        <i class="bi bi-check-circle u-color-success-600"></i>
+                        <strong class="u-margin-left-space-2">Item costs & values</strong>
                     </div>
-                    <div style="margin-bottom: var(--space-3);">
-                        <i class="bi bi-check-circle" style="color: var(--success-600);"></i>
-                        <strong style="margin-left: var(--space-2);">Reorder points</strong>
+                    <div class="u-margin-bottom-space-3">
+                        <i class="bi bi-check-circle u-color-success-600"></i>
+                        <strong class="u-margin-left-space-2">Reorder points</strong>
                     </div>
                     <div>
-                        <i class="bi bi-check-circle" style="color: var(--success-600);"></i>
-                        <strong style="margin-left: var(--space-2);">Location details</strong>
+                        <i class="bi bi-check-circle u-color-success-600"></i>
+                        <strong class="u-margin-left-space-2">Location details</strong>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Stats Preview -->
-        <div class="card" style="margin-top: var(--space-4); background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+        <div class="card u-margin-top-space-4-1">
             <div class="card-body">
-                <div style="display: flex; gap: var(--space-3);">
-                    <div style="flex-shrink: 0;">
-                        <i class="bi bi-box-seam" style="font-size: 32px; color: var(--warning-600);"></i>
+                <div class="u-display-flex_gap-space-3">
+                    <div class="u-flex-shrink-0">
+                        <i class="bi bi-box-seam u-font-size-32px_color-warning-600"></i>
                     </div>
                     <div>
-                        <div style="font-size: var(--text-xs); color: var(--warning-700); font-weight: var(--font-semibold); margin-bottom: var(--space-1);">
+                        <div class="u-font-size-text-xs_color-warning-700_fo">
                             INVENTORY VALUE
                         </div>
-                        <div style="font-size: var(--text-2xl); font-weight: var(--font-bold); color: var(--warning-800);">
+                        <div class="u-font-size-text-2xl_font-weight-font-bo">
                             View Report
                         </div>
-                        <div style="font-size: var(--text-xs); color: var(--warning-700); margin-top: var(--space-1);">
+                        <div class="u-font-size-text-xs_color-warning-700_ma">
                             Generate to see total value
                         </div>
                     </div>
@@ -162,11 +162,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<style>
-[data-theme="dark"] .card[style*="background: linear-gradient"] {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%) !important;
-}
-</style>
+
 
 <script>
 function generateReport() {

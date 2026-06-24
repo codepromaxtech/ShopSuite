@@ -47,7 +47,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-2">
-        <div class="card" style="margin-bottom: var(--space-6);">
+        <div class="card u-margin-bottom-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">Receiving Options</h3>
             </div>
@@ -77,7 +77,7 @@ echo view('layouts/modern_header', ['title' => $title]);
             </div>
         </div>
         
-        <div class="card" style="margin-bottom: var(--space-6);">
+        <div class="card u-margin-bottom-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">Add Items</h3>
             </div>
@@ -110,12 +110,12 @@ echo view('layouts/modern_header', ['title' => $title]);
             </div>
             <div class="card-body">
                 <?php if (empty($cart)): ?>
-                    <div style="text-align: center; padding: var(--space-8) var(--space-4); color: var(--text-tertiary);">
-                        <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto var(--space-4);">
+                    <div class="u-text-align-center_padding-space-8space">
+                        <svg class="u-margin-0autospace-4" width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                         </svg>
-                        <p style="font-size: var(--text-base); margin: 0;">No items in this receiving</p>
-                        <p style="font-size: var(--text-sm); margin-top: var(--space-2);">Scan or search for items to add them</p>
+                        <p class="u-font-size-text-base_margin-0">No items in this receiving</p>
+                        <p class="u-font-size-text-sm_margin-top-space-2">Scan or search for items to add them</p>
                     </div>
                 <?php else: ?>
                     <div class="table-responsive">
@@ -127,22 +127,22 @@ echo view('layouts/modern_header', ['title' => $title]);
                                     <th>Price</th>
                                     <th>Discount</th>
                                     <th>Total</th>
-                                    <th style="width: 100px;">Actions</th>
+                                    <th class="u-width-100px">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($cart as $line => $item): ?>
                                     <tr>
                                         <td>
-                                            <div style="font-weight: var(--font-medium);"><?= esc($item['name']) ?></div>
+                                            <div class="u-font-weight-font-medium"><?= esc($item['name']) ?></div>
                                             <?php if (!empty($item['description'])): ?>
-                                                <div style="font-size: var(--text-sm); color: var(--text-secondary);"><?= esc($item['description']) ?></div>
+                                                <div class="u-font-size-text-sm_color-text-secondary"><?= esc($item['description']) ?></div>
                                             <?php endif; ?>
                                         </td>
                                         <td><?= esc($item['quantity']) ?></td>
                                         <td>$<?= number_format($item['price'], 2) ?></td>
                                         <td><?= esc($item['discount']) ?>%</td>
-                                        <td style="font-weight: var(--font-semibold);">$<?= number_format($item['total'], 2) ?></td>
+                                        <td class="u-font-weight-font-semibold">$<?= number_format($item['total'], 2) ?></td>
                                         <td>
                                             <div class="flex gap-2">
                                                 <a href="<?= base_url("receivings/deleteItem/$line") ?>" class="btn btn-sm btn-ghost" title="Remove">
@@ -163,16 +163,16 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
     
     <div class="lg:col-span-1">
-        <div class="card" style="margin-bottom: var(--space-6);">
+        <div class="card u-margin-bottom-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">Supplier</h3>
             </div>
             <div class="card-body">
                 <?php if (isset($supplier) && $supplier > 0): ?>
-                    <div style="margin-bottom: var(--space-4);">
-                        <div style="font-weight: var(--font-semibold); margin-bottom: var(--space-2);"><?= esc($company_name ?? '') ?></div>
+                    <div class="u-margin-bottom-space-4">
+                        <div class="u-font-weight-font-semibold_margin-botto"><?= esc($company_name ?? '') ?></div>
                         <?php if (isset($supplier_address)): ?>
-                            <div style="font-size: var(--text-sm); color: var(--text-secondary);"><?= esc($supplier_address) ?></div>
+                            <div class="u-font-size-text-sm_color-text-secondary"><?= esc($supplier_address) ?></div>
                         <?php endif; ?>
                     </div>
                     <a href="<?= base_url('receivings/removeSupplier') ?>" class="btn btn-outline btn-sm btn-block">Change Supplier</a>
@@ -189,12 +189,12 @@ echo view('layouts/modern_header', ['title' => $title]);
             </div>
         </div>
         
-        <div class="card" style="margin-bottom: var(--space-6);">
+        <div class="card u-margin-bottom-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">Total</h3>
             </div>
             <div class="card-body">
-                <div style="font-size: var(--text-3xl); font-weight: var(--font-bold); color: var(--success-600); text-align: center;">
+                <div class="u-font-size-text-3xl_font-weight-font-bo-3">
                     $<?= number_format($total ?? 0, 2) ?>
                 </div>
             </div>
@@ -212,7 +212,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                     </button>
                     <?= form_close() ?>
                     
-                    <a href="<?= base_url('receivings/cancelReceiving') ?>" class="btn btn-outline btn-block" style="margin-top: var(--space-3);">
+                    <a href="<?= base_url('receivings/cancelReceiving') ?>" class="btn btn-outline btn-block mt-space-3">
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>

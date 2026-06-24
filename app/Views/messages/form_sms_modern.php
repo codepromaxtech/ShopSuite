@@ -71,8 +71,8 @@ echo view('layouts/modern_header', ['title' => $title]);
                 
                 <div class="form-group">
                     <label for="phone" class="form-label form-label-required">Phone Number</label>
-                    <div style="position: relative;">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary);">
+                    <div class="u-position-relative">
+                        <svg class="u-position-absolute_left-12px_top-50pct" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                         </svg>
                         <input type="tel" 
@@ -95,7 +95,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                               rows="6"
                               placeholder="Type your message here..."
                               required><?= esc($config['msg_msg'] ?? '') ?></textarea>
-                    <div style="display: flex; justify-content: space-between; margin-top: var(--space-2);">
+                    <div class="u-display-flex_justify-content-space-bet-1">
                         <small class="form-text">Maximum 160 characters per SMS</small>
                         <small class="form-text" id="char_count">0 / 160</small>
                     </div>
@@ -115,7 +115,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                     Send Message
                 </button>
                 
-                <button type="button" class="btn btn-outline btn-block" onclick="window.history.back()" style="margin-top: var(--space-3);">
+                <button type="button" class="btn btn-outline btn-block u-margin-top-space-3" onclick="window.history.back()">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -125,30 +125,30 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
         
         <!-- SMS Info -->
-        <div class="card" style="margin-top: var(--space-6);">
+        <div class="card u-margin-top-space-6">
             <div class="card-header">
                 <h3 class="card-header-title">SMS Information</h3>
             </div>
             <div class="card-body">
-                <div style="font-size: var(--text-sm); color: var(--text-secondary);">
-                    <div style="display: flex; align-items: start; gap: var(--space-2); margin-bottom: var(--space-3);">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0; margin-top: 2px;">
+                <div class="u-font-size-text-sm_color-text-secondary">
+                    <div class="u-display-flex_align-items-start_gap-spa">
+                        <svg class="u-flex-shrink-0_margin-top-2px" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <div>
                             <strong>Standard SMS:</strong> 160 characters max per message
                         </div>
                     </div>
-                    <div style="display: flex; align-items: start; gap: var(--space-2); margin-bottom: var(--space-3);">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0; margin-top: 2px;">
+                    <div class="u-display-flex_align-items-start_gap-spa">
+                        <svg class="u-flex-shrink-0_margin-top-2px" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <div>
                             Messages are sent immediately
                         </div>
                     </div>
-                    <div style="display: flex; align-items: start; gap: var(--space-2);">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0; margin-top: 2px;">
+                    <div class="u-display-flex_align-items-start_gap-spa-1">
+                        <svg class="u-flex-shrink-0_margin-top-2px" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0121 12c0 5.523-4.477 10-10 10S1 17.523 1 12 5.477 2 11 2c1.836 0 3.551.463 5.058 1.281"></path>
                         </svg>
                         <div>

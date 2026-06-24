@@ -10,7 +10,7 @@ class Backups extends Secure_Controller
 
     public function __construct()
     {
-        parent::__construct('backups', 'config', 'backups');
+        parent::__construct('backups', null, 'office');
         $this->backup = model(Backup::class);
     }
 

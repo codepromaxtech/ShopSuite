@@ -1208,9 +1208,11 @@ class Sale_lib
             $line['total'] = $this->get_item_total($quantity, $price, $discount, $line['discount_type']);
             $line['discounted_total'] = $this->get_item_total($quantity, $price, $discount, $line['discount_type'], true);
             $this->set_cart($items);
+
+            return true;
         }
 
-        return false;    // TODO: This function will always return false.
+        return false;
     }
 
     /**

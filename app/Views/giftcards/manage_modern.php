@@ -32,7 +32,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 </div>
 
 <div class="card">
-    <div class="card-body" style="padding: 0;">
+    <div class="card-body u-padding-0">
         <div id="giftcardsTable"></div>
     </div>
 </div>
@@ -56,7 +56,7 @@ function initializeDataTable() {
                 field: 'giftcard_number', 
                 title: 'Card Number',
                 sortable: true,
-                render: (value) => `<span style="font-weight: var(--font-medium); font-family: var(--font-mono);">${value}</span>`
+                render: (value) => `<span class="u-font-weight-font-medium_font-family-fo">${value}</span>`
             },
             { 
                 field: 'value', 
@@ -64,7 +64,7 @@ function initializeDataTable() {
                 sortable: true,
                 render: (value) => {
                     const formatted = parseFloat(value).toFixed(2);
-                    return `<span style="color: var(--success-600); font-weight: var(--font-semibold);">$${formatted}</span>`;
+                    return `<span class="u-color-success-600_font-weight-font-sem">$${formatted}</span>`;
                 }
             },
             { 
@@ -75,7 +75,7 @@ function initializeDataTable() {
                     if (value || row.last_name) {
                         return `${value || ''} ${row.last_name || ''}`.trim();
                     }
-                    return '<span style="color: var(--text-tertiary);">Unassigned</span>';
+                    return '<span class="u-color-text-tertiary">Unassigned</span>';
                 }
             }
         ],

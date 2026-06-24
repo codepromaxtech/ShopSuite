@@ -39,7 +39,7 @@ echo view('layouts/modern_header', ['title' => $title]);
         <div class="col-lg-9">
             <!-- Personal Information -->
             <div class="card border-0 shadow-sm mb-4 settings-panel" id="personal">
-                <div class="card-header bg-white">
+                <div class="card-header bg-primary">
                     <h5 class="mb-0">
                         <i class="bi bi-person-circle me-2"></i>Personal Information
                     </h5>
@@ -50,12 +50,12 @@ echo view('layouts/modern_header', ['title' => $title]);
                             <div class="col-md-6">
                                 <label class="form-label">First Name</label>
                                 <input type="text" class="form-control" value="<?= esc($user_info->first_name ?? '') ?>" disabled>
-                                <small class="text-muted">Contact administrator to change</small>
+                                <small class="text-secondary">Contact administrator to change</small>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Last Name</label>
                                 <input type="text" class="form-control" value="<?= esc($user_info->last_name ?? '') ?>" disabled>
-                                <small class="text-muted">Contact administrator to change</small>
+                                <small class="text-secondary">Contact administrator to change</small>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Username</label>
@@ -64,7 +64,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                             <div class="col-md-6">
                                 <label class="form-label">Email</label>
                                 <input type="email" class="form-control" value="<?= esc($user_info->email ?? '') ?>" disabled>
-                                <small class="text-muted">Contact administrator to change</small>
+                                <small class="text-secondary">Contact administrator to change</small>
                             </div>
                             <div class="col-12">
                                 <div class="alert alert-info">
@@ -79,8 +79,8 @@ echo view('layouts/modern_header', ['title' => $title]);
             </div>
 
             <!-- Change Password -->
-            <div class="card border-0 shadow-sm mb-4 settings-panel" id="password" style="display: none;">
-                <div class="card-header bg-white">
+            <div class="card border-0 shadow-sm mb-4 settings-panel d-none" id="password">
+                <div class="card-header bg-primary">
                     <h5 class="mb-0">
                         <i class="bi bi-key me-2"></i>Change Password
                     </h5>
@@ -98,7 +98,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                             <div class="col-md-6">
                                 <label class="form-label">New Password *</label>
                                 <input type="password" class="form-control" name="password" id="new_password" required minlength="8">
-                                <small class="text-muted">Minimum 8 characters</small>
+                                <small class="text-secondary">Minimum 8 characters</small>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Confirm New Password *</label>
@@ -115,8 +115,8 @@ echo view('layouts/modern_header', ['title' => $title]);
             </div>
 
             <!-- Preferences -->
-            <div class="card border-0 shadow-sm mb-4 settings-panel" id="preferences" style="display: none;">
-                <div class="card-header bg-white">
+            <div class="card border-0 shadow-sm mb-4 settings-panel d-none" id="preferences">
+                <div class="card-header bg-primary">
                     <h5 class="mb-0">
                         <i class="bi bi-palette me-2"></i>Preferences
                     </h5>
@@ -165,27 +165,7 @@ echo view('layouts/modern_header', ['title' => $title]);
     </div>
 </div>
 
-<style>
-.list-group-item-action.active {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    border-color: transparent;
-}
 
-.settings-panel {
-    animation: fadeInUp 0.3s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -216,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Load current theme
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedTheme = localStorage.getItem('theme') || 'dark';
     document.getElementById('theme-' + savedTheme).checked = true;
     
     // Theme change handler
