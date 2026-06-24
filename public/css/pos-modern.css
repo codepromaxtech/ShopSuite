@@ -22,11 +22,12 @@
 .pos-header {
     background: var(--bg-elevated);
     border-bottom: 1px solid var(--border-color);
-    padding: var(--space-4);
+    padding: var(--space-3) var(--space-4);
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
+    gap: var(--space-4);
 }
 
 .pos-logo {

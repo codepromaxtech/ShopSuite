@@ -52,7 +52,7 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    public string $baseURL;    // Defined in the constructor
+    public string $baseURL = 'https://shopsuite.codepromax.com.de/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
@@ -284,8 +284,5 @@ class App extends BaseConfig
     {
         parent::__construct();
         $this->https_on = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_ENV['FORCE_HTTPS']) && $_ENV['FORCE_HTTPS'] == 'true');
-        $this->baseURL = $this->https_on ? 'https' : 'http';
-        $this->baseURL .= '://' . ((isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'localhost') . '/';
-        $this->baseURL .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
     }
 }

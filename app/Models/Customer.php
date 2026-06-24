@@ -413,86 +413,35 @@ class Customer extends Person
         if ($order == null) $order = 'asc';
         if ($count_only == null) $count_only = false;
 
-        // Use raw SQL to avoid prefix issues
-        $prefix = $this->db->getPrefix();
-        
-        if ($count_only) {
-            $sql = "SELECT COUNT(c.person_id) as count 
-                    FROM {$prefix}customers c 
-                    LEFT JOIN {$prefix}people p ON c.person_id = p.person_id 
-                    WHERE c.deleted = 0";
-            
-            if (!empty($search)) {
-                $search_safe = $this->db->escapeString($search);
-                $sql .= " AND (
-                    p.first_name LIKE '%{$search_safe}%' OR 
-                    p.last_name LIKE '%{$search_safe}%' OR 
-                    p.email LIKE '%{$search_safe}%' OR 
-                    p.phone_number LIKE '%{$search_safe}%' OR 
-                    c.account_number LIKE '%{$search_safe}%' OR 
-                    c.company_name LIKE '%{$search_safe}%'
-                )";
-            }
-            
-            return $this->db->query($sql)->getRow()->count;
-        }
-        
-        // Build main query
-        $sql = "SELECT 
-                    c.person_id,
-                    c.company_name,
-                    c.account_number,
-                    c.taxable,
-                    c.tax_id,
-                    c.sales_tax_code_id,
-                    c.package_id,
-                    c.points,
-                    c.deleted,
-                    c.discount,
-                    c.discount_type,
-                    c.date,
-                    c.employee_id,
-                    c.consent,
-                    COALESCE(p.first_name, 'No Name') as first_name,
-                    COALESCE(p.last_name, 'No Name') as last_name,
-                    p.email,
-                    p.phone_number,
-                    p.gender,
-                    p.address_1,
-                    p.address_2,
-                    p.city,
-                    p.state,
-                    p.zip,
-                    p.country,
-                    p.comments
-                FROM {$prefix}customers c
-                LEFT JOIN {$prefix}people p ON c.person_id = p.person_id
-                WHERE c.deleted = 0";
-        
-        // Add search filters
+        $builder = $this->db->table('customers c');
+        $builder->join('people p', 'c.person_id = p.person_id', 'left');
+        $builder->where('c.deleted', 0);
+
         if (!empty($search)) {
-            $search_safe = $this->db->escapeString($search);
-            $sql .= " AND (
-                p.first_name LIKE '%{$search_safe}%' OR 
-                p.last_name LIKE '%{$search_safe}%' OR 
-                p.email LIKE '%{$search_safe}%' OR 
-                p.phone_number LIKE '%{$search_safe}%' OR 
-                c.account_number LIKE '%{$search_safe}%' OR 
-                c.company_name LIKE '%{$search_safe}%'
-            )";
+            $builder->groupStart()
+                ->like('p.first_name', $search)
+                ->orLike('p.last_name', $search)
+                ->orLike('p.email', $search)
+                ->orLike('p.phone_number', $search)
+                ->orLike('c.account_number', $search)
+                ->orLike('c.company_name', $search)
+                ->groupEnd();
         }
-        
+
+        if ($count_only) {
+            return $builder->countAllResults();
+        }
+
+        $builder->select("c.person_id, c.company_name, c.account_number, c.taxable, c.tax_id, c.sales_tax_code_id, c.package_id, c.points, c.deleted, c.discount, c.discount_type, c.date, c.employee_id, c.consent, COALESCE(p.first_name, 'No Name') as first_name, COALESCE(p.last_name, 'No Name') as last_name, p.email, p.phone_number, p.gender, p.address_1, p.address_2, p.city, p.state, p.zip, p.country, p.comments");
+
         // Add sorting - map table names to aliases
         $sort_mapped = str_replace(['people.', 'customers.'], ['p.', 'c.'], $sort);
-        $sql .= " ORDER BY {$sort_mapped} {$order}";
-        
-        // Add pagination
+        $builder->orderBy($sort_mapped, $order);
+
         if ($rows > 0) {
-            $sql .= " LIMIT {$limit_from}, {$rows}";
+            $builder->limit($rows, $limit_from);
         }
-        
-        error_log('[CUSTOMER MODEL] Final SQL: ' . $sql);
-        
-        return $this->db->query($sql);
+
+        return $builder->get();
     }
 }

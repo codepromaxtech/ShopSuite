@@ -9,68 +9,73 @@ echo view('layouts/modern_header', ['title' => $title]);
 $stats = $stats ?? [];
 ?>
 
-<!-- Page Header -->
-<div class="page-header">
-    <div class="page-header-content">
-        <div class="page-header-text">
-            <h1 class="page-header-title">Dashboard</h1>
-        </div>
+<!-- Welcome Banner -->
+<div class="welcome-banner-modern">
+    <div class="welcome-banner-content">
+        <h1 class="welcome-greeting">Welcome back!</h1>
+        <p class="welcome-date"><?= date('l, F j, Y') ?></p>
+    </div>
+    <div class="welcome-banner-decoration">
+        <i class="bi bi-stars"></i>
     </div>
 </div>
 
-<!-- Key Metrics -->
-<div class="stats-grid u-margin-bottom-space-8">
-    <!-- Today's Sales -->
-    <div class="stat-card" >
-        <div class="stat-card-icon u-background-rgba255-255-255-02">
-            <i class="bi bi-cart-check" ></i>
-        </div>
-        <div class="stat-card-content">
-            <div class="stat-card-label u-color-rgba255-255-255-09">Today's Sales</div>
-            <div class="stat-card-value" ><?= $stats['today_sales'] ?? 0 ?></div>
-            <div class="u-font-size-text-xs_color-rgba255-255-25">
+<!-- Section: Overview -->
+<div class="dashboard-section">
+    <h2 class="section-title">Overview</h2>
+    <div class="stats-grid u-margin-bottom-space-8">
+        <!-- Today's Sales -->
+        <div class="stat-card stat-card-sales">
+            <div class="stat-card-header">
+                <div class="stat-card-label">Today's Sales</div>
+                <div class="stat-card-icon">
+                    <i class="bi bi-cart-check"></i>
+                </div>
+            </div>
+            <div class="stat-card-value"><?= $stats['today_sales'] ?? 0 ?></div>
+            <div class="stat-card-trend">
                 <i class="bi bi-clock"></i> Last 24 hours
             </div>
         </div>
-    </div>
-    
-    <!-- Today's Revenue -->
-    <div class="stat-card" >
-        <div class="stat-card-icon u-background-rgba255-255-255-02">
-            <i class="bi bi-currency-dollar" ></i>
-        </div>
-        <div class="stat-card-content">
-            <div class="stat-card-label u-color-rgba255-255-255-09">Today's Revenue</div>
-            <div class="stat-card-value" >$<?= $stats['today_revenue'] ?? '0.00' ?></div>
-            <div class="u-font-size-text-xs_color-rgba255-255-25">
+        
+        <!-- Today's Revenue -->
+        <div class="stat-card stat-card-revenue">
+            <div class="stat-card-header">
+                <div class="stat-card-label">Today's Revenue</div>
+                <div class="stat-card-icon">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+            </div>
+            <div class="stat-card-value">$<?= $stats['today_revenue'] ?? '0.00' ?></div>
+            <div class="stat-card-trend">
                 <i class="bi bi-graph-up"></i> This month: $<?= $stats['month_revenue'] ?? '0.00' ?>
             </div>
         </div>
-    </div>
-    
-    <!-- Total Customers -->
-    <div class="stat-card" >
-        <div class="stat-card-icon u-background-rgba255-255-255-02">
-            <i class="bi bi-people" ></i>
-        </div>
-        <div class="stat-card-content">
-            <div class="stat-card-label u-color-rgba255-255-255-09">Total Customers</div>
-            <div class="stat-card-value" ><?= number_format($stats['total_customers'] ?? 0) ?></div>
-            <div class="u-font-size-text-xs_color-rgba255-255-25">
+        
+        <!-- Total Customers -->
+        <div class="stat-card stat-card-customers">
+            <div class="stat-card-header">
+                <div class="stat-card-label">Total Customers</div>
+                <div class="stat-card-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+            </div>
+            <div class="stat-card-value"><?= number_format($stats['total_customers'] ?? 0) ?></div>
+            <div class="stat-card-trend">
                 <i class="bi bi-person-plus"></i> Active customers
             </div>
         </div>
-    </div>
-    
-    <!-- Inventory -->
-    <div class="stat-card" >
-        <div class="stat-card-icon u-background-rgba255-255-255-02">
-            <i class="bi bi-box-seam" ></i>
-        </div>
-        <div class="stat-card-content">
-            <div class="stat-card-label u-color-rgba255-255-255-09">Products in Stock</div>
-            <div class="stat-card-value" ><?= $stats['total_items'] ?? 0 ?></div>
-            <div class="u-font-size-text-xs_color-rgba255-255-25">
+        
+        <!-- Inventory -->
+        <div class="stat-card stat-card-inventory">
+            <div class="stat-card-header">
+                <div class="stat-card-label">Products in Stock</div>
+                <div class="stat-card-icon">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+            </div>
+            <div class="stat-card-value"><?= $stats['total_items'] ?? 0 ?></div>
+            <div class="stat-card-trend <?= (($stats['low_stock'] ?? 0) > 0) ? 'trend-warning' : 'trend-success' ?>">
                 <?php if (($stats['low_stock'] ?? 0) > 0): ?>
                     <i class="bi bi-exclamation-triangle"></i> <?= $stats['low_stock'] ?> low stock
                 <?php else: ?>
@@ -81,165 +86,149 @@ $stats = $stats ?? [];
     </div>
 </div>
 
-<!-- Main Content Grid -->
-<div class="u-display-grid_grid-template-columns-2fr">
-    
-    <!-- Sales Trend Chart -->
-    <div class="card">
-        <div class="card-header">
-            <h2 class="u-margin-0_font-size-text-lg_font-weight">
-                <i class="bi bi-graph-up"></i>
-                Sales Trend (Last 7 Days)
-            </h2>
-        </div>
-        <div class="card-body">
-            <div class="u-position-relative_height-300px">
-                <canvas id="salesChart"></canvas>
+<!-- Section: Analytics & Actions -->
+<div class="dashboard-section">
+    <h2 class="section-title">Analytics & Actions</h2>
+    <div class="dashboard-main-grid">
+        <!-- Sales Trend Chart -->
+        <div class="card card-analytics">
+            <div class="card-header border-bottom-0">
+                <h2 class="card-title">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    Sales Trend (7 Days)
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 250px; position: relative;">
+                    <canvas id="salesChart"></canvas>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Quick Actions -->
-    <div class="card">
-        <div class="card-header">
-            <h2 class="u-margin-0_font-size-text-lg_font-weight">
-                <i class="bi bi-lightning-charge"></i>
-                Quick Actions
-            </h2>
-        </div>
-        <div class="card-body">
-            <div class="u-display-flex_flex-direction-column_gap">
-                <button onclick="location.reload()" class="quick-action-btn u-border-none_cursor-pointer">
-                    <i class="bi bi-arrow-clockwise"></i>
-                    <span>Refresh Dashboard</span>
-                </button>
-                <a href="<?= base_url('sales/register') ?>" class="quick-action-btn" >
-                    <i class="bi bi-cart-plus"></i>
-                    <span>New Sale</span>
-                </a>
-                <a href="<?= base_url('customers/view/-1') ?>" class="quick-action-btn" >
-                    <i class="bi bi-person-plus"></i>
-                    <span>Add Customer</span>
-                </a>
-                <a href="<?= base_url('products/view/-1') ?>" class="quick-action-btn" >
-                    <i class="bi bi-box-seam"></i>
-                    <span>Add Product</span>
-                </a>
-                <a href="<?= base_url('reports') ?>" class="quick-action-btn" >
-                    <i class="bi bi-file-earmark-bar-graph"></i>
-                    <span>View Reports</span>
-                </a>
+        
+        <!-- Quick Actions -->
+        <div class="card card-quick-actions">
+            <div class="card-header border-bottom-0">
+                <h2 class="card-title">
+                    <i class="bi bi-lightning-charge"></i>
+                    Quick Actions
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="quick-actions-list">
+                    <a href="javascript:void(0);" onclick="location.reload()" class="quick-action-item">
+                        <div class="quick-action-icon"><i class="bi bi-arrow-clockwise"></i></div>
+                        <div class="quick-action-text">Refresh Dashboard</div>
+                    </a>
+                    <a href="<?= base_url('sales/register') ?>" class="quick-action-item highlight" >
+                        <div class="quick-action-icon"><i class="bi bi-cart-plus"></i></div>
+                        <div class="quick-action-text">New Point of Sale</div>
+                    </a>
+                    <a href="<?= base_url('customers/view/-1') ?>" class="quick-action-item" >
+                        <div class="quick-action-icon"><i class="bi bi-person-plus"></i></div>
+                        <div class="quick-action-text">Add Customer</div>
+                    </a>
+                    <a href="<?= base_url('products/view/-1') ?>" class="quick-action-item" >
+                        <div class="quick-action-icon"><i class="bi bi-box-seam"></i></div>
+                        <div class="quick-action-text">Add Product</div>
+                    </a>
+                    <a href="<?= base_url('reports') ?>" class="quick-action-item" >
+                        <div class="quick-action-icon"><i class="bi bi-file-earmark-bar-graph"></i></div>
+                        <div class="quick-action-text">View Reports</div>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Second Row -->
-<div class="u-display-grid_grid-template-columns-1fr-1">
-    
-    <!-- Recent Sales -->
-    <div class="card">
-        <div class="card-header u-display-flex_justify-content-space-bet">
-            <h2 class="u-margin-0_font-size-text-lg_font-weight">
-                <i class="bi bi-receipt"></i>
-                Recent Sales
-            </h2>
-            <a href="<?= base_url('sales') ?>" class="btn btn-sm btn-outline">View All</a>
-        </div>
-        <div class="card-body u-padding-0">
-            <?php if (!empty($stats['recent_sales'])): ?>
-                <div class="list-group">
-                    <?php foreach ($stats['recent_sales'] as $sale): ?>
-                        <div class="list-item">
-                            <div class="list-item-icon u-background-success-100_color-success-6">
-                                <i class="bi bi-receipt"></i>
+<!-- Section: Activity -->
+<div class="dashboard-section">
+    <h2 class="section-title">Activity Timeline</h2>
+    <div class="dashboard-sub-grid">
+        <!-- Recent Sales -->
+        <div class="card">
+            <div class="card-header u-display-flex_justify-content-space-bet">
+                <h2 class="card-title"><i class="bi bi-receipt"></i> Recent Sales</h2>
+                <a href="<?= base_url('sales') ?>" class="btn btn-sm btn-outline">View All</a>
+            </div>
+            <div class="card-body u-padding-0">
+                <?php if (!empty($stats['recent_sales'])): ?>
+                    <div class="list-group">
+                        <?php foreach ($stats['recent_sales'] as $sale): ?>
+                            <div class="list-item">
+                                <div class="list-item-icon bg-success-light text-success">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </div>
+                                <div class="list-item-content">
+                                    <div class="list-item-title">Sale #<?= $sale['sale_id'] ?></div>
+                                    <div class="list-item-subtitle"><?= $sale['customer_name'] ?: 'Walk-in Customer' ?></div>
+                                </div>
+                                <div class="list-item-value">$<?= number_format($sale['total'] ?? 0, 2) ?></div>
                             </div>
-                            <div class="list-item-content">
-                                <div class="list-item-title">Sale #<?= $sale['sale_id'] ?></div>
-                                <div class="list-item-subtitle">
-                                    <?= $sale['customer_name'] ?: 'Walk-in Customer' ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="empty-state-modern">
+                        <i class="bi bi-receipt"></i>
+                        <p>No recent sales</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        
+        <!-- Top Products -->
+        <div class="card">
+            <div class="card-header u-display-flex_justify-content-space-bet">
+                <h2 class="card-title"><i class="bi bi-star"></i> Top Products</h2>
+                <a href="<?= base_url('products') ?>" class="btn btn-sm btn-outline">View All</a>
+            </div>
+            <div class="card-body u-padding-0">
+                <?php if (!empty($stats['top_products'])): ?>
+                    <div class="list-group">
+                        <?php foreach ($stats['top_products'] as $index => $product): ?>
+                            <div class="list-item">
+                                <div class="list-item-rank rank-<?= $index + 1 ?>">#<?= $index + 1 ?></div>
+                                <div class="list-item-content">
+                                    <div class="list-item-title"><?= esc($product['name']) ?></div>
+                                    <div class="list-item-subtitle"><?= number_format($product['total_sold']) ?> units sold</div>
                                 </div>
                             </div>
-                            <div class="list-item-value">
-                                $<?= number_format($sale['total'] ?? 0, 2) ?>
-                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="empty-state-modern">
+                        <i class="bi bi-star"></i>
+                        <p>No sales data</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        
+        <!-- Low Stock Alert -->
+        <div class="card">
+            <div class="card-header u-display-flex_justify-content-space-bet">
+                <h2 class="card-title"><i class="bi bi-exclamation-triangle"></i> Inventory Alert</h2>
+                <a href="<?= base_url('reports/inventory_low') ?>" class="btn btn-sm btn-outline">View All</a>
+            </div>
+            <div class="card-body">
+                <?php if (($stats['low_stock'] ?? 0) > 0): ?>
+                    <div class="alert-box-modern">
+                        <div class="alert-icon-large pulse-animation">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <div class="empty-state-small">
-                    <i class="bi bi-receipt"></i>
-                    <p>No recent sales</p>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
-    
-    <!-- Top Products -->
-    <div class="card">
-        <div class="card-header u-display-flex_justify-content-space-bet">
-            <h2 class="u-margin-0_font-size-text-lg_font-weight">
-                <i class="bi bi-star"></i>
-                Top Products
-            </h2>
-            <a href="<?= base_url('products') ?>" class="btn btn-sm btn-outline">View All</a>
-        </div>
-        <div class="card-body u-padding-0">
-            <?php if (!empty($stats['top_products'])): ?>
-                <div class="list-group">
-                    <?php foreach ($stats['top_products'] as $index => $product): ?>
-                        <div class="list-item">
-                            <div class="list-item-rank">#<?= $index + 1 ?></div>
-                            <div class="list-item-content">
-                                <div class="list-item-title"><?= esc($product['name']) ?></div>
-                                <div class="list-item-subtitle">
-                                    <?= number_format($product['total_sold']) ?> sold
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <div class="empty-state-small">
-                    <i class="bi bi-star"></i>
-                    <p>No sales data</p>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
-    
-    <!-- Low Stock Alert -->
-    <div class="card">
-        <div class="card-header u-display-flex_justify-content-space-bet">
-            <h2 class="u-margin-0_font-size-text-lg_font-weight">
-                <i class="bi bi-exclamation-triangle"></i>
-                Low Stock Alert
-            </h2>
-            <a href="<?= base_url('reports/inventory_low') ?>" class="btn btn-sm btn-outline">View All</a>
-        </div>
-        <div class="card-body">
-            <?php if (($stats['low_stock'] ?? 0) > 0): ?>
-                <div class="u-text-align-center_padding-space-60">
-                    <div class="u-width-80px_height-80px_margin-0autospa">
-                        <i class="bi bi-exclamation-triangle u-font-size-32px"></i>
+                        <div class="alert-count"><?= $stats['low_stock'] ?></div>
+                        <div class="alert-text">Products below reorder level</div>
+                        <a href="<?= base_url('reports/inventory_low') ?>" class="btn btn-danger btn-modern mt-3">
+                            <i class="bi bi-clipboard-check"></i> Review Now
+                        </a>
                     </div>
-                    <div class="u-font-size-text-3xl_font-weight-font-bo-2">
-                        <?= $stats['low_stock'] ?>
+                <?php else: ?>
+                    <div class="empty-state-modern success-state">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <p>All products well stocked!</p>
                     </div>
-                    <div class="u-font-size-text-sm_color-text-secondary-4">
-                        Products below reorder level
-                    </div>
-                    <a href="<?= base_url('reports/inventory_low') ?>" class="btn btn-danger btn-sm">
-                        <i class="bi bi-clipboard-check"></i>
-                        <span>Review Products</span>
-                    </a>
-                </div>
-            <?php else: ?>
-                <div class="empty-state-small">
-                    <i class="bi bi-check-circle u-color-success-600"></i>
-                    <p class="u-color-success-600">All products well stocked!</p>
-                </div>
-            <?php endif; ?>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 </div>

@@ -116,16 +116,16 @@ class Tax extends Model
      */
     public function get_taxes(int $tax_code_id, int $tax_category_id): array
     {
-        $sql = 'select tax_rate_id, rate_tax_code_id, tax_code, tax_code_name, tax_type, cascade_sequence, rate_tax_category_id, tax_category,
-            rate_jurisdiction_id, jurisdiction_name, tax_group, tax_rate, tax_rounding_code,tax_categories.tax_group_sequence + tax_jurisdictions.tax_group_sequence as tax_group_sequence
-            from ' . $this->db->prefixTable('tax_rates') . '
-            left outer join ' . $this->db->prefixTable('tax_codes') . ' on rate_tax_code_id = tax_code_id
-            left outer join ' . $this->db->prefixTable('tax_categories') . ' as tax_categories on rate_tax_category_id = tax_category_id
-            left outer join ' . $this->db->prefixTable('tax_jurisdictions') . ' as tax_jurisdictions on rate_jurisdiction_id = jurisdiction_id
-            where rate_tax_code_id = ' . $this->db->escape($tax_code_id) . ' and rate_tax_category_id = ' . $this->db->escape($tax_category_id) . '
-            order by cascade_sequence, tax_group, jurisdiction_name, tax_jurisdictions.tax_group_sequence + tax_categories.tax_group_sequence';
+        $builder = $this->db->table('tax_rates');
+        $builder->select('tax_rate_id, rate_tax_code_id, tax_code, tax_code_name, tax_type, cascade_sequence, rate_tax_category_id, tax_category, rate_jurisdiction_id, jurisdiction_name, tax_group, tax_rate, tax_rounding_code, tax_categories.tax_group_sequence + tax_jurisdictions.tax_group_sequence as tax_group_sequence');
+        $builder->join('tax_codes', 'rate_tax_code_id = tax_code_id', 'left outer');
+        $builder->join('tax_categories as tax_categories', 'rate_tax_category_id = tax_category_id', 'left outer');
+        $builder->join('tax_jurisdictions as tax_jurisdictions', 'rate_jurisdiction_id = jurisdiction_id', 'left outer');
+        $builder->where('rate_tax_code_id', $tax_code_id);
+        $builder->where('rate_tax_category_id', $tax_category_id);
+        $builder->orderBy('cascade_sequence, tax_group, jurisdiction_name, tax_jurisdictions.tax_group_sequence + tax_categories.tax_group_sequence');
 
-        $query = $this->db->query($sql);
+        $query = $builder->get();
 
         return $query->getResultArray() ?: [];
     }

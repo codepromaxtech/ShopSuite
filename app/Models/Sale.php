@@ -1161,13 +1161,20 @@ class Sale extends Model
      */
     public function get_all_suspended(?int $customer_id = null): array
     {
+        $builder = $this->db->table('sales');
+
+        $docIdSelect = "sale_id, CASE WHEN sale_type = '" . SALE_TYPE_QUOTE . "' THEN quote_number WHEN sale_type = '" . SALE_TYPE_WORK_ORDER . "' THEN work_order_number ELSE sale_id END AS doc_id";
+
         if ($customer_id == NEW_ENTRY) {
-            $query = $this->db->query("SELECT sale_id, case when sale_type = '" . SALE_TYPE_QUOTE . "' THEN quote_number WHEN sale_type = '" . SALE_TYPE_WORK_ORDER . "' THEN work_order_number else sale_id end as doc_id, sale_id as suspended_sale_id, sale_status, sale_time, dinner_table_id, customer_id, employee_id, comment FROM "
-                . $this->db->prefixTable('sales') . ' where sale_status = ' . SUSPENDED);
+            $builder->select("$docIdSelect, sale_id AS suspended_sale_id, sale_status, sale_time, dinner_table_id, customer_id, employee_id, comment", false);
         } else {
-            $query = $this->db->query("SELECT sale_id, case when sale_type = '" . SALE_TYPE_QUOTE . "' THEN quote_number WHEN sale_type = '" . SALE_TYPE_WORK_ORDER . "' THEN work_order_number else sale_id end as doc_id, sale_status, sale_time, dinner_table_id, customer_id, employee_id, comment FROM "
-                . $this->db->prefixTable('sales') . ' where sale_status = ' . SUSPENDED . ' AND customer_id = ' . $customer_id);
+            $builder->select("$docIdSelect, sale_status, sale_time, dinner_table_id, customer_id, employee_id, comment", false);
+            $builder->where('customer_id', $customer_id);
         }
+
+        $builder->where('sale_status', SUSPENDED);
+
+        $query = $builder->get();
 
         return $query->getResultArray() ?: [];
     }

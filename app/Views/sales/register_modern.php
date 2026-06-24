@@ -328,7 +328,7 @@ const addItemForm = document.getElementById('add_item_form');
 if (itemInput) {
     // Create autocomplete dropdown container
     const autocompleteContainer = document.createElement('div');
-    autocompleteContainer.style.min.cssText = 'position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-lg); max-height: 300px; overflow-y: auto; z-index: 1000; display: none; box-shadow: var(--shadow-xl); margin-top: 4px;';
+    autocompleteContainer.style.cssText = 'position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-lg); max-height: 300px; overflow-y: auto; z-index: 1000; display: none; box-shadow: var(--shadow-xl); margin-top: 4px;';
     itemInput.parentElement.style.position = 'relative';
     itemInput.parentElement.appendChild(autocompleteContainer);
     
@@ -542,7 +542,7 @@ const customerInput = document.getElementById('customer_search_input');
 
 if (customerInput) {
     const customerAutocompleteContainer = document.createElement('div');
-    customerAutocompleteContainer.style.min.cssText = 'position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-lg); max-height: 240px; overflow-y: auto; z-index: 1000; display: none; box-shadow: var(--shadow-xl); margin-top: 4px;';
+    customerAutocompleteContainer.style.cssText = 'position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-lg); max-height: 240px; overflow-y: auto; z-index: 1000; display: none; box-shadow: var(--shadow-xl); margin-top: 4px;';
     customerInput.parentElement.appendChild(customerAutocompleteContainer);
     
     customerInput.addEventListener('input', function(e) {

@@ -439,21 +439,12 @@ class Attribute extends Model
 
                 $this->db->transStart();
 
-                $query = 'UPDATE ' . $this->db->prefixTable('attribute_links') . ' links ';
-                $query .= 'JOIN ' . $this->db->prefixTable('attribute_values') . ' vals ';
-                $query .= 'ON vals.attribute_id = links.attribute_id ';
-                $query .= "SET links.attribute_id = IF((attribute_value IN('false','0','') OR (attribute_value IS NULL)), $checkbox_attribute_values[0], $checkbox_attribute_values[1]) ";
-                $query .= 'WHERE definition_id = ' . $this->db->escape($definition_id);
-                $success = $this->db->query($query);
-
-                // TODO: In order to convert this query to QueryBuilder, CI needs to fix their issue with JOINs being ignored in UPDATE queries and ideally fix their issue with backticks and dbprefix not being prepended when SQL functions are used.
-                // Replace the code above with the code below when it's fixed.
-                // $db_prefix = $this->db->getPrefix();
-                // $builder = $this->db->table('attribute_links');
-                // $builder->join('attribute_values', 'attribute_values.attribute_id = attribute_links.attribute_id', 'inner');
-                // $builder->set('attribute_links.attribute_id', "IF((`$db_prefix" . "attribute_values`.`attribute_value` IN('false','0','') OR (`". $db_prefix ."attribute_values`.`attribute_value` IS NULL)), $checkbox_attribute_values[0], $checkbox_attribute_values[1])", false);
-                // $builder->where('attribute_links.definition_id', $definition_id);
-                // $success = $builder->update();
+                $db_prefix = $this->db->getPrefix();
+                $builder = $this->db->table('attribute_links');
+                $builder->join('attribute_values', 'attribute_values.attribute_id = attribute_links.attribute_id', 'inner');
+                $builder->set('attribute_links.attribute_id', "IF((`$db_prefix" . "attribute_values`.`attribute_value` IN('false','0','') OR (`". $db_prefix ."attribute_values`.`attribute_value` IS NULL)), $checkbox_attribute_values[0], $checkbox_attribute_values[1])", false);
+                $builder->where('attribute_links.definition_id', $definition_id);
+                $success = $builder->update();
 
                 $this->db->transComplete();
             }
@@ -464,21 +455,12 @@ class Attribute extends Model
 
                     $this->db->transStart();
 
-                    $query = 'UPDATE ' . $this->db->prefixTable('attribute_links') . ' links ';
-                    $query .= 'JOIN ' . $this->db->prefixTable('attribute_values') . ' vals ';
-                    $query .= 'ON vals.attribute_id = links.attribute_id ';
-                    $query .= "SET links.attribute_id = IF((attribute_value IN('false','0','') OR (attribute_value IS NULL)), $checkbox_attribute_values[0], $checkbox_attribute_values[1]) ";
-                    $query .= 'WHERE definition_id = ' . $this->db->escape($definition_id);
-                    $success = $this->db->query($query);
-
-                    // TODO: Same issue here. Replace the code above with the code below when it's fixed.
-                    // $builder = $this->db->table('attribute_links');
-                    // $builder->join('attribute_values', 'attribute_values.attribute_id = attribute_links.attribute_id', 'inner');
-                    // $builder->set('attribute_links.attribute_id', "IF((attribute_value IN('false','0','') OR (attribute_value IS NULL)), $checkbox_attribute_values[0], $checkbox_attribute_values[1])", false);
-                    // $builder->where('definition_id', $definition_id);
-                    // $success = $builder->update();
-                    //
-                    // $this->db->transComplete();
+                    $db_prefix = $this->db->getPrefix();
+                    $builder = $this->db->table('attribute_links');
+                    $builder->join('attribute_values', 'attribute_values.attribute_id = attribute_links.attribute_id', 'inner');
+                    $builder->set('attribute_links.attribute_id', "IF((`$db_prefix" . "attribute_values`.`attribute_value` IN('false','0','') OR (`". $db_prefix ."attribute_values`.`attribute_value` IS NULL)), $checkbox_attribute_values[0], $checkbox_attribute_values[1])", false);
+                    $builder->where('attribute_links.definition_id', $definition_id);
+                    $success = $builder->update();
                 }
             }
         } else {
