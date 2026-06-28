@@ -373,9 +373,10 @@ class Employee extends Person
 
             // Compare passwords depending on the hash version
             if ($row->hash_version === '1' && $row->password === md5($password)) {
-                $builder->where('person_id', $row->person_id);
                 $this->session->set('person_id', $row->person_id);
+                $this->session->set('force_password_change', true);
                 $password_hash = password_hash($password, PASSWORD_DEFAULT);
+                $builder->where('person_id', $row->person_id);
 
                 return $builder->update(['hash_version' => 2, 'password' => $password_hash]);
             } elseif ($row->hash_version === '2' && password_verify($password, $row->password)) {
@@ -427,7 +428,26 @@ class Employee extends Person
         $result_count = $builder->get()->getNumRows();
 
         if ($result_count != 1) {
-            return ($result_count != 0);
+            if ($result_count != 0) {
+                return true;
+            }
+        } else {
+            return $this->has_subpermissions($permission_id);
+        }
+
+        $role_id = $this->get_employee_role_id($person_id);
+        if ($role_id === null) {
+            return false;
+        }
+
+        $prefix = $this->db->getPrefix();
+        $builder = $this->db->table($prefix . 'role_permissions');
+        $builder->like('permission_id', $permission_id, 'after');
+        $builder->where('role_id', $role_id);
+        $role_count = $builder->get()->getNumRows();
+
+        if ($role_count != 1) {
+            return ($role_count != 0);
         }
 
         return $this->has_subpermissions($permission_id);
@@ -449,7 +469,6 @@ class Employee extends Person
      */
     public function has_grant(?string $permission_id, ?int $person_id): bool
     {
-        // If no module_id is null, allow access
         if ($permission_id == null) {
             return true;
         }
@@ -460,7 +479,13 @@ class Employee extends Person
         $builder = $this->db->table('grants');
         $query = $builder->getWhere(['person_id' => $person_id, 'permission_id' => $permission_id], 1);
 
-        return ($query->getNumRows() == 1);    // TODO: ===
+        if ($query->getNumRows() === 1) {
+            return true;
+        }
+
+        $role_id = $this->get_employee_role_id($person_id);
+
+        return $role_id !== null && $this->has_role_grant($role_id, $permission_id);
     }
 
     /**
@@ -475,12 +500,77 @@ class Employee extends Person
 
         $row = $builder->get()->getRow();
 
-        // If no grants are assigned yet then set the default to 'home'
-        if ($row == null) {
-            return 'home';
-        } else {
+        if ($row != null) {
             return $row->menu_group;
         }
+
+        $role_id = $person_id !== null ? $this->get_employee_role_id($person_id) : null;
+        if ($role_id !== null) {
+            $prefix = $this->db->getPrefix();
+            $roleRow = $this->db->table($prefix . 'role_permissions')
+                ->select('menu_group')
+                ->where('role_id', $role_id)
+                ->where('permission_id', $permission_id)
+                ->get()
+                ->getRow();
+
+            if ($roleRow !== null) {
+                return $roleRow->menu_group;
+            }
+        }
+
+        return 'home';
+    }
+
+    /**
+     * Copy role permissions into the grants table for an employee.
+     */
+    public function sync_grants_from_role(int $person_id, int $role_id): bool
+    {
+        $prefix = $this->db->getPrefix();
+        $permissions = $this->db->table($prefix . 'role_permissions')
+            ->where('role_id', $role_id)
+            ->get()
+            ->getResultArray();
+
+        $builder = $this->db->table('grants');
+        $builder->delete(['person_id' => $person_id]);
+
+        foreach ($permissions as $perm) {
+            if (!$builder->insert([
+                'permission_id' => $perm['permission_id'],
+                'person_id'     => $person_id,
+                'menu_group'    => $perm['menu_group'] ?? 'home',
+            ])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @return int|null
+     */
+    private function get_employee_role_id(int $person_id): ?int
+    {
+        $info = $this->get_info($person_id);
+
+        if ($info === false || empty($info->role_id)) {
+            return null;
+        }
+
+        return (int) $info->role_id;
+    }
+
+    private function has_role_grant(int $role_id, string $permission_id): bool
+    {
+        $prefix = $this->db->getPrefix();
+
+        return $this->db->table($prefix . 'role_permissions')
+                ->where('role_id', $role_id)
+                ->where('permission_id', $permission_id)
+                ->countAllResults() > 0;
     }
 
     /**

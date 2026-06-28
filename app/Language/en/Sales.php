@@ -223,4 +223,11 @@ return [
     "work_order_number_duplicate"      => "Work Order Number must be unique.",
     "work_order_sent"                  => "Work Order sent to",
     "work_order_unsent"                => "Work Order failed to be sent to",
+    "cashup_active"                    => "Cashup",
+    "cashup_active_hint"               => "Sales are linked to this open cash register session",
+    "open_cashup"                      => "Open Cashup",
+    "return_exchange_search_required"  => "Please enter a sale ID, invoice number, or customer name.",
+    "return_exchange_search_error"     => "Could not search sales. Please try again.",
+    "return_exchange_confirm_title"    => "Process Return",
+    "return_exchange_confirm_load"     => "Load this sale into POS for return or exchange?",
 ];

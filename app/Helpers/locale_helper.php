@@ -441,7 +441,7 @@ function to_decimals(?string $number, ?string $decimals = null, int $type = Numb
  * @param string $number
  * @return false|float|int|mixed|string
  */
-function parse_quantity(string $number): mixed
+function parse_quantity(?string $number): mixed
 {
     return parse_decimals($number, quantity_decimals());
 }
@@ -450,7 +450,7 @@ function parse_quantity(string $number): mixed
  * @param string $number
  * @return false|float|int|mixed|string
  */
-function parse_tax(string $number): mixed
+function parse_tax(?string $number): mixed
 {
     return parse_decimals($number, tax_decimals());
 }
@@ -460,10 +460,10 @@ function parse_tax(string $number): mixed
  * @param int|null $decimals
  * @return false|float|int|mixed|string
  */
-function parse_decimals(string $number, ?int $decimals = null): mixed
+function parse_decimals(?string $number, ?int $decimals = null): mixed
 {
     if (empty($number)) {
-        return $number;
+        return 0.0;
     }
 
 

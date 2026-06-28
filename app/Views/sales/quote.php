@@ -1,5 +1,6 @@
 <?php
 /**
+ * Modern Sales Quote
  * @var int $sale_id_num
  * @var bool $print_after_sale
  * @var string $customer_info
@@ -14,212 +15,219 @@
  * @var array $payments
  * @var array $config
  */
-?>
 
-<?= view('partial/header') ?>
-
-<?php
 if (isset($error_message)) {
-    echo '<div class="alert alert-dismissible alert-danger">' . $error_message . '</div>';
+    echo view('sales/partials/document_error', ['error_message' => $error_message]);
     exit;
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#3b82f6">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('css/modern-pages.css') ?>">
+    <title><?= lang('Sales.quote') ?> #<?= esc($quote_number) ?> - Complete</title>
+    <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Scripts for sending email -->
+    <?= view('sales/partials/document_csrf') ?>
+</head>
+<body class="u-margin-0_padding-0_font-family--apple">
 
-<?php if (!empty($customer_email)): ?>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            var send_email = function() {
-                $.get('<?= site_url() . esc("/sales/sendPdf/$sale_id_num/quote") ?>',
-                    function(response) {
-                        $.notify({
-                            message: response.message
-                        }, {
-                            type: response.success ? 'success' : 'danger'
-                        })
-                    }, 'json'
-                );
-            };
+<div class="receipt-page">
+    <div class="receipt-container sale-doc-container">
+        <!-- Success Header -->
+        <div class="receipt-success-header print-hide">
+            <div class="success-icon sale-doc-icon-info">
+                <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+            </div>
+            <h1 class="u-margin-008px_font-size-32px_font-weigh">Quote Created!</h1>
+            <p class="u-margin-0_font-size-16px_opacity-09">Quote saved successfully</p>
+        </div>
+        
+        <!-- Document Content -->
+        <div class="receipt-content">
+            <!-- Header Grid for A4 scale -->
+            <div class="sale-doc-header-row">
+                <div class="sale-doc-company-col">
+                    <?php if ($config['company_logo'] != ''): ?>
+                        <img src="<?= base_url('uploads/' . $config['company_logo']) ?>" alt="Logo" class="sale-doc-logo">
+                    <?php endif; ?>
+                    <?php if ($config['receipt_show_company_name']): ?>
+                        <h2 class="sale-doc-company-name"><?= esc($config['company']) ?></h2>
+                    <?php endif; ?>
+                    <div class="sale-doc-company-info">
+                        <?= nl2br(esc($company_info)) ?>
+                    </div>
+                </div>
+                <div class="sale-doc-meta-col">
+                    <h1 class="sale-doc-title"><?= lang('Sales.quote') ?></h1>
+                    
+                    <table class="sale-doc-meta-table">
+                        <tr>
+                            <td class="sale-doc-meta-label"><?= lang('Sales.quote_number') ?></td>
+                            <td class="sale-doc-meta-value"><?= esc($quote_number) ?></td>
+                        </tr>
+                        <tr>
+                            <td class="sale-doc-meta-label"><?= lang('Common.date') ?></td>
+                            <td class="sale-doc-meta-value"><?= esc($transaction_date) ?></td>
+                        </tr>
+                        <tr>
+                            <td class="sale-doc-meta-label-total"><?= lang('Sales.invoice_total') ?></td>
+                            <td class="sale-doc-meta-value-total"><?= to_currency($total) ?></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
 
-            $("#show_email_button").click(send_email);
-
-            <?php if (!empty($email_receipt)): ?>
-                send_email();
+            <!-- Customer Details -->
+            <?php if (isset($customer)): ?>
+            <div class="sale-doc-customer-box">
+                <div class="sale-doc-section-label">Customer</div>
+                <div class="sale-doc-customer-info">
+                    <?= nl2br(esc($customer_info)) ?>
+                </div>
+            </div>
             <?php endif; ?>
-        });
-    </script>
+            
+            <!-- Items Table -->
+            <table class="sale-doc-items-table">
+                <thead class="sale-doc-items-thead">
+                    <tr class="sale-doc-row">
+                        <th class="sale-doc-th sale-doc-th-left"><?= lang('Sales.item_number') ?></th>
+                        <th class="sale-doc-th sale-doc-th-left"><?= lang('Sales.item_name') ?></th>
+                        <th class="sale-doc-th sale-doc-th-center"><?= lang('Sales.quantity') ?></th>
+                        <th class="sale-doc-th sale-doc-th-right"><?= lang('Sales.price') ?></th>
+                        <th class="sale-doc-th sale-doc-th-right"><?= lang('Sales.discount') ?></th>
+                        <?php if ($discount > 0): ?>
+                            <th class="sale-doc-th sale-doc-th-right"><?= lang('Sales.customer_discount') ?></th>
+                        <?php endif; ?>
+                        <th class="sale-doc-th sale-doc-th-right"><?= lang('Sales.total') ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($cart as $line => $item): ?>
+                        <?php if ($item['print_option'] == PRINT_YES): ?>
+                        <tr class="sale-doc-row">
+                            <td class="sale-doc-td"><?= esc($item['item_number']) ?></td>
+                            <td class="sale-doc-td sale-doc-td-bold"><?= esc($item['name']) ?></td>
+                            <td class="sale-doc-td sale-doc-td-center"><?= to_quantity_decimals($item['quantity']) ?></td>
+                            <td class="sale-doc-td sale-doc-td-right"><?= to_currency($item['price']) ?></td>
+                            <td class="sale-doc-td sale-doc-td-right">
+                                <?= ($item['discount_type'] == FIXED) ? to_currency($item['discount']) : to_decimals($item['discount']) . '%' ?>
+                            </td>
+                            <?php if ($discount > 0): ?>
+                                <td class="sale-doc-td sale-doc-td-right"><?= to_currency($item['discounted_total'] / $item['quantity']) ?></td>
+                            <?php endif; ?>
+                            <td class="sale-doc-td sale-doc-td-right sale-doc-td-total"><?= to_currency($item['discounted_total']) ?></td>
+                        </tr>
+                        <?php if ($item['is_serialized'] && !empty($item['serialnumber'])): ?>
+                            <tr class="sale-doc-row-serial">
+                                <td></td>
+                                <td colspan="<?= ($discount > 0) ? 6 : 5 ?>" class="sale-doc-serial-cell">SN: <?= esc($item['serialnumber']) ?></td>
+                            </tr>
+                        <?php endif; ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            
+            <!-- Totals Section -->
+            <div class="sale-doc-totals-wrap">
+                <table class="sale-doc-totals-table">
+                    <tr>
+                        <td class="sale-doc-total-row-label"><?= lang('Sales.sub_total') ?></td>
+                        <td class="sale-doc-total-row-value"><?= to_currency($subtotal) ?></td>
+                    </tr>
+                    
+                    <?php foreach ($taxes as $tax_group_index => $tax): ?>
+                    <tr>
+                        <td class="sale-doc-total-row-label"><?= (float)$tax['tax_rate'] . '% ' . $tax['tax_group'] ?></td>
+                        <td class="sale-doc-total-row-value"><?= to_currency_tax($tax['sale_tax_amount']) ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    
+                    <tr>
+                        <td class="sale-doc-grand-total-label"><?= lang('Sales.total') ?></td>
+                        <td class="sale-doc-grand-total-value"><?= to_currency($total) ?></td>
+                    </tr>
+                    
+                    <?php
+                    foreach ($payments as $payment_id => $payment):
+                        $splitpayment = explode(':', $payment['payment_type']);
+                    ?>
+                    <tr>
+                        <td class="sale-doc-total-row-label"><?= esc($splitpayment[0]) ?></td>
+                        <td class="sale-doc-total-row-value"><?= to_currency($payment['payment_amount']) ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+            
+            <!-- Terms and Barcode -->
+            <div class="sale-doc-footer">
+                <div class="sale-doc-terms">
+                    <?php if (!empty($comments)): ?>
+                        <div class="sale-doc-terms-block"><strong><?= lang('Sales.comments') ?>:</strong> <?= esc($comments) ?></div>
+                    <?php endif; ?>
+                    <div class="sale-doc-terms-block"><?= esc($config['quote_default_comments']) ?></div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons print-hide sale-doc-actions">
+                <button onclick="window.print()" class="btn-action btn-print">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                    </svg>
+                    Print Quote
+                </button>
+                
+                <?php if (isset($customer_email) && !empty($customer_email)): ?>
+                <button onclick="sendEmail()" id="email_button" class="btn-action btn-email btn-email-default">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Email Quote
+                </button>
+                <?php endif; ?>
+                
+                <a href="<?= base_url('sales') ?>" class="btn-action btn-new-sale">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    New Sale
+                </a>
+                
+                <a href="<?= base_url('sales/discard_suspended_sale') ?>" class="btn-action" class="sale-doc-btn-discard">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    Discard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php if (isset($customer_email) && !empty($customer_email)): ?>
+<?= view('sales/partials/document_email_script', [
+    'post_url' => base_url('sales/sendPdf/' . $sale_id_num . '/quote'),
+    'button_label' => '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Email Quote',
+    'auto_send' => !empty($email_receipt),
+]) ?>
 <?php endif; ?>
 
-<?= view('partial/print_receipt', ['print_after_sale' => $print_after_sale, 'selected_printer' => 'invoice_printer']) ?>
-
-<div class="print_hide text-right" id="control_buttons">
-    <a href="javascript:printdoc();">
-        <div class="btn btn-info btn-sm" id="show_print_button"><?= '<span class="glyphicon glyphicon-print">&nbsp;</span>' . lang('Common.print') ?></div>
-    </a>
-    <?php
-    /* This line will allow to print and go back to sales automatically.
-     * echo anchor('sales', '<span class="glyphicon glyphicon-print">&nbsp;</span>' . lang('Common.print'), ['class' => 'btn btn-info btn-sm', 'id' => 'show_print_button', 'onclick' => 'window.print();'));
-     */
-    ?>
-    <?php if (isset($customer_email) && !empty($customer_email)): ?>
-        <a href="javascript:void(0);">
-            <div class="btn btn-info btn-sm" id="show_email_button"><?= '<span class="glyphicon glyphicon-envelope">&nbsp;</span>' . lang('Sales.send_quote') ?></div>
-        </a>
-    <?php endif; ?>
-    <?= anchor('sales', '<span class="glyphicon glyphicon-shopping-cart">&nbsp;</span>' . lang('Sales.register'), ['class' => 'btn btn-info btn-sm', 'id' => 'show_sales_button']) ?>
-    <?= anchor('sales/discardsuspendedsale', '<span class="glyphicon glyphicon-remove">&nbsp;</span>' . lang('Sales.discard'), ['class' => 'btn btn-danger btn-sm', 'id' => 'discard_quote_button']) ?>
-</div>
-
-<div id="page-wrap">
-    <div id="header"><?= lang('Sales.quote') ?></div>
-    <div id="block1">
-        <div id="customer-title">
-            <?php if (isset($customer)) { ?>
-                <div id="customer"><?= nl2br(esc($customer_info)) ?></div>
-            <?php } ?>
-        </div>
-
-        <div id="logo">
-            <?php if ($config['company_logo'] != '') { ?>
-                <img id="image" src="<?= base_url('uploads/' . esc($config['company_logo'], 'url')) ?>" alt="company_logo">
-            <?php } ?>
-            <div>&nbsp;</div>
-            <?php if ($config['receipt_show_company_name']) { ?>
-                <div id="company_name"><?= esc($config['company']) ?></div>
-            <?php } ?>
-        </div>
-    </div>
-
-    <div id="block2">
-        <div id="company-title"><?= nl2br(esc($company_info)) ?></div>
-        <table id="meta">
-            <tr>
-                <td class="meta-head"><?= lang('Sales.quote_number') ?></td>
-                <td><?= esc($quote_number) ?></td>
-            </tr>
-            <tr>
-                <td class="meta-head"><?= lang('Common.date') ?></td>
-                <td><?= esc($transaction_date) ?></td>
-            </tr>
-            <tr>
-                <td class="meta-head"><?= lang('Sales.invoice_total') ?></td>
-                <td><?= to_currency($total) ?></td>
-            </tr>
-        </table>
-    </div>
-
-    <table id="items">
-        <tr>
-            <th><?= lang('Sales.item_number') ?></th>
-            <th><?= lang('Sales.item_name') ?></th>
-            <th><?= lang('Sales.quantity') ?></th>
-            <th><?= lang('Sales.price') ?></th>
-            <th><?= lang('Sales.discount') ?></th>
-            <?php
-            $quote_columns = 6;
-            if ($discount > 0) {
-                $quote_columns = $quote_columns + 1;
-            ?>
-                <th><?= lang('Sales.customer_discount') ?></th>
-            <?php } ?>
-            <th><?= lang('Sales.total') ?></th>
-        </tr>
-
-        <?php
-        foreach ($cart as $line => $item) {
-            if ($item['print_option'] == PRINT_YES) {
-        ?>
-                <tr class="item-row">
-                    <td><?= esc($item['item_number']) ?></td>
-                    <td class="item-name"><?= esc($item['name']) ?></td>
-                    <td class="text-center"><?= to_quantity_decimals($item['quantity']) ?></td>
-                    <td><?= to_currency($item['price']) ?></td>
-                    <td class="text-center"><?= ($item['discount_type'] == FIXED) ? to_currency($item['discount']) : to_decimals($item['discount']) . '%' ?></td>
-                    <?php if ($discount > 0): ?>
-                        <td class="text-center"><?= to_currency($item['discounted_total'] / $item['quantity']) ?></td>
-                    <?php endif; ?>
-                    <td class="u-border-right-solid1px_text-align-right"><?= to_currency($item['discounted_total']) ?></td>
-                </tr>
-
-                <?php if ($item['is_serialized']) { ?>
-                    <tr class="item-row">
-                        <td class="item-name" colspan="<?= $quote_columns - 1 ?>"></td>
-                        <td class="text-center"><?= esc($item['serialnumber'])    // TODO: the variable serialnumber does not meet naming conventions for this project ?></td>
-                    </tr>
-        <?php
-                }
-            }
-        }
-        ?>
-
-        <tr>
-            <td class="blank" colspan="<?= $quote_columns ?>" style="text-align: center;"><?= '&nbsp;' //TODO: align is deprecated. Also should replace the php echo for nbsp with simple html ?></td>
-        </tr>
-
-        <tr>
-            <td colspan="<?= $quote_columns - 3 ?>" class="blank-bottom"> </td>
-            <td colspan="2" class="total-line"><?= lang('Sales.sub_total') ?></td>
-            <td class="total-value" id="subtotal"><?= to_currency($subtotal) ?></td>
-        </tr>
-
-        <?php foreach ($taxes as $tax_group_index => $tax) { ?>
-            <tr>
-                <td colspan="<?= $quote_columns - 3 ?>" class="blank"> </td>
-                <td colspan="2" class="total-line"><?= (float)$tax['tax_rate'] . '% ' . $tax['tax_group'] ?></td>
-                <td class="total-value" id="taxes"><?= to_currency_tax($tax['sale_tax_amount']) ?></td>
-            </tr>
-        <?php } ?>
-
-        <tr>
-            <td colspan="<?= $quote_columns - 3 ?>" class="blank"> </td>
-            <td colspan="2" class="total-line"><?= lang('Sales.total') ?></td>
-            <td class="total-value" id="total"><?= to_currency($total) ?></td>
-        </tr>
-
-        <?php
-        $only_sale_check = false;
-        $show_giftcard_remainder = false;
-
-        foreach ($payments as $payment_id => $payment) {
-            $only_sale_check |= $payment['payment_type'] == lang('Sales.check');
-            $splitpayment = explode(':', $payment['payment_type']);
-            $show_giftcard_remainder |= $splitpayment[0] == lang('Sales.giftcard');
-        ?>
-            <tr>
-                <td colspan="<?= $quote_columns - 3 ?>" class="blank"> </td>
-                <td colspan="2" class="total-line"><?= $splitpayment[0] ?></td>
-                <td class="total-value" id="paid"><?= to_currency($payment['payment_amount']) ?></td>
-            </tr>
-        <?php } ?>
-    </table>
-    <div id="terms">
-        <div id="sale_return_policy">
-            <h5>
-                <span class="u-padding-4pct"><?= empty($comments) ? '' : lang('Sales.comments') . ': ' . esc($comments) ?></span>
-                <span class="u-padding-4pct"><?= esc($config['quote_default_comments']) ?></span>
-            </h5>
-        </div>
-    </div>
-</div>
-
-<script type="text/javascript">
-    $(window).on("load", function() {
-        // Install firefox addon in order to use this plugin
-        if (window.jsPrintSetup) {
-            <?php if (!$config['print_header']) { ?>
-                // Set page header
-                jsPrintSetup.setOption('headerStrLeft', '');
-                jsPrintSetup.setOption('headerStrCenter', '');
-                jsPrintSetup.setOption('headerStrRight', '');
-            <?php } ?>
-
-            <?php if (!$config['print_footer']) { ?>
-                // Set empty page footer
-                jsPrintSetup.setOption('footerStrLeft', '');
-                jsPrintSetup.setOption('footerStrCenter', '');
-                jsPrintSetup.setOption('footerStrRight', '');
-            <?php } ?>
-        }
-    });
+<?php if (!empty($print_after_sale)): ?>
+<script>
+setTimeout(() => window.print(), 500);
 </script>
+<?php endif; ?>
 
-<?= view('partial/footer') ?>
+</body>
+</html>

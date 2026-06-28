@@ -55,6 +55,19 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
             </div>
             
             <div class="d-flex align-items-center gap-2">
+                <?php if (!empty($active_cashup_id)): ?>
+                <a href="<?= base_url('cashups/view/' . (int) $active_cashup_id) ?>" class="pos-cashup-badge" title="<?= esc(lang('Sales.cashup_active_hint')) ?>">
+                    <span class="pos-cashup-badge-dot" aria-hidden="true"></span>
+                    <?= esc(lang('Sales.cashup_active')) ?> #<?= (int) $active_cashup_id ?>
+                </a>
+                <?php elseif (!empty($cashups_allowed)): ?>
+                <a href="<?= base_url('cashups/view/-1') ?>" class="btn-ghost btn-sm pos-cashup-open">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                    <?= esc(lang('Sales.open_cashup')) ?>
+                </a>
+                <?php endif; ?>
                 <button class="btn-ghost btn-sm" onclick="window.location.href='<?= base_url('sales/returnExchange') ?>'">
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
@@ -155,11 +168,11 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                                             <span>×</span>
                                             <span>$<?= number_format($item['price'], 2) ?></span>
                                         </div>
-                                        <a href="<?= base_url("sales/deleteItem/$line") ?>" class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); return confirm('Remove this item?');">
+                                        <button type="button" class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); removeCartItem(<?= $line ?>);">
                                             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                             </svg>
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -179,11 +192,11 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                                 <div class="customer-name"><?= esc($customer ?? 'Customer') ?></div>
                                 <div class="customer-id">ID: <?= esc($customer_id) ?></div>
                             </div>
-                            <a href="<?= base_url('sales/removeCustomer') ?>" class="btn btn-ghost btn-sm">
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="removeCustomer()">
                                 <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
-                            </a>
+                            </button>
                         </div>
                     <?php else: ?>
                         <div class="mb-2">
@@ -239,7 +252,7 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                         <?php if (!empty($payments)): ?>
                             <div class="total-row">
                                 <span class="total-label">Paid</span>
-                                <span class="total-value">$<?= number_format($amount_tendered ?? 0, 2) ?></span>
+                                <span class="total-value">$<?= number_format($payments_total ?? 0, 2) ?></span>
                             </div>
                         <?php endif; ?>
                         
@@ -258,47 +271,65 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                     </div>
                     
                     <!-- Added Payments List -->
-                    <div id="payments_list" class="payments-list-container"></div>
+                    <div id="payments_list" class="payments-list-container">
+                        <?php if (!empty($payments)): ?>
+                            <?php foreach ($payments as $payment_id => $payment): ?>
+                                <div class="payment-item">
+                                    <div class="flex-1">
+                                        <span class="payment-item-method"><?= esc($payment['payment_type']) ?></span>
+                                        <span class="payment-item-amount">$<?= number_format($payment['payment_amount'], 2) ?></span>
+                                    </div>
+                                    <button type="button" class="remove-payment-btn text-danger text-decoration-none" title="Remove" onclick="removePayment('<?= base64url_encode($payment_id) ?>')">
+                                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
                     
                     <!-- Add Payment Form -->
                     <div class="add-payment-card">
+                        <?= form_open("sales/addPayment", ['id' => 'add_payment_form']) ?>
                         <div class="d-flex gap-2 mb-2">
                             <div class="flex-1">
                                 <div class="position-relative">
-                                    <span class="currency-symbol">$</span>
+                                    <span class="currency-symbol" id="payment_amount_symbol">$</span>
                                     <input type="number" 
+                                           name="amount_tendered"
                                            id="payment_amount" 
                                            class="form-control payment-amount-input" 
                                            placeholder="Amount" 
                                            step="0.01" 
-                                           min="0.01">
+                                           value="<?= number_format($amount_due ?? $total ?? 0, 2, '.', '') ?>"
+                                           required>
                                 </div>
                             </div>
                             <div class="flex-1">
-                                <select id="payment_method" class="form-control payment-method-select">
-                                    <option value="Cash">Cash</option>
-                                    <option value="Card">Card</option>
-                                    <option value="Mobile">Mobile</option>
+                                <select id="payment_method" name="payment_type" class="form-control payment-method-select" onchange="toggleGiftCardInput()">
+                                    <?php foreach ($payment_options as $key => $value): ?>
+                                        <option value="<?= esc($key) ?>" <?= ($key == ($selected_payment_type ?? '')) ? 'selected' : '' ?>><?= esc($value) ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
-                            <button type="button" onclick="addPayment()" class="btn btn-primary btn-sm whitespace-nowrap add-payment-btn">
+                            <button type="submit" id="add_payment_btn" class="btn btn-primary btn-sm whitespace-nowrap add-payment-btn">
                                 + Add
                             </button>
                         </div>
                         <!-- Quick Amounts -->
-                        <div class="d-flex gap-1">
+                        <div class="d-flex gap-1" id="quick_amounts_row">
                             <button type="button" onclick="quickPaymentAmount('remaining')" class="btn btn-outline btn-xxs flex-1">Full</button>
                             <button type="button" onclick="quickPaymentAmount(50)" class="btn btn-outline btn-xxs flex-1">$50</button>
                             <button type="button" onclick="quickPaymentAmount(100)" class="btn btn-outline btn-xxs flex-1">$100</button>
                         </div>
+                        <?= form_close() ?>
                     </div>
                 </div>
                 
                 <!-- Action Buttons -->
                 <div class="action-buttons">
                     <?= form_open("sales/complete", ['id' => 'complete_sale_form']) ?>
-                    <input type="hidden" name="payment_type" id="payment_type" value="cash">
-                    <input type="hidden" name="amount_tendered" id="amount_tendered" value="<?= $total ?? 0 ?>">
                     <button type="submit" class="btn btn-success btn-block" <?= empty($cart) ? 'disabled' : '' ?>>
                         <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="align-middle">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -416,8 +447,32 @@ if (itemInput) {
 // Clear cart
 function clearCart() {
     if (confirm('Clear all items from cart?')) {
-        window.location.href = '<?= base_url("sales/cancel") ?>';
+        window.shopsuiteApp.postAction('<?= base_url("sales/cancel") ?>')
+            .then(() => window.location.reload())
+            .catch(err => console.error('Error clearing cart:', err));
     }
+}
+
+function removeCartItem(line) {
+    if (!confirm('Remove this item?')) {
+        return;
+    }
+
+    window.shopsuiteApp.postAction('<?= base_url("sales/deleteItem") ?>/' + line)
+        .then(() => window.location.reload())
+        .catch(err => console.error('Error removing item:', err));
+}
+
+function removeCustomer() {
+    window.shopsuiteApp.postAction('<?= base_url("sales/removeCustomer") ?>')
+        .then(() => window.location.reload())
+        .catch(err => console.error('Error removing customer:', err));
+}
+
+function removePayment(paymentId) {
+    window.shopsuiteApp.postAction('<?= base_url("sales/deletePayment") ?>/' + paymentId)
+        .then(() => window.location.reload())
+        .catch(err => console.error('Error removing payment:', err));
 }
 
 // Suspend sale
@@ -432,13 +487,7 @@ function suspendSale() {
         return;
     }
     
-    fetch('<?= base_url("sales/suspend") ?>', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        }
-    })
-    .then(response => response.text())
+    window.shopsuiteApp.postAction('<?= base_url("sales/suspend") ?>')
     .then(() => {
         window.location.href = '<?= base_url("sales") ?>';
     })
@@ -703,152 +752,104 @@ function closeCustomerModal() {
     }
 }
 
-// Multi-payment system
-let payments = [];
-let saleTotal = 0;
-
-function addPayment() {
-    const amount = parseFloat(document.getElementById('payment_amount').value);
-    const method = document.getElementById('payment_method').value;
-    
-    if (!amount || amount <= 0) {
-        alert('Please enter a valid payment amount');
-        return;
-    }
-    
-    const remaining = getRemainingAmount();
-    if (amount > remaining) {
-        if (!confirm(`Payment amount ($${amount.toFixed(2)}) exceeds remaining balance ($${remaining.toFixed(2)}). Continue?`)) {
-            return;
-        }
-    }
-    
-    payments.push({ method, amount });
-    
-    document.getElementById('payment_amount').value = '';
-    document.getElementById('payment_method').selectedIndex = 0;
-    
-    updatePaymentsList();
-    updateRemainingAmount();
-}
-
-function removePayment(index) {
-    payments.splice(index, 1);
-    updatePaymentsList();
-    updateRemainingAmount();
-}
-
-function updatePaymentsList() {
-    const listEl = document.getElementById('payments_list');
-    
-    if (payments.length === 0) {
-        listEl.innerHTML = '';
-        return;
-    }
-    
-    listEl.innerHTML = payments.map((payment, index) => `
-        <div class="payment-item">
-            <div class="flex-1">
-                <span class="payment-item-method">${payment.method}</span>
-                <span class="payment-item-amount">$${payment.amount.toFixed(2)}</span>
-            </div>
-            <button type="button" onclick="removePayment(${index})" class="remove-payment-btn" title="Remove">
-                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-    `).join('');
-}
-
-function getTotalPayments() {
-    return payments.reduce((sum, p) => sum + p.amount, 0);
-}
+// Handled via PHP now
 
 function getRemainingAmount() {
-    const totalEl = document.querySelector('.total-row-main .total-value');
-    if (!totalEl) return 0;
-    
-    saleTotal = parseFloat(totalEl.textContent.replace('$', '').replace(',', '')) || 0;
-    const paid = getTotalPayments();
-    return Math.max(0, saleTotal - paid);
-}
-
-function updateRemainingAmount() {
-    const remaining = getRemainingAmount();
-    const el = document.getElementById('remaining_amount');
-    
-    if (remaining > 0) {
-        el.textContent = `Due: $${remaining.toFixed(2)}`;
-        el.style.color = 'var(--danger-500)';
-    } else if (remaining === 0) {
-        el.textContent = 'Paid in Full';
-        el.style.color = 'var(--success-500)';
-    } else {
-        el.textContent = `Change: $${Math.abs(remaining).toFixed(2)}`;
-        el.style.color = 'var(--success-500)';
-    }
+    return <?= (float)($amount_due ?? $total ?? 0) ?>;
 }
 
 function quickPaymentAmount(value) {
-    const remaining = getRemainingAmount();
     let amount;
-    
     if (value === 'remaining') {
-        amount = remaining;
+        amount = getRemainingAmount();
     } else {
-        amount = value;
+        amount = parseFloat(value);
     }
-    
     document.getElementById('payment_amount').value = amount.toFixed(2);
     document.getElementById('payment_amount').focus();
 }
 
-// Before form submit, add payments to form
+function toggleGiftCardInput() {
+    const isGiftCard = document.getElementById('payment_method').value === '<?= lang('Sales.giftcard') ?>';
+    const amountInput = document.getElementById('payment_amount');
+    const symbol = document.getElementById('payment_amount_symbol');
+    const quickAmounts = document.getElementById('quick_amounts_row');
+    
+    if (isGiftCard) {
+        amountInput.type = 'text';
+        amountInput.placeholder = 'Gift Card Number';
+        amountInput.removeAttribute('step');
+        amountInput.removeAttribute('min');
+        amountInput.value = '';
+        if (symbol) symbol.style.display = 'none';
+        if (quickAmounts) quickAmounts.style.display = 'none';
+    } else {
+        amountInput.type = 'number';
+        amountInput.placeholder = 'Amount';
+        amountInput.step = '0.01';
+        amountInput.min = '0.01';
+        amountInput.value = getRemainingAmount().toFixed(2);
+        if (symbol) symbol.style.display = 'inline-block';
+        if (quickAmounts) quickAmounts.style.display = 'flex';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('complete_sale_form');
+    const form = document.getElementById('add_payment_form');
     if (form) {
         form.addEventListener('submit', function(e) {
-            if (payments.length === 0) {
-                e.preventDefault();
-                alert('Please add at least one payment method');
-                return false;
-            }
+            e.preventDefault();
+            const btn = document.getElementById('add_payment_btn');
+            const ogText = btn.innerHTML;
+            btn.innerHTML = '...';
+            btn.disabled = true;
             
-            const remaining = getRemainingAmount();
-            if (remaining > 0) {
-                e.preventDefault();
-                if (!confirm(`There is still $${remaining.toFixed(2)} remaining. Complete sale anyway?`)) {
-                    return false;
-                }
-            }
-            
-            // Remove existing payment inputs
-            form.querySelectorAll('input[name^="payment"]').forEach(el => el.remove());
-            
-            // Add payment data to form
-            payments.forEach((payment, index) => {
-                const methodInput = document.createElement('input');
-                methodInput.type = 'hidden';
-                methodInput.name = `payment_${index}_type`;
-                methodInput.value = payment.method;
-                form.appendChild(methodInput);
-                
-                const amountInput = document.createElement('input');
-                amountInput.type = 'hidden';
-                amountInput.name = `payment_${index}_amount`;
-                amountInput.value = payment.amount.toFixed(2);
-                form.appendChild(amountInput);
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(() => {
+                window.location.reload();
+            })
+            .catch(err => {
+                console.error('Error adding payment:', err);
+                btn.innerHTML = ogText;
+                btn.disabled = false;
             });
         });
     }
 });
 
-// Focus search on load and initialize payments
+// Before form submit logic check
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('complete_sale_form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const hasPayments = document.querySelectorAll('.payment-item').length > 0;
+            const remaining = getRemainingAmount();
+            
+            if (remaining > 0 && !hasPayments && <?= (int)$cash_mode ?> !== 1) {
+                // Cash_mode = 0 means they haven't explicitly set full amount as cash fallback
+                // For modern we allow it if they proceed, but maybe warn them
+                if (!confirm(`There is still $${remaining.toFixed(2)} remaining. Complete sale anyway?`)) {
+                    e.preventDefault();
+                    return false;
+                }
+            } else if (remaining > 0) {
+                 if (!confirm(`There is still $${remaining.toFixed(2)} remaining. Complete sale anyway?`)) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        });
+    }
+});
+
+// Focus search on load
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('item')?.focus();
-    updatePaymentsList();
-    updateRemainingAmount();
+    toggleGiftCardInput();
 });
 </script>
 

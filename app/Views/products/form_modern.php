@@ -91,10 +91,12 @@ $is_edit = isset($item_info) && $item_info->item_id > 0;
                             </div>
                         </div>
                         
+                        <?php foreach ($stock_locations as $location_id => $location): ?>
                         <div class="form-group">
-                            <label for="quantity" class="form-label">Quantity</label>
-                            <input type="number" class="form-control" id="quantity" name="quantity" step="1" min="0" value="<?= esc($item_info->quantity ?? '0') ?>">
+                            <label for="quantity_<?= $location_id ?>" class="form-label">Quantity - <?= esc($location['location_name']) ?></label>
+                            <input type="number" class="form-control" id="quantity_<?= $location_id ?>" name="quantity_<?= $location_id ?>" step="1" min="0" value="<?= esc($location['quantity'] ?? '0') ?>">
                         </div>
+                        <?php endforeach; ?>
                         
                         <div class="form-group">
                             <label for="reorder_level" class="form-label">Reorder Level</label>
@@ -167,12 +169,14 @@ document.getElementById('itemForm').addEventListener('submit', function(e) {
     }
     
     const formData = new FormData(this);
+    formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
     
     fetch(this.action, {
         method: 'POST',
         body: formData,
         headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
         }
     })
     .then(response => response.json())
@@ -209,7 +213,33 @@ function deleteItem() {
             'Delete Item',
             'Are you sure you want to delete this item? This action cannot be undone.',
             function() {
-                window.location.href = '<?= base_url("items/delete/" . ($item_info->item_id ?? "")) ?>';
+                const payload = { ids: [<?= $item_info->item_id ?? "''" ?>] };
+                payload['<?= csrf_token() ?>'] = '<?= csrf_hash() ?>';
+
+                fetch(`<?= base_url("products/delete") ?>`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.shopsuiteApp.showToast('Success', 'Item deleted successfully', 'success');
+                        setTimeout(() => {
+                            window.location.href = '<?= base_url("products") ?>';
+                        }, 1000);
+                    } else {
+                        window.shopsuiteApp.showToast('Error', data.message || 'Failed to delete item', 'error');
+                    }
+                })
+                .catch(error => {
+                    window.shopsuiteApp.showToast('Error', 'An error occurred', 'error');
+                    console.error('Error:', error);
+                });
             }
         );
     }

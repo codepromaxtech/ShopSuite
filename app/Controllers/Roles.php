@@ -117,6 +117,8 @@ class Roles extends Secure_Controller
         }
 
         if ($this->role->save_role_permissions($role_id, $permissions_data)) {
+            $this->sync_employee_grants_for_role($role_id);
+
             echo json_encode([
                 'success' => true,
                 'message' => $message,
@@ -129,6 +131,25 @@ class Roles extends Secure_Controller
             ]);
         }
         exit;
+    }
+
+    /**
+     * Refresh grants for all employees assigned to a role.
+     */
+    private function sync_employee_grants_for_role(int $role_id): void
+    {
+        $employee = model(\App\Models\Employee::class);
+        $prefix = $this->role->db->getPrefix();
+        $employees = $this->role->db->table($prefix . 'employees')
+            ->select('person_id')
+            ->where('role_id', $role_id)
+            ->where('deleted', 0)
+            ->get()
+            ->getResultArray();
+
+        foreach ($employees as $row) {
+            $employee->sync_grants_from_role((int) $row['person_id'], $role_id);
+        }
     }
 
     /**

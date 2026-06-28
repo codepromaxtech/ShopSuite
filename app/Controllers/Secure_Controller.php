@@ -44,6 +44,22 @@ class Secure_Controller extends BaseController
             exit();
         }
 
+        $this->session = session();
+
+        if ($this->session->get('force_password_change')) {
+            $router = Services::router();
+            $controller = strtolower(class_basename($router->controllerName()));
+            $method = $router->methodName();
+            $allowed = ($controller === 'home' && in_array($method, ['getChangePassword', 'postSave', 'postSavePassword', 'getLogout'], true))
+                || ($controller === 'login' && $method === 'getLogout');
+
+            if (!$allowed) {
+                $person_id = (int) $this->session->get('person_id');
+                header('Location:' . base_url("home/changePassword/$person_id"));
+                exit();
+            }
+        }
+
         $logged_in_employee_info = $this->employee->get_logged_in_employee_info();
         if (
             !$this->employee->has_module_grant($module_id, $logged_in_employee_info->person_id)
@@ -54,7 +70,9 @@ class Secure_Controller extends BaseController
         }
 
         // Load up global global_view_data visible to all the loaded views
-        $this->session = session();
+        if (!isset($this->session)) {
+            $this->session = session();
+        }
         if ($menu_group == null) {
             $menu_group = $this->session->get('menu_group');
         } else {

@@ -14,122 +14,20 @@
  * @var string $barcode
  * @var array $config
  */
-?>
 
-<?= view('partial/header') ?>
-
-<?php
+// Check for errors
 if (isset($error_message)) {
-    echo '<div class="alert alert-dismissible alert-danger">' . esc($error_message) . '</div>';
+    echo '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Transaction Failed</title><link rel="icon" type="image/x-icon" href="' . base_url('favicon.ico') . '"></head><body class="u-margin-0_padding-0_font-family--apple-1">';
+    echo '<div class="u-display-flex_align-items-center_justif">';
+    echo '<div class="u-max-width-500px_padding-40px_border-ra">';
+    echo '<svg class="u-margin-0auto20px" width="80" height="80" fill="none" stroke="#dc2626" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+    echo '<h1 class="u-margin-bottom-16px">Transaction Failed</h1>';
+    echo '<p class="u-margin-bottom-24px">' . esc($error_message) . '</p>';
+    echo '<a class="u-padding-12px24px_border-radius-8px_tex" style="background: var(--info-600); color: white; display: inline-block; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600;" href="' . base_url('receivings') . '">Back to Receivings</a>';
+    echo '</div></div></body></html>';
     exit;
 }
 
-echo view('partial/print_receipt', ['print_after_sale', $print_after_sale, 'selected_printer' => 'receipt_printer']) ?>
-
-<div class="print_hide text-right" id="control_buttons">
-    <a href="javascript:printdoc();">
-        <div class="btn btn-info btn-sm" id="show_print_button"><?= '<span class="glyphicon glyphicon-print">&nbsp;</span>' . lang('Common.print') ?></div>
-    </a>
-    <?= anchor("receivings", '<span class="glyphicon glyphicon-save">&nbsp;</span>' . lang('Receivings.register'), ['class' => 'btn btn-info btn-sm', 'id' => 'show_sales_button']) ?>
-</div>
-
-<div id="receipt_wrapper">
-    <div id="receipt_header">
-        <?php if ($config['company_logo'] != '') { ?>
-            <div id="company_name">
-                <img id="image" src="<?= base_url('uploads/' . esc($config['company_logo'], 'url')) ?>" alt="company_logo">
-            </div>
-        <?php } ?>
-
-        <?php if ($config['receipt_show_company_name']) { ?>
-            <div id="company_name"><?= esc($config['company']) ?></div>
-        <?php } ?>
-
-        <div id="company_address"><?= nl2br(esc($config['address'])) ?></div>
-        <div id="company_phone"><?= esc($config['phone']) ?></div>
-        <div id="sale_receipt"><?= lang('Receivings.receipt') ?></div>
-        <div id="sale_time"><?= esc($transaction_time) ?></div>
-    </div>
-
-    <div id="receipt_general_info">
-        <?php if (isset($supplier)) { ?>
-            <div id="customer"><?= lang('Suppliers.supplier') . esc(": $supplier") ?></div>
-        <?php } ?>
-        <div id="sale_id"><?= lang('Receivings.id') . ": $receiving_id" ?></div>
-        <?php if (!empty($reference)) { ?>
-            <div id="reference"><?= lang('Receivings.reference') . esc(": $reference") ?></div>
-        <?php } ?>
-        <div id="employee"><?= lang('Employees.employee') . esc(": $employee") ?></div>
-    </div>
-
-    <table id="receipt_items">
-        <tr>
-            <th class="u-width-40pct"><?= lang('Items.item') ?></th>
-            <th class="u-width-20pct"><?= lang('Common.price') ?></th>
-            <th class="u-width-20pct"><?= lang('Sales.quantity') ?></th>
-            <th class="u-width-15pct_text-align-right"><?= lang('Sales.total') ?></th>
-        </tr>
-
-        <?php foreach (array_reverse($cart, true) as $line => $item) { ?>
-            <tr>
-                <td><?= esc($item['name'] . ' ' . $item['attribute_values']) ?></td>
-                <td><?= to_currency($item['price']) ?></td>
-                <td><?= to_quantity_decimals($item['quantity']) . ' ' . ($show_stock_locations ? ' [' . esc($item['stock_name']) . ']' : '') ?>&nbsp;&nbsp;&nbsp;x <?= $item['receiving_quantity'] != 0 ? to_quantity_decimals($item['receiving_quantity']) : 1 ?></td>
-                <td><div class="total-value"><?= to_currency($item['total']) ?></div></td>
-            </tr>
-            <tr>
-                <td><?= esc($item['serialnumber']) ?></td>
-            </tr>
-            <?php if ($item['discount'] > 0) { ?>
-                <tr>
-                    <?php if ($item['discount_type'] == FIXED) { ?>
-                        <td colspan="3" class="discount"><?= to_currency($item['discount']) . ' ' . lang('Sales.discount') ?></td>
-                    <?php } elseif ($item['discount_type'] == PERCENT) { ?>
-                        <td colspan="3" class="discount"><?= to_decimals($item['discount']) . ' ' . lang('Sales.discount_included') ?></td>
-                    <?php } ?>
-                </tr>
-            <?php } ?>
-        <?php } ?>
-        <tr>
-            <td class="u-text-align-right_border-top-2pxsolidhe" colspan="3"><?= lang('Sales.total') ?></td>
-            <td class="u-border-top-2pxsolidhex000000">
-                <div class="total-value"><?= to_currency($total) ?></div>
-            </td>
-        </tr>
-        <?php if ($mode != 'requisition') { ?>
-            <tr>
-                <td colspan="3" class="text-right"><?= lang('Sales.payment') ?></td>
-                <td>
-                    <div class="total-value"><?= esc($payment_type) ?></div>
-                </td>
-            </tr>
-
-            <?php if (isset($amount_change)) { ?>
-                <tr>
-                    <td colspan="3" class="text-right"><?= lang('Sales.amount_tendered') ?></td>
-                    <td>
-                        <div class="total-value"><?= to_currency($amount_tendered) ?></div>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td colspan="3" class="text-right"><?= lang('Sales.change_due') ?></td>
-                    <td>
-                        <div class="total-value"><?= $amount_change ?></div>
-                    </td>
-                </tr>
-            <?php } ?>
-        <?php } ?>
-    </table>
-
-    <div id="sale_return_policy">
-        <?= nl2br(esc($config['return_policy'])) ?>
-    </div>
-
-    <div id="barcode">
-        <?= $barcode ?><br>
-        <?= $receiving_id ?>
-    </div>
-</div>
-
-<?= view('partial/footer') ?>
+// Use modern receipt view
+echo view('receivings/receipt_modern', get_defined_vars());
+?>

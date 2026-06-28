@@ -208,7 +208,7 @@
     // Validation and submit handling
     $(document).ready(function() {
         $('#item').autocomplete({
-            source: '<?= "items/suggest" ?>',
+            source: '<?= "products/suggest" ?>',
             minChars: 0,
             autoFocus: false,
             delay: 10,

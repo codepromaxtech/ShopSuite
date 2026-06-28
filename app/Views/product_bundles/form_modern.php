@@ -227,7 +227,7 @@ function addKitItem() {
                     }
                     
                     searchTimeout = setTimeout(() => {
-                        fetch('<?= base_url("items/suggest_search") ?>', {
+                        fetch('<?= base_url("products/suggest_search") ?>', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                             body: 'term=' + encodeURIComponent(query)

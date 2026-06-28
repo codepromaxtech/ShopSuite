@@ -26,7 +26,20 @@ class Tax_codes extends Secure_Controller
      */
     public function getIndex(): void
     {
-        echo view('taxes/tax_codes', $this->get_data());
+        $person_id = $this->employee->get_logged_in_employee_info()->person_id;
+        if ($this->employee->has_grant('taxes', $person_id)) {
+            redirect()->to(site_url('taxes?tab=codes'))->send();
+            exit;
+        }
+
+        echo view('taxes/submodule_list_modern', [
+            'title'            => 'Tax Codes',
+            'rows'             => $this->tax_code->get_all()->getResultArray(),
+            'name_field'       => 'tax_code',
+            'id_field'         => 'tax_code_id',
+            'add_url'          => base_url('tax_codes/view/-1'),
+            'edit_url_prefix'  => base_url('tax_codes/view/'),
+        ]);
     }
 
     /**

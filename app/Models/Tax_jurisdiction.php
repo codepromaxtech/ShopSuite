@@ -13,7 +13,7 @@ use stdClass;
 class Tax_jurisdiction extends Model
 {
     protected $table = 'tax_jurisdictions';
-    protected $primaryKey = 'cashup_id';
+    protected $primaryKey = 'jurisdiction_id';
     protected $useAutoIncrement = true;
     protected $useSoftDeletes = false;
     protected $allowedFields = [

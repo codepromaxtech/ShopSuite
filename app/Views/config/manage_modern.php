@@ -37,7 +37,7 @@ echo view('layouts/modern_header', ['title' => $title]);
             </div>
         </div>
         <div class="config-category-links">
-            <a href="<?= base_url('config/company') ?>" class="config-link">
+            <a href="<?= base_url('config/info') ?>" class="config-link">
                 <i class="bi bi-building"></i>
                 <span>Company Information</span>
                 <i class="bi bi-chevron-right"></i>
@@ -72,14 +72,14 @@ echo view('layouts/modern_header', ['title' => $title]);
             </div>
         </div>
         <div class="config-category-links">
-            <a href="<?= base_url('config/sales') ?>" class="config-link">
+            <a href="<?= base_url('config/general') ?>" class="config-link">
                 <i class="bi bi-cart"></i>
                 <span>Sales Options</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
-            <a href="<?= base_url('config/payment') ?>" class="config-link">
+            <a href="<?= base_url('config/table') ?>" class="config-link">
                 <i class="bi bi-credit-card"></i>
-                <span>Payment Methods</span>
+                <span>Table Settings</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
             <a href="<?= base_url('config/invoice') ?>" class="config-link">
@@ -87,7 +87,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                 <span>Invoice Settings</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
-            <a href="<?= base_url('config/rewards') ?>" class="config-link">
+            <a href="<?= base_url('config/reward') ?>" class="config-link">
                 <i class="bi bi-gift"></i>
                 <span>Rewards Program</span>
                 <i class="bi bi-chevron-right"></i>
@@ -110,16 +110,6 @@ echo view('layouts/modern_header', ['title' => $title]);
             <a href="<?= base_url('config/stock') ?>" class="config-link">
                 <i class="bi bi-box"></i>
                 <span>Stock Settings</span>
-                <i class="bi bi-chevron-right"></i>
-            </a>
-            <a href="<?= base_url('config/locations') ?>" class="config-link">
-                <i class="bi bi-geo-alt"></i>
-                <span>Stock Locations</span>
-                <i class="bi bi-chevron-right"></i>
-            </a>
-            <a href="<?= base_url('config/categories') ?>" class="config-link">
-                <i class="bi bi-tags"></i>
-                <span>Categories</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
             <a href="<?= base_url('config/barcode') ?>" class="config-link">
@@ -152,9 +142,9 @@ echo view('layouts/modern_header', ['title' => $title]);
                 <span>Email Settings</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
-            <a href="<?= base_url('config/security') ?>" class="config-link">
-                <i class="bi bi-lock"></i>
-                <span>Security Settings</span>
+            <a href="<?= base_url('config/message') ?>" class="config-link">
+                <i class="bi bi-chat-quote"></i>
+                <span>SMS Settings</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
             <a href="<?= base_url('config/system') ?>" class="config-link">

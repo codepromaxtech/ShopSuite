@@ -2,8 +2,10 @@
 
 namespace App\Controllers;
 
+use App\Libraries\Cashup_lib;
 use App\Models\Cashup;
 use App\Models\Expense;
+use App\Models\Sale;
 use App\Models\Reports\Summary_payments;
 use Config\ShopSuite;
 use Config\Services;
@@ -124,7 +126,18 @@ class Cashups extends Secure_Controller
             // The closed amount starts with the open amount -/+ any trasferred amount
             $cash_ups_info->closed_amount_cash = $cash_ups_info->open_amount_cash + $cash_ups_info->transfer_amount_cash;
 
-            // If it's date mode only and not date & time truncate the open and end date to date only
+            $used_cashup_link = false;
+            if ($cash_ups_info->cashup_id != NEW_ENTRY && $this->db->fieldExists('cashup_id', 'sales')) {
+                $payment_summary = model(Sale::class)->get_payment_summary_by_cashup((int) $cash_ups_info->cashup_id);
+                if ($payment_summary['has_sales']) {
+                    $used_cashup_link = true;
+                    $cash_ups_info->closed_amount_cash += $payment_summary['cash'];
+                    $cash_ups_info->closed_amount_due += $payment_summary['due'];
+                    $cash_ups_info->closed_amount_card += $payment_summary['card'];
+                    $cash_ups_info->closed_amount_check += $payment_summary['check'];
+                }
+            }
+
             if (empty($this->config['date_or_time_format'])) {
                 if ($cash_ups_info->open_date != null) {
                     $start_date = substr($cash_ups_info->open_date, 0, 10);
@@ -136,7 +149,6 @@ class Cashups extends Secure_Controller
                 } else {
                     $end_date = null;
                 }
-                // Search for all the payments given the time range
                 $inputs = [
                     'start_date'  => $start_date,
                     'end_date'    => $end_date,
@@ -144,7 +156,6 @@ class Cashups extends Secure_Controller
                     'location_id' => 'all'
                 ];
             } else {
-                // Search for all the payments given the time range
                 $inputs = [
                     'start_date'  => $cash_ups_info->open_date,
                     'end_date'    => $cash_ups_info->close_date,
@@ -153,27 +164,27 @@ class Cashups extends Secure_Controller
                 ];
             }
 
-            // Get all the transactions payment summaries
-            $reports_data = $this->summary_payments->getData($inputs);
+            if (!$used_cashup_link) {
+                $reports_data = $this->summary_payments->getData($inputs);
 
-            foreach ($reports_data as $row) {
-                if ($row['trans_group'] == lang('Reports.trans_payments')) {
-                    if ($row['trans_type'] == lang('Sales.cash')) {
-                        $cash_ups_info->closed_amount_cash += $row['trans_amount'];
-                    } elseif ($row['trans_type'] == lang('Sales.due')) {
-                        $cash_ups_info->closed_amount_due += $row['trans_amount'];
-                    } elseif (
-                        $row['trans_type'] == lang('Sales.debit') ||
-                        $row['trans_type'] == lang('Sales.credit')
-                    ) {
-                        $cash_ups_info->closed_amount_card += $row['trans_amount'];
-                    } elseif ($row['trans_type'] == lang('Sales.check')) {
-                        $cash_ups_info->closed_amount_check += $row['trans_amount'];
+                foreach ($reports_data as $row) {
+                    if ($row['trans_group'] == lang('Reports.trans_payments')) {
+                        if ($row['trans_type'] == lang('Sales.cash')) {
+                            $cash_ups_info->closed_amount_cash += $row['trans_amount'];
+                        } elseif ($row['trans_type'] == lang('Sales.due')) {
+                            $cash_ups_info->closed_amount_due += $row['trans_amount'];
+                        } elseif (
+                            $row['trans_type'] == lang('Sales.debit') ||
+                            $row['trans_type'] == lang('Sales.credit')
+                        ) {
+                            $cash_ups_info->closed_amount_card += $row['trans_amount'];
+                        } elseif ($row['trans_type'] == lang('Sales.check')) {
+                            $cash_ups_info->closed_amount_check += $row['trans_amount'];
+                        }
                     }
                 }
             }
 
-            // Lookup expenses paid in cash
             $filters = [
                 'only_cash'   => true,
                 'only_due'    => false,
@@ -239,10 +250,20 @@ class Cashups extends Secure_Controller
         ];
 
         if ($this->cashup->save_value($cash_up_data, $cashup_id)) {
+            $cashup_lib = new Cashup_lib();
+
             // New cashup_id
             if ($cashup_id == NEW_ENTRY) {
+                $cashup_lib->set_active_cashup_id((int) $cash_up_data['cashup_id']);
                 echo json_encode(['success' => true, 'message' => lang('Cashups.successful_adding'), 'id' => $cash_up_data['cashup_id']]);
             } else { // Existing Cashup
+                $is_closed = parse_decimals($this->request->getPost('closed_amount_cash')) != 0
+                    || parse_decimals($this->request->getPost('closed_amount_due')) != 0
+                    || parse_decimals($this->request->getPost('closed_amount_card')) != 0
+                    || parse_decimals($this->request->getPost('closed_amount_check')) != 0;
+                if ($is_closed) {
+                    $cashup_lib->clear_if_active((int) $cashup_id);
+                }
                 echo json_encode(['success' => true, 'message' => lang('Cashups.successful_updating'), 'id' => $cashup_id]);
             }
         } else { // Failure

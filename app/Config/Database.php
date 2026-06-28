@@ -27,8 +27,8 @@ class Database extends Config
     public array $default = [
         'DSN'          => '',
         'hostname'     => 'localhost',
-        'username'     => 'admin',
-        'password'     => 'pointofsale',
+        'username'     => 'shopsuite',
+        'password'     => 'shopsuite@2024',
         'database'     => 'shopsuite',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => 'shopsuite_',

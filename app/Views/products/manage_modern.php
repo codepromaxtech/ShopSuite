@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function loadStats() {
     // Fetch stats from API
-    fetch('<?= base_url("items/stats") ?>')
+    fetch('<?= base_url("products/stats") ?>')
         .then(response => response.json())
         .then(data => {
             const totalEl = document.getElementById('totalItems');
@@ -123,7 +123,7 @@ function loadStats() {
 function initializeDataTable() {
     itemsTable = new ModernDataTable('#itemsTable', {
         ajax: {
-            url: '<?= base_url("items/search") ?>',
+            url: '<?= base_url("products/search") ?>',
             dataSrc: 'rows'
         },
         columns: [
@@ -185,11 +185,11 @@ function initializeDataTable() {
 }
 
 function addItem() {
-    window.location.href = '<?= base_url("items/view/-1") ?>';
+    window.location.href = '<?= base_url("products/view/-1") ?>';
 }
 
 function editItem(item) {
-    window.location.href = `<?= base_url("items/view") ?>/${item.item_id}`;
+    window.location.href = `<?= base_url("products/view") ?>/${item.item_id}`;
 }
 
 function deleteItem(item) {
@@ -198,13 +198,18 @@ function deleteItem(item) {
             'Delete Item',
             `Are you sure you want to delete ${item.name}? This action cannot be undone.`,
             function() {
-                fetch(`<?= base_url("items/delete") ?>`, {
+                // CSRF Token payload injection
+                const payload = { ids: [item.item_id] };
+                payload['<?= csrf_token() ?>'] = '<?= csrf_hash() ?>';
+
+                fetch(`<?= base_url("products/delete") ?>`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
                     },
-                    body: JSON.stringify({ ids: [item.item_id] })
+                    body: JSON.stringify(payload)
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -228,6 +233,7 @@ function importItems() {
     if (window.shopsuiteApp) {
         const modalHtml = `
             <form class="u-padding-space-4" id="import_form" enctype="multipart/form-data">
+                <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
                 <div class="form-group">
                     <label class="form-label">Select CSV File</label>
                     <input type="file" 
@@ -283,7 +289,7 @@ function importItems() {
                     window.shopsuiteApp.showLoading('Importing items...');
                 }
                 
-                fetch('<?= base_url("items/excel_import") ?>', {
+                fetch('<?= base_url("products/excel_import") ?>', {
                     method: 'POST',
                     body: formData,
                     headers: {

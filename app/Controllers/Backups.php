@@ -35,6 +35,23 @@ class Backups extends Secure_Controller
         $created_by = $this->session->get('person_id') ?? 1;
 
         $result = $this->backup->create_backup('manual', $created_by, $notes);
+
+        $notification_lib = new \App\Libraries\Notification_lib();
+        if (!empty($result['success'])) {
+            $notification_lib->notify(
+                (int) $created_by,
+                'Backup Created',
+                $result['message'] ?? 'Database backup completed successfully.',
+                site_url('backups')
+            );
+        } else {
+            $notification_lib->notify_by_permission(
+                'backups',
+                'Backup Failed',
+                $result['message'] ?? 'Database backup failed.',
+                site_url('backups')
+            );
+        }
         
         echo json_encode($result);
         exit;

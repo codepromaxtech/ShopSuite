@@ -82,11 +82,31 @@ $is_edit = isset($person_info) && $person_info->person_id > 0;
                         
                         <div class="form-group">
                             <label for="password" class="form-label <?= !$is_edit ? 'form-label-required' : '' ?>">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" <?= !$is_edit ? 'required' : '' ?>>
+                            <input type="password" class="form-control" id="password" name="password" <?= !$is_edit ? 'required minlength="8"' : 'minlength="8"' ?>>
                             <?php if ($is_edit): ?>
                                 <span class="form-help">Leave blank to keep current password</span>
+                            <?php else: ?>
+                                <span class="form-help">Minimum 8 characters</span>
                             <?php endif; ?>
                         </div>
+
+                        <?php if (!empty($roles)): ?>
+                        <div class="form-group sm:col-span-2">
+                            <label for="role_id" class="form-label">Role</label>
+                            <select class="form-control form-select" id="role_id" name="role_id" onchange="document.getElementById('sync_role_grants').checked = true;">
+                                <option value="">— Custom permissions —</option>
+                                <?php foreach ($roles as $role): ?>
+                                    <option value="<?= (int) $role->role_id ?>" <?= (isset($selected_role_id) && (int) $selected_role_id === (int) $role->role_id) ? 'selected' : '' ?>>
+                                        <?= esc($role->role_name) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <label class="form-check u-margin-top-space-2">
+                                <input type="checkbox" class="form-check-input" id="sync_role_grants" name="sync_role_grants" value="1" checked>
+                                <span class="form-check-label">Apply role permissions on save</span>
+                            </label>
+                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

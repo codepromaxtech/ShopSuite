@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Module;
+use App\Models\Role;
 use Config\Services;
 
 /**
@@ -124,7 +125,43 @@ class Employees extends Persons
         }
         $data['all_subpermissions'] = $permissions;
 
+        $roleModel = model(Role::class);
+        $data['roles'] = $roleModel->findAll();
+        $data['selected_role_id'] = $person_info->role_id ?? null;
+
         echo view('employees/form_modern', $data);
+    }
+
+    /**
+     * Build grants array from POST data (supports legacy and modern form field names).
+     */
+    private function build_grants_from_request(): array
+    {
+        $grants_array = [];
+
+        foreach ($this->module->get_all_permissions()->getResult() as $permission) {
+            $grant = $this->request->getPost('grant_' . $permission->permission_id);
+
+            if ($grant === $permission->permission_id) {
+                $grants_array[] = [
+                    'permission_id' => $permission->permission_id,
+                    'menu_group'    => $this->request->getPost('menu_group_' . $permission->permission_id) ?: 'both',
+                ];
+            }
+        }
+
+        $grantsFromModernForm = $this->request->getPost('grants');
+        if (!empty($grantsFromModernForm) && is_array($grantsFromModernForm)) {
+            $grants_array = [];
+            foreach ($grantsFromModernForm as $permission_id) {
+                $grants_array[] = [
+                    'permission_id' => $permission_id,
+                    'menu_group'    => 'both',
+                ];
+            }
+        }
+
+        return $grants_array;
     }
 
     /**
@@ -132,9 +169,32 @@ class Employees extends Persons
      */
     public function postSave(int $employee_id = NEW_ENTRY): void
     {
-        $first_name = $this->request->getPost('first_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);    // TODO: duplicated code
+        $validation = Services::validation();
+        $rules = [
+            'first_name' => 'required|min_length[1]|max_length[255]',
+            'last_name'  => 'required|min_length[1]|max_length[255]',
+            'username'   => 'required|min_length[1]|max_length[255]',
+            'email'      => 'permit_empty|valid_email|max_length[255]',
+        ];
+
+        if ($employee_id === NEW_ENTRY) {
+            $rules['password'] = 'required|min_length[8]';
+        } else {
+            $rules['password'] = 'permit_empty|min_length[8]';
+        }
+
+        if (!$this->validate($rules)) {
+            echo json_encode([
+                'success' => false,
+                'message' => implode(' ', $validation->getErrors()),
+            ]);
+
+            return;
+        }
+
+        $first_name = $this->request->getPost('first_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $last_name = $this->request->getPost('last_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $email = strtolower($this->request->getPost('email', FILTER_SANITIZE_EMAIL));
+        $email = strtolower($this->request->getPost('email', FILTER_SANITIZE_EMAIL) ?: '');
 
         // format first and last name properly
         $first_name = $this->nameize($first_name);
@@ -155,35 +215,47 @@ class Employees extends Persons
             'comments'     => $this->request->getPost('comments', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
         ];
 
-        $grants_array = [];
-        foreach ($this->module->get_all_permissions()->getResult() as $permission) {
-            $grants = [];
-            $grant = $this->request->getPost('grant_' . $permission->permission_id) != null ? $this->request->getPost('grant_' . $permission->permission_id, FILTER_SANITIZE_FULL_SPECIAL_CHARS) : '';
+        $grants_array = $this->build_grants_from_request();
 
-            if ($grant == $permission->permission_id) {
-                $grants['permission_id'] = $permission->permission_id;
-                $grants['menu_group'] = $this->request->getPost('menu_group_' . $permission->permission_id) != null ? $this->request->getPost('menu_group_' . $permission->permission_id, FILTER_SANITIZE_FULL_SPECIAL_CHARS) : '--';
-                $grants_array[] = $grants;
+        $role_id = $this->request->getPost('role_id', FILTER_SANITIZE_NUMBER_INT);
+        $role_id = !empty($role_id) ? (int) $role_id : null;
+
+        if ($role_id !== null && ($this->request->getPost('sync_role_grants') || empty($grants_array))) {
+            $grants_array = [];
+            $prefix = $this->employee->db->getPrefix();
+            $rolePerms = $this->employee->db->table($prefix . 'role_permissions')
+                ->where('role_id', $role_id)
+                ->get()
+                ->getResultArray();
+            foreach ($rolePerms as $perm) {
+                $grants_array[] = [
+                    'permission_id' => $perm['permission_id'],
+                    'menu_group'    => $perm['menu_group'] ?? 'home',
+                ];
             }
         }
 
         // Password has been changed OR first time password set
         if (!empty($this->request->getPost('password')) && ENVIRONMENT != 'testing') {
-            $exploded = explode(":", $this->request->getPost('language', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+            $exploded = explode(":", $this->request->getPost('language', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'en:english');
             $employee_data = [
                 'username'      => $this->request->getPost('username', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
                 'password'      => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
                 'hash_version'  => 2,
-                'language_code' => $exploded[0],
-                'language'      => $exploded[1]
+                'language_code' => $exploded[0] ?? 'en',
+                'language'      => $exploded[1] ?? 'english',
             ];
-        } else { // Password not changed
-            $exploded = explode(":", $this->request->getPost('language', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+        } else {
+            $exploded = explode(":", $this->request->getPost('language', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'en:english');
             $employee_data = [
                 'username'      => $this->request->getPost('username', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-                'language_code' => $exploded[0],
-                'language'      => $exploded[1]
+                'language_code' => $exploded[0] ?? 'en',
+                'language'      => $exploded[1] ?? 'english',
             ];
+        }
+
+        if ($role_id !== null) {
+            $employee_data['role_id'] = $role_id;
         }
 
         if ($this->employee->save_employee($person_data, $employee_data, $grants_array, $employee_id)) {

@@ -42,9 +42,10 @@ class Sms_lib
         }
         
         // make sure passed string is url encoded
-        $message = rawurlencode($message);
+        $messageUrlEncoded = rawurlencode($message);
 
         // Add call to send a message via 3rd party API here
+        log_message('info', "SMS Stub: Sending message to $phone with payload: $message");
 
         return true;
     }

@@ -40,12 +40,16 @@ class Home extends Secure_Controller
         // Today's sales count and revenue
         $today_sales = $this->db->table($prefix . 'sales')
             ->where('DATE(sale_time)', date('Y-m-d'))
+            ->where('sale_status', 0)
+            ->whereIn('sale_type', [0, 1, 4])
             ->countAllResults();
         
         $today_revenue = $this->db->table($prefix . 'sales_payments sp')
             ->select('SUM(sp.payment_amount) as total', false)
             ->join($prefix . 'sales s', 's.sale_id = sp.sale_id')
             ->where('DATE(s.sale_time)', date('Y-m-d'))
+            ->where('s.sale_status', 0)
+            ->whereIn('s.sale_type', [0, 1, 4])
             ->get()
             ->getRow()
             ->total ?? 0;
@@ -56,6 +60,8 @@ class Home extends Secure_Controller
             ->join($prefix . 'sales s', 's.sale_id = sp.sale_id')
             ->where('YEAR(s.sale_time)', date('Y'))
             ->where('MONTH(s.sale_time)', date('m'))
+            ->where('s.sale_status', 0)
+            ->whereIn('s.sale_type', [0, 1, 4])
             ->get()
             ->getRow()
             ->total ?? 0;
@@ -90,6 +96,8 @@ class Home extends Secure_Controller
             LEFT JOIN {$prefix}people p ON s.customer_id = p.person_id
             LEFT JOIN {$prefix}sales_payments sp ON s.sale_id = sp.sale_id
             WHERE s.sale_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+            AND s.sale_status = 0
+            AND s.sale_type IN (0, 1, 4)
             GROUP BY s.sale_id
             ORDER BY s.sale_time DESC
             LIMIT 5
@@ -103,6 +111,8 @@ class Home extends Secure_Controller
             JOIN {$prefix}sales s ON si.sale_id = s.sale_id
             WHERE s.sale_time >= DATE_SUB(NOW(), INTERVAL 30 DAY)
             AND i.deleted = 0
+            AND s.sale_status = 0
+            AND s.sale_type IN (0, 1, 4)
             GROUP BY si.item_id
             ORDER BY total_sold DESC
             LIMIT 5
@@ -111,11 +121,13 @@ class Home extends Secure_Controller
         // Sales trend (last 7 days)
         $sales_trend = $this->db->query("
             SELECT DATE(s.sale_time) as date, 
-                   COUNT(s.sale_id) as count,
+                   COUNT(DISTINCT s.sale_id) as count,
                    COALESCE(SUM(sp.payment_amount), 0) as revenue
             FROM {$prefix}sales s
             LEFT JOIN {$prefix}sales_payments sp ON s.sale_id = sp.sale_id
             WHERE s.sale_time >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+            AND s.sale_status = 0
+            AND s.sale_type IN (0, 1, 4)
             GROUP BY DATE(s.sale_time)
             ORDER BY date ASC
         ")->getResultArray();
@@ -152,6 +164,11 @@ class Home extends Secure_Controller
      */
     public function getDebugSidebar(): void
     {
+        if (ENVIRONMENT !== 'development') {
+            redirect()->to('home')->send();
+            exit;
+        }
+
         echo view('debug_sidebar', $this->global_view_data);
     }
     
@@ -172,15 +189,25 @@ class Home extends Secure_Controller
      *
      * @noinspection PhpUnused
      */
-    public function getChangePassword(int $employee_id = -1): void    // TODO: Replace -1 with a constant
+    public function getChangePassword(int $employee_id = -1): void
     {
-        $person_info = $this->employee->get_info($employee_id);
-        foreach (get_object_vars($person_info) as $property => $value) {
-            $person_info->$property = $value;
+        $logged_in = $this->employee->get_logged_in_employee_info();
+        if ($employee_id === -1 || $employee_id === NEW_ENTRY) {
+            $employee_id = (int) $logged_in->person_id;
         }
-        $data['person_info'] = $person_info;
 
-        echo view('home/form_change_password', $data);
+        if ((int) $logged_in->person_id !== (int) $employee_id && !$this->employee->has_grant('employees', $logged_in->person_id)) {
+            redirect()->to('home')->send();
+            exit;
+        }
+
+        $person_info = $this->employee->get_info($employee_id);
+        $data = [
+            'person_info'            => $person_info,
+            'force_password_change'  => (bool) session()->get('force_password_change'),
+        ];
+
+        echo view('home/form_change_password_modern', $data);
     }
 
     /**
@@ -197,6 +224,7 @@ class Home extends Secure_Controller
                 ];
 
                 if ($this->employee->change_password($employee_data, $employee_id)) {
+                    session()->remove('force_password_change');
                     echo json_encode([
                         'success' => true,
                         'message' => lang('Employees.successful_change_password'),
@@ -259,6 +287,7 @@ class Home extends Secure_Controller
             ];
             
             if ($this->employee->change_password($employee_data, $person_id)) {
+                session()->remove('force_password_change');
                 echo json_encode([
                     'success' => true,
                     'message' => lang('Employees.successful_change_password')

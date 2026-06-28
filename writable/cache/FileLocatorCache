@@ -153,6 +153,16 @@
         ),
       ),
     ),
+    'Config/Factory' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Config/Factory.php',
+        ),
+      ),
+    ),
     'Language/ar-EG/HTTP.php' => 
     array (
       'php' => 
@@ -181,13 +191,202 @@
         ),
       ),
     ),
-    'Config/Factory' => 
+    'Language/en/Login.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Login.php',
+        ),
+      ),
+    ),
+    'Language/en/Errors.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Language/en/Errors.php',
+        ),
+      ),
+    ),
+    'Helpers/text_helper' => 
     array (
       'php' => 
       array (
         1 => 
         array (
-          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Config/Factory.php',
+          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Helpers/text_helper.php',
+        ),
+      ),
+    ),
+    'Helpers/file_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+        ),
+      ),
+    ),
+    'Language/en/Sales.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Sales.php',
+        ),
+      ),
+    ),
+    'Language/en/Config.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Config.php',
+        ),
+      ),
+    ),
+    'Language/en/Enum.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Enum.php',
+        ),
+      ),
+    ),
+    'Language/en/Common.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Common.php',
+        ),
+      ),
+    ),
+    'Language/en/Giftcards.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Giftcards.php',
+        ),
+      ),
+    ),
+    'Language/en/Items.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Items.php',
+        ),
+      ),
+    ),
+    'Language/en/Suppliers.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Suppliers.php',
+        ),
+      ),
+    ),
+    'Language/en/Item_kits.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Item_kits.php',
+        ),
+      ),
+    ),
+    'Language/en/Expenses.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Expenses.php',
+        ),
+      ),
+    ),
+    'Language/en/Expenses_categories.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Expenses_categories.php',
+        ),
+      ),
+    ),
+    'Language/en/Cashups.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Cashups.php',
+        ),
+      ),
+    ),
+    'Helpers/tax_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Helpers/tax_helper.php',
+        ),
+      ),
+    ),
+    'Language/en/Taxes.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Taxes.php',
+        ),
+      ),
+    ),
+    'Helpers/report_helper' => 
+    array (
+      'php' => 
+      array (
+        1 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Helpers/report_helper.php',
+        ),
+      ),
+    ),
+    'Language/en/Reports.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Reports.php',
+        ),
+      ),
+    ),
+    'Language/en/Security.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Language/en/Security.php',
         ),
       ),
     ),
@@ -218,6 +417,7 @@
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ScaffoldGenerator.php' => 'CodeIgniter\\Commands\\Generators\\ScaffoldGenerator',
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/SeederGenerator.php' => 'CodeIgniter\\Commands\\Generators\\SeederGenerator',
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/TestGenerator.php' => 'CodeIgniter\\Commands\\Generators\\TestGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/TransformerGenerator.php' => 'CodeIgniter\\Commands\\Generators\\TransformerGenerator',
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ValidationGenerator.php' => 'CodeIgniter\\Commands\\Generators\\ValidationGenerator',
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/cell.tpl.php' => false,
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/cell_view.tpl.php' => false,
@@ -230,6 +430,7 @@
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/model.tpl.php' => false,
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/seeder.tpl.php' => false,
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/test.tpl.php' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/transformer.tpl.php' => false,
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/validation.tpl.php' => false,
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Help.php' => 'CodeIgniter\\Commands\\Help',
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Housekeeping/ClearDebugbar.php' => 'CodeIgniter\\Commands\\Housekeeping\\ClearDebugbar',
@@ -254,11 +455,221 @@
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/FilterCollector.php' => 'CodeIgniter\\Commands\\Utilities\\Routes\\FilterCollector',
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/FilterFinder.php' => 'CodeIgniter\\Commands\\Utilities\\Routes\\FilterFinder',
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/SampleURIGenerator.php' => 'CodeIgniter\\Commands\\Utilities\\Routes\\SampleURIGenerator',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Worker/Views/Caddyfile.tpl' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Worker/Views/frankenphp-worker.php.tpl' => false,
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Worker/WorkerInstall.php' => 'CodeIgniter\\Commands\\Worker\\WorkerInstall',
+    '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Worker/WorkerUninstall.php' => 'CodeIgniter\\Commands\\Worker\\WorkerUninstall',
   ),
   'getClassname' => 
   array (
     '/home/erp/ShopSuite/app/Config/Filters.php' => 'Config\\Filters',
     '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Config/Filters.php' => 'CodeIgniter\\Config\\Filters',
+    '/home/erp/ShopSuite/app/Database/Migrations/20170501150000_upgrade_to_3_1_1.php' => 'App\\Database\\Migrations\\Migration_Upgrade_To_3_1_1',
+    '/home/erp/ShopSuite/app/Database/Migrations/20170502221506_sales_tax_data.php' => 'App\\Database\\Migrations\\Migration_Sales_Tax_Data',
+    '/home/erp/ShopSuite/app/Database/Migrations/20180225100000_upgrade_to_3_2_0.php' => 'App\\Database\\Migrations\\Migration_Upgrade_To_3_2_0',
+    '/home/erp/ShopSuite/app/Database/Migrations/20180501100000_upgrade_to_3_2_1.php' => 'App\\Database\\Migrations\\Migration_Upgrade_To_3_2_1',
+    '/home/erp/ShopSuite/app/Database/Migrations/20181015100000_attributes.php' => 'App\\Database\\Migrations\\Migration_Attributes',
+    '/home/erp/ShopSuite/app/Database/Migrations/20190111270000_upgrade_to_3_3_0.php' => 'App\\Database\\Migrations\\Migration_Upgrade_To_3_3_0',
+    '/home/erp/ShopSuite/app/Database/Migrations/20190129212600_indiagst.php' => 'App\\Database\\Migrations\\Migration_IndiaGST',
+    '/home/erp/ShopSuite/app/Database/Migrations/20190213210000_indiagst1.php' => 'App\\Database\\Migrations\\Migration_IndiaGST1',
+    '/home/erp/ShopSuite/app/Database/Migrations/20190220210000_indiagst2.php' => 'App\\Database\\Migrations\\Migration_IndiaGST2',
+    '/home/erp/ShopSuite/app/Database/Migrations/20190301124900_decimal_attribute_type.php' => 'App\\Database\\Migrations\\Migration_decimal_attribute_type',
+    '/home/erp/ShopSuite/app/Database/Migrations/20190317102600_add_iso_4217.php' => 'App\\Database\\Migrations\\Migration_add_iso_4217',
+    '/home/erp/ShopSuite/app/Database/Migrations/20190427100000_paymenttracking.php' => 'App\\Database\\Migrations\\Migration_PaymentTracking',
+    '/home/erp/ShopSuite/app/Database/Migrations/20190502100000_refundtracking.php' => 'App\\Database\\Migrations\\Migration_RefundTracking',
+    '/home/erp/ShopSuite/app/Database/Migrations/20190612100000_dbfix.php' => 'App\\Database\\Migrations\\Migration_DBFix',
+    '/home/erp/ShopSuite/app/Database/Migrations/20190615100000_fix_attribute_datetime.php' => 'App\\Database\\Migrations\\Migration_fix_attribute_datetime',
+    '/home/erp/ShopSuite/app/Database/Migrations/20190712150200_fix_empty_reports.php' => 'App\\Database\\Migrations\\Migration_fix_empty_reports',
+    '/home/erp/ShopSuite/app/Database/Migrations/20191008100000_receipttaxindicator.php' => 'App\\Database\\Migrations\\Migration_receipttaxindicator',
+    '/home/erp/ShopSuite/app/Database/Migrations/20191231100000_paymentdatefix.php' => 'App\\Database\\Migrations\\Migration_PaymentDateFix',
+    '/home/erp/ShopSuite/app/Database/Migrations/20200125100000_saleschangeprice.php' => 'App\\Database\\Migrations\\Migration_SalesChangePrice',
+    '/home/erp/ShopSuite/app/Database/Migrations/20200202000000_taxamount.php' => 'App\\Database\\Migrations\\Migration_TaxAmount',
+    '/home/erp/ShopSuite/app/Database/Migrations/20200215100000_taxgroupconstraint.php' => 'App\\Database\\Migrations\\Migration_taxgroupconstraint',
+    '/home/erp/ShopSuite/app/Database/Migrations/20200508000000_image_upload_defaults.php' => 'App\\Database\\Migrations\\Migration_image_upload_defaults',
+    '/home/erp/ShopSuite/app/Database/Migrations/20200819000000_modify_attr_links_constraint.php' => 'App\\Database\\Migrations\\Migration_modify_attr_links_constraint',
+    '/home/erp/ShopSuite/app/Database/Migrations/20201108100000_cashrounding.php' => 'App\\Database\\Migrations\\Migration_cashrounding',
+    '/home/erp/ShopSuite/app/Database/Migrations/20201110000000_add_item_kit_number.php' => 'App\\Database\\Migrations\\Migration_add_item_kit_number',
+    '/home/erp/ShopSuite/app/Database/Migrations/20210103000000_modify_session_datatype.php' => 'App\\Database\\Migrations\\Migration_modify_session_datatype',
+    '/home/erp/ShopSuite/app/Database/Migrations/20210422000000_database_optimizations.php' => 'App\\Database\\Migrations\\Migration_database_optimizations',
+    '/home/erp/ShopSuite/app/Database/Migrations/20210422000001_remove_duplicate_links.php' => 'App\\Database\\Migrations\\Migration_remove_duplicate_links',
+    '/home/erp/ShopSuite/app/Database/Migrations/20210714140000_move_expenses_categories.php' => 'App\\Database\\Migrations\\Migration_move_expenses_categories',
+    '/home/erp/ShopSuite/app/Database/Migrations/20220127000000_convert_to_ci4.php' => 'App\\Database\\Migrations\\Convert_to_ci4',
+    '/home/erp/ShopSuite/app/Database/Migrations/20230307000000_int_to_tinyint.php' => 'App\\Database\\Migrations\\IntToTinyint',
+    '/home/erp/ShopSuite/app/Database/Migrations/20230412000000_add_missing_config.php' => 'App\\Database\\Migrations\\Migration_add_missing_config',
+    '/home/erp/ShopSuite/app/Database/Migrations/20230412000001_drop_account_number_index.php' => 'App\\Database\\Migrations\\Migration_drop_account_number_index',
+    '/home/erp/ShopSuite/app/Database/Migrations/20240319000000_Migration_Convert_Barcode_Types.php' => 'App\\Database\\Migrations\\Migration_Convert_Barcode_Types',
+    '/home/erp/ShopSuite/app/Database/Migrations/20240630000001_fix_keys_for_db_upgrade.php' => 'App\\Database\\Migrations\\Migration_fix_keys_for_db_upgrade',
+    '/home/erp/ShopSuite/app/Database/Migrations/20240826000000_fix_duplicate_attributes.php' => 'App\\Database\\Migrations\\fix_duplicate_attributes',
+    '/home/erp/ShopSuite/app/Database/Migrations/2025-01-24-000001_AddPerformanceIndexes.php' => 'App\\Database\\Migrations\\AddPerformanceIndexes',
+    '/home/erp/ShopSuite/app/Database/Migrations/2025-01-24-120000_create_roles_system.php' => 'App\\Database\\Migrations\\CreateRolesSystem',
+    '/home/erp/ShopSuite/app/Database/Migrations/20250213000000_fix_attributes_cascading_delete.php' => 'App\\Database\\Migrations\\Migration_Attributes_fix_cascading_delete',
+    '/home/erp/ShopSuite/app/Database/Migrations/20250425000000_sessions_migration.php' => 'App\\Database\\Migrations\\Migration_sessions_migration',
+    '/home/erp/ShopSuite/app/Database/Migrations/20250519000000_MigrationOptimizationIndices.php' => 'App\\Database\\Migrations\\MigrationOptimizationIndices',
+    '/home/erp/ShopSuite/app/Database/Migrations/20250522000000_AttributeLinksUniqueConstraint.php' => 'App\\Database\\Migrations\\AttributeLinksUniqueConstraint',
+    '/home/erp/ShopSuite/app/Database/Migrations/20250716170000_MissingConfigKeys.php' => 'App\\Database\\Migrations\\Migration_MissingConfigKeys',
+    '/home/erp/ShopSuite/app/Database/Migrations/20250729170000_NullableTaxCategoryId.php' => 'App\\Database\\Migrations\\Migration_NullableTaxCategoryId',
+    '/home/erp/ShopSuite/app/Database/Migrations/20260624000000_AddBackupsModule.php' => 'App\\Database\\Migrations\\AddBackupsModule',
+    '/home/erp/ShopSuite/app/Database/Migrations/20260626000000_add_sales_cashup_id.php' => 'App\\Database\\Migrations\\AddSalesCashupId',
+    '/home/erp/ShopSuite/app/Controllers/Attributes.php' => 'App\\Controllers\\Attributes',
+    '/home/erp/ShopSuite/app/Controllers/Backups.php' => 'App\\Controllers\\Backups',
+    '/home/erp/ShopSuite/app/Controllers/BaseController.php' => 'App\\Controllers\\BaseController',
+    '/home/erp/ShopSuite/app/Controllers/Cashups.php' => 'App\\Controllers\\Cashups',
+    '/home/erp/ShopSuite/app/Controllers/Config.php' => 'App\\Controllers\\Config',
+    '/home/erp/ShopSuite/app/Controllers/Customers.php' => 'App\\Controllers\\Customers',
+    '/home/erp/ShopSuite/app/Controllers/Employees.php' => 'App\\Controllers\\Employees',
+    '/home/erp/ShopSuite/app/Controllers/Expenses.php' => 'App\\Controllers\\Expenses',
+    '/home/erp/ShopSuite/app/Controllers/Expenses_categories.php' => 'App\\Controllers\\Expenses_categories',
+    '/home/erp/ShopSuite/app/Controllers/Giftcards.php' => 'App\\Controllers\\Giftcards',
+    '/home/erp/ShopSuite/app/Controllers/Home.php' => 'App\\Controllers\\Home',
+    '/home/erp/ShopSuite/app/Controllers/Login.php' => 'App\\Controllers\\Login',
+    '/home/erp/ShopSuite/app/Controllers/Messages.php' => 'App\\Controllers\\Messages',
+    '/home/erp/ShopSuite/app/Controllers/No_access.php' => 'App\\Controllers\\No_access',
+    '/home/erp/ShopSuite/app/Controllers/Notifications.php' => 'App\\Controllers\\Notifications',
+    '/home/erp/ShopSuite/app/Controllers/Office.php' => 'App\\Controllers\\Office',
+    '/home/erp/ShopSuite/app/Controllers/Persons.php' => 'App\\Controllers\\Persons',
+    '/home/erp/ShopSuite/app/Controllers/Product_bundles.php' => 'App\\Controllers\\Product_bundles',
+    '/home/erp/ShopSuite/app/Controllers/Products.php' => 'App\\Controllers\\Products',
+    '/home/erp/ShopSuite/app/Controllers/Receivings.php' => 'App\\Controllers\\Receivings',
+    '/home/erp/ShopSuite/app/Controllers/Reports.php' => 'App\\Controllers\\Reports',
+    '/home/erp/ShopSuite/app/Controllers/Roles.php' => 'App\\Controllers\\Roles',
+    '/home/erp/ShopSuite/app/Controllers/Sales.php' => 'App\\Controllers\\Sales',
+    '/home/erp/ShopSuite/app/Controllers/Secure_Controller.php' => 'App\\Controllers\\Secure_Controller',
+    '/home/erp/ShopSuite/app/Controllers/Suppliers.php' => 'App\\Controllers\\Suppliers',
+    '/home/erp/ShopSuite/app/Controllers/Tax_categories.php' => 'App\\Controllers\\Tax_categories',
+    '/home/erp/ShopSuite/app/Controllers/Tax_codes.php' => 'App\\Controllers\\Tax_codes',
+    '/home/erp/ShopSuite/app/Controllers/Tax_jurisdictions.php' => 'App\\Controllers\\Tax_jurisdictions',
+    '/home/erp/ShopSuite/app/Controllers/Taxes.php' => 'App\\Controllers\\Taxes',
+    '/home/erp/ShopSuite/app/Controllers/index.html' => '',
+  ),
+  'listNamespaceFiles' => 
+  array (
+    'App' => 
+    array (
+      '/Database/Migrations/' => 
+      array (
+        0 => '/home/erp/ShopSuite/app/Database/Migrations/20170501150000_upgrade_to_3_1_1.php',
+        1 => '/home/erp/ShopSuite/app/Database/Migrations/20170502221506_sales_tax_data.php',
+        2 => '/home/erp/ShopSuite/app/Database/Migrations/20180225100000_upgrade_to_3_2_0.php',
+        3 => '/home/erp/ShopSuite/app/Database/Migrations/20180501100000_upgrade_to_3_2_1.php',
+        4 => '/home/erp/ShopSuite/app/Database/Migrations/20181015100000_attributes.php',
+        5 => '/home/erp/ShopSuite/app/Database/Migrations/20190111270000_upgrade_to_3_3_0.php',
+        6 => '/home/erp/ShopSuite/app/Database/Migrations/20190129212600_indiagst.php',
+        7 => '/home/erp/ShopSuite/app/Database/Migrations/20190213210000_indiagst1.php',
+        8 => '/home/erp/ShopSuite/app/Database/Migrations/20190220210000_indiagst2.php',
+        9 => '/home/erp/ShopSuite/app/Database/Migrations/20190301124900_decimal_attribute_type.php',
+        10 => '/home/erp/ShopSuite/app/Database/Migrations/20190317102600_add_iso_4217.php',
+        11 => '/home/erp/ShopSuite/app/Database/Migrations/20190427100000_paymenttracking.php',
+        12 => '/home/erp/ShopSuite/app/Database/Migrations/20190502100000_refundtracking.php',
+        13 => '/home/erp/ShopSuite/app/Database/Migrations/20190612100000_dbfix.php',
+        14 => '/home/erp/ShopSuite/app/Database/Migrations/20190615100000_fix_attribute_datetime.php',
+        15 => '/home/erp/ShopSuite/app/Database/Migrations/20190712150200_fix_empty_reports.php',
+        16 => '/home/erp/ShopSuite/app/Database/Migrations/20191008100000_receipttaxindicator.php',
+        17 => '/home/erp/ShopSuite/app/Database/Migrations/20191231100000_paymentdatefix.php',
+        18 => '/home/erp/ShopSuite/app/Database/Migrations/20200125100000_saleschangeprice.php',
+        19 => '/home/erp/ShopSuite/app/Database/Migrations/20200202000000_taxamount.php',
+        20 => '/home/erp/ShopSuite/app/Database/Migrations/20200215100000_taxgroupconstraint.php',
+        21 => '/home/erp/ShopSuite/app/Database/Migrations/20200508000000_image_upload_defaults.php',
+        22 => '/home/erp/ShopSuite/app/Database/Migrations/20200819000000_modify_attr_links_constraint.php',
+        23 => '/home/erp/ShopSuite/app/Database/Migrations/20201108100000_cashrounding.php',
+        24 => '/home/erp/ShopSuite/app/Database/Migrations/20201110000000_add_item_kit_number.php',
+        25 => '/home/erp/ShopSuite/app/Database/Migrations/20210103000000_modify_session_datatype.php',
+        26 => '/home/erp/ShopSuite/app/Database/Migrations/20210422000000_database_optimizations.php',
+        27 => '/home/erp/ShopSuite/app/Database/Migrations/20210422000001_remove_duplicate_links.php',
+        28 => '/home/erp/ShopSuite/app/Database/Migrations/20210714140000_move_expenses_categories.php',
+        29 => '/home/erp/ShopSuite/app/Database/Migrations/20220127000000_convert_to_ci4.php',
+        30 => '/home/erp/ShopSuite/app/Database/Migrations/20230307000000_int_to_tinyint.php',
+        31 => '/home/erp/ShopSuite/app/Database/Migrations/20230412000000_add_missing_config.php',
+        32 => '/home/erp/ShopSuite/app/Database/Migrations/20230412000001_drop_account_number_index.php',
+        33 => '/home/erp/ShopSuite/app/Database/Migrations/20240319000000_Migration_Convert_Barcode_Types.php',
+        34 => '/home/erp/ShopSuite/app/Database/Migrations/20240630000001_fix_keys_for_db_upgrade.php',
+        35 => '/home/erp/ShopSuite/app/Database/Migrations/20240826000000_fix_duplicate_attributes.php',
+        36 => '/home/erp/ShopSuite/app/Database/Migrations/2025-01-24-000001_AddPerformanceIndexes.php',
+        37 => '/home/erp/ShopSuite/app/Database/Migrations/2025-01-24-120000_create_roles_system.php',
+        38 => '/home/erp/ShopSuite/app/Database/Migrations/20250213000000_fix_attributes_cascading_delete.php',
+        39 => '/home/erp/ShopSuite/app/Database/Migrations/20250425000000_sessions_migration.php',
+        40 => '/home/erp/ShopSuite/app/Database/Migrations/20250519000000_MigrationOptimizationIndices.php',
+        41 => '/home/erp/ShopSuite/app/Database/Migrations/20250522000000_AttributeLinksUniqueConstraint.php',
+        42 => '/home/erp/ShopSuite/app/Database/Migrations/20250716170000_MissingConfigKeys.php',
+        43 => '/home/erp/ShopSuite/app/Database/Migrations/20250729170000_NullableTaxCategoryId.php',
+        44 => '/home/erp/ShopSuite/app/Database/Migrations/20260624000000_AddBackupsModule.php',
+        45 => '/home/erp/ShopSuite/app/Database/Migrations/20260626000000_add_sales_cashup_id.php',
+        46 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.0.2_to_3.1.1.sql',
+        47 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.1.1_to_3.2.0.sql',
+        48 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.2.0_to_3.2.1.sql',
+        49 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.2.1_to_3.3.0.sql',
+        50 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.0_add_iso_4217.sql',
+        51 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.0_attributes.sql',
+        52 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.0_dbfix.sql',
+        53 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.0_decimal_attribute_type.sql',
+        54 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.0_fix_attribute_datetime.sql',
+        55 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.0_indiagst.sql',
+        56 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.0_indiagst1.sql',
+        57 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.0_indiagst2.sql',
+        58 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.0_paymenttracking.sql',
+        59 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.0_refundtracking.sql',
+        60 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.2_modify_attr_links_constraint.sql',
+        61 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.2_paymentdatefix.sql',
+        62 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.2_saleschangeprice.sql',
+        63 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.3_add_kits_item_number.sql',
+        64 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.3.4_modify_session_datatype.sql',
+        65 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.4.0_attribute_links_unique_constraint.sql',
+        66 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.4.0_ci4_conversion.sql',
+        67 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.4.0_database_optimizations.sql',
+        68 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.4.1_attribute_links_unique_constraint.sql',
+        69 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.4.1_migrate_sessions_table.sql',
+        70 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.4.2_missing_config_keys.sql',
+        71 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.4.2_nullable_tax_category_id.sql',
+        72 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/3.4.3_add_notifications_table.sql',
+        73 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/2.0_to_2.1.sql',
+        74 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/2.1_to_2.2.sql',
+        75 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/2.2.1_to_2.2.2.sql',
+        76 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/2.2.2_to_2.3.sql',
+        77 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/2.3.1_to_2.3.2.sql',
+        78 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/2.3.2_to_2.3.3.sql',
+        79 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/2.3.4_to_2.4.sql',
+        80 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/2.3_migrate_locations.sql',
+        81 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/2.3_to_2.3.1.sql',
+        82 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/2.4_to_3.0.sql',
+        83 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/phppos_migrate.sql',
+        84 => '/home/erp/ShopSuite/app/Database/Migrations/sqlscripts/pre-3.0.2/rename_tables.sql',
+      ),
+    ),
+    '\\App' => 
+    array (
+      'Controllers' => 
+      array (
+        0 => '/home/erp/ShopSuite/app/Controllers/Attributes.php',
+        1 => '/home/erp/ShopSuite/app/Controllers/Backups.php',
+        2 => '/home/erp/ShopSuite/app/Controllers/BaseController.php',
+        3 => '/home/erp/ShopSuite/app/Controllers/Cashups.php',
+        4 => '/home/erp/ShopSuite/app/Controllers/Config.php',
+        5 => '/home/erp/ShopSuite/app/Controllers/Customers.php',
+        6 => '/home/erp/ShopSuite/app/Controllers/Employees.php',
+        7 => '/home/erp/ShopSuite/app/Controllers/Expenses.php',
+        8 => '/home/erp/ShopSuite/app/Controllers/Expenses_categories.php',
+        9 => '/home/erp/ShopSuite/app/Controllers/Giftcards.php',
+        10 => '/home/erp/ShopSuite/app/Controllers/Home.php',
+        11 => '/home/erp/ShopSuite/app/Controllers/Login.php',
+        12 => '/home/erp/ShopSuite/app/Controllers/Messages.php',
+        13 => '/home/erp/ShopSuite/app/Controllers/No_access.php',
+        14 => '/home/erp/ShopSuite/app/Controllers/Notifications.php',
+        15 => '/home/erp/ShopSuite/app/Controllers/Office.php',
+        16 => '/home/erp/ShopSuite/app/Controllers/Persons.php',
+        17 => '/home/erp/ShopSuite/app/Controllers/Product_bundles.php',
+        18 => '/home/erp/ShopSuite/app/Controllers/Products.php',
+        19 => '/home/erp/ShopSuite/app/Controllers/Receivings.php',
+        20 => '/home/erp/ShopSuite/app/Controllers/Reports.php',
+        21 => '/home/erp/ShopSuite/app/Controllers/Roles.php',
+        22 => '/home/erp/ShopSuite/app/Controllers/Sales.php',
+        23 => '/home/erp/ShopSuite/app/Controllers/Secure_Controller.php',
+        24 => '/home/erp/ShopSuite/app/Controllers/Suppliers.php',
+        25 => '/home/erp/ShopSuite/app/Controllers/Tax_categories.php',
+        26 => '/home/erp/ShopSuite/app/Controllers/Tax_codes.php',
+        27 => '/home/erp/ShopSuite/app/Controllers/Tax_jurisdictions.php',
+        28 => '/home/erp/ShopSuite/app/Controllers/Taxes.php',
+        29 => '/home/erp/ShopSuite/app/Controllers/index.html',
+      ),
+    ),
   ),
   'listFiles' => 
   array (
@@ -286,42 +697,48 @@
       19 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ScaffoldGenerator.php',
       20 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/SeederGenerator.php',
       21 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/TestGenerator.php',
-      22 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ValidationGenerator.php',
-      23 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/cell.tpl.php',
-      24 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/cell_view.tpl.php',
-      25 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/command.tpl.php',
-      26 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/config.tpl.php',
-      27 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/controller.tpl.php',
-      28 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/entity.tpl.php',
-      29 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/filter.tpl.php',
-      30 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/migration.tpl.php',
-      31 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/model.tpl.php',
-      32 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/seeder.tpl.php',
-      33 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/test.tpl.php',
-      34 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/validation.tpl.php',
-      35 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Help.php',
-      36 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Housekeeping/ClearDebugbar.php',
-      37 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Housekeeping/ClearLogs.php',
-      38 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/ListCommands.php',
-      39 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Server/Serve.php',
-      40 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Translation/LocalizationFinder.php',
-      41 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Translation/LocalizationSync.php',
-      42 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/ConfigCheck.php',
-      43 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Environment.php',
-      44 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/FilterCheck.php',
-      45 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Namespaces.php',
-      46 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Optimize.php',
-      47 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/PhpIniCheck.php',
-      48 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Publish.php',
-      49 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes.php',
-      50 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouteCollector.php',
-      51 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouterImproved/AutoRouteCollector.php',
-      52 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouterImproved/ControllerMethodReader.php',
-      53 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/ControllerFinder.php',
-      54 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/ControllerMethodReader.php',
-      55 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/FilterCollector.php',
-      56 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/FilterFinder.php',
-      57 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/SampleURIGenerator.php',
+      22 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/TransformerGenerator.php',
+      23 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/ValidationGenerator.php',
+      24 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/cell.tpl.php',
+      25 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/cell_view.tpl.php',
+      26 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/command.tpl.php',
+      27 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/config.tpl.php',
+      28 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/controller.tpl.php',
+      29 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/entity.tpl.php',
+      30 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/filter.tpl.php',
+      31 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/migration.tpl.php',
+      32 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/model.tpl.php',
+      33 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/seeder.tpl.php',
+      34 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/test.tpl.php',
+      35 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/transformer.tpl.php',
+      36 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Generators/Views/validation.tpl.php',
+      37 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Help.php',
+      38 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Housekeeping/ClearDebugbar.php',
+      39 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Housekeeping/ClearLogs.php',
+      40 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/ListCommands.php',
+      41 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Server/Serve.php',
+      42 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Translation/LocalizationFinder.php',
+      43 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Translation/LocalizationSync.php',
+      44 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/ConfigCheck.php',
+      45 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Environment.php',
+      46 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/FilterCheck.php',
+      47 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Namespaces.php',
+      48 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Optimize.php',
+      49 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/PhpIniCheck.php',
+      50 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Publish.php',
+      51 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes.php',
+      52 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouteCollector.php',
+      53 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouterImproved/AutoRouteCollector.php',
+      54 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/AutoRouterImproved/ControllerMethodReader.php',
+      55 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/ControllerFinder.php',
+      56 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/ControllerMethodReader.php',
+      57 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/FilterCollector.php',
+      58 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/FilterFinder.php',
+      59 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Utilities/Routes/SampleURIGenerator.php',
+      60 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Worker/Views/Caddyfile.tpl',
+      61 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Worker/Views/frankenphp-worker.php.tpl',
+      62 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Worker/WorkerInstall.php',
+      63 => '/home/erp/ShopSuite/vendor/codeigniter4/framework/system/Commands/Worker/WorkerUninstall.php',
     ),
   ),
 );

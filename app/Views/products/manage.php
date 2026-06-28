@@ -17,7 +17,7 @@ use App\Models\Employee;
     $(document).ready(function() {
         $('#generate_barcodes').click(function() {
             window.open(
-                'index.php/items/generateBarcodes/' + table_support.selected_ids().join(':'),
+                'index.php/products/generateBarcodes/' + table_support.selected_ids().join(':'),
                 '_blank'
             );
         });
@@ -90,7 +90,7 @@ use App\Models\Employee;
         <button id="delete" class="btn btn-default btn-sm print_hide">
             <span class="glyphicon glyphicon-trash">&nbsp;</span><?= lang('Common.delete') ?>
         </button>
-        <button id="bulk_edit" class="btn btn-default btn-sm modal-dlg print_hide" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "items/bulkEdit" ?>" title="<?= lang('Items.edit_multiple_items') ?>">
+        <button id="bulk_edit" class="btn btn-default btn-sm modal-dlg print_hide" data-btn-submit="<?= lang('Common.submit') ?>" data-href="<?= "products/bulkEdit" ?>" title="<?= lang('Items.edit_multiple_items') ?>">
             <span class="glyphicon glyphicon-edit">&nbsp;</span><?= lang('Items.bulk_edit') ?>
         </button>
         <button id="generate_barcodes" class="btn btn-default btn-sm print_hide" data-href="<?= "$controller_name/generateBarcodes" ?>" title="<?= lang('Items.generate_barcodes') ?>">

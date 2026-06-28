@@ -24,9 +24,20 @@ class Tax_categories extends Secure_Controller
      */
     public function getIndex(): void
     {
-        $data['tax_categories_table_headers'] = get_tax_categories_table_headers();
+        $person_id = $this->employee->get_logged_in_employee_info()->person_id;
+        if ($this->employee->has_grant('taxes', $person_id)) {
+            redirect()->to(site_url('taxes?tab=categories'))->send();
+            exit;
+        }
 
-        echo view('taxes/tax_categories', $data);
+        echo view('taxes/submodule_list_modern', [
+            'title'            => 'Tax Categories',
+            'rows'             => $this->tax_category->get_all()->getResultArray(),
+            'name_field'       => 'tax_category',
+            'id_field'         => 'tax_category_id',
+            'add_url'          => base_url('taxes/view_tax_categories/-1'),
+            'edit_url_prefix'  => base_url('taxes/view_tax_categories/'),
+        ]);
     }
 
     /**

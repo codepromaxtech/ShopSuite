@@ -24,7 +24,7 @@
         .login-form-side {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: center; color: var(--neutral-0);
             padding: var(--space-8);
             background: var(--bg-primary);
             position: relative;
@@ -52,7 +52,7 @@
             overflow: hidden;
             
             align-items: center;
-            justify-content: center;
+            justify-content: center; color: var(--neutral-0);
         }
 
         @media (min-width: 1024px) {
@@ -113,12 +113,12 @@
             max-width: 600px;
             padding: var(--space-8);
             text-align: left;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--bg-elevated);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius-2xl);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: var(--shadow-xl, 0 25px 50px -12px rgba(0, 0, 0, 0.15));
             transform: translateY(20px);
             opacity: 0;
             animation: slideUp 0.8s ease-out forwards 0.3s;
@@ -130,14 +130,15 @@
             line-height: 1.2;
             margin-bottom: var(--space-6);
             
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-primary);
+            
+            
         }
 
         .visual-content p {
             font-size: var(--text-lg);
             line-height: 1.6;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-secondary);
         }
 
         /* Typography & Form Elements */
@@ -292,7 +293,7 @@
             box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: center; color: var(--neutral-0);
             gap: var(--space-2);
         }
 
@@ -353,7 +354,7 @@
             border-radius: var(--radius-full);
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: center; color: var(--neutral-0);
             cursor: pointer;
             transition: all var(--transition-fast);
             color: var(--text-secondary);
@@ -400,8 +401,8 @@
     right: -10%; 
     width: 400px; 
     height: 250px; 
-    background: rgba(255,255,255,0.03); 
-    border: 1px solid rgba(255,255,255,0.1); 
+    background: var(--bg-elevated); 
+    border: 1px solid var(--border-color); 
     border-radius: 20px; 
     backdrop-filter: blur(10px); 
     transform: rotate(-5deg); 
@@ -415,8 +416,8 @@
     left: 10%; 
     width: 300px; 
     height: 150px; 
-    background: rgba(255,255,255,0.03); 
-    border: 1px solid rgba(255,255,255,0.1); 
+    background: var(--bg-elevated); 
+    border: 1px solid var(--border-color); 
     border-radius: 20px; 
     backdrop-filter: blur(10px); 
     transform: rotate(5deg); 
@@ -432,7 +433,7 @@
 
 .visual-card-header {
     padding: 15px; 
-    border-bottom: 1px solid rgba(255,255,255,0.05); 
+    border-bottom: 1px solid var(--border-color); 
     display: flex; 
     gap: 8px;
 }
@@ -463,12 +464,12 @@
     height: 20px; 
     border-radius: 4px;
 }
-.mb-60 { background: rgba(255,255,255,0.1); width: 60%; }
-.mb-80 { background: rgba(255,255,255,0.05); width: 80%; }
+.mb-60 { background: var(--bg-tertiary); width: 60%; }
+.mb-80 { background: var(--bg-secondary); width: 80%; }
 
 .placeholder-box {
     height: 60px; 
-    background: rgba(255,255,255,0.05); 
+    background: var(--bg-tertiary); 
     border-radius: 8px; 
     width: 100%;
 }
@@ -480,16 +481,17 @@
     background: var(--primary-500); 
     display: flex; 
     align-items: center; 
-    justify-content: center;
+    justify-content: center; color: var(--neutral-0);
 }
 
 .stat-title {
     font-weight: bold; 
     font-size: 1.2rem;
+    color: var(--text-primary);
 }
 
 .stat-subtitle {
-    color: rgba(255,255,255,0.5); 
+    color: var(--text-secondary); 
     font-size: 0.85rem;
 }
 

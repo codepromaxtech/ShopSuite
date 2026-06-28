@@ -9,14 +9,28 @@ echo view('layouts/modern_header', ['title' => $title]);
 $stats = $stats ?? [];
 ?>
 
-<!-- Welcome Banner -->
+<!-- Welcome Banner with Quick Actions -->
 <div class="welcome-banner-modern">
     <div class="welcome-banner-content">
         <h1 class="welcome-greeting">Welcome back!</h1>
         <p class="welcome-date"><?= date('l, F j, Y') ?></p>
     </div>
-    <div class="welcome-banner-decoration">
-        <i class="bi bi-stars"></i>
+    <div class="header-quick-actions" style="position: relative; z-index: 1; display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: flex-end; align-items: center;">
+        <a href="javascript:void(0);" onclick="location.reload()" class="btn btn-sm btn-outline" style="background: var(--bg-elevated); border-color: var(--border-color);">
+            <i class="bi bi-arrow-clockwise"></i> <span class="hide-mobile">Refresh</span>
+        </a>
+        <a href="<?= base_url('sales/register') ?>" class="btn btn-sm btn-primary">
+            <i class="bi bi-cart-plus"></i> <span class="hide-mobile">New Sale</span>
+        </a>
+        <a href="<?= base_url('customers/view/-1') ?>" class="btn btn-sm btn-outline" style="background: var(--bg-elevated); border-color: var(--border-color);">
+            <i class="bi bi-person-plus"></i> <span class="hide-mobile">Add Customer</span>
+        </a>
+        <a href="<?= base_url('products/view/-1') ?>" class="btn btn-sm btn-outline" style="background: var(--bg-elevated); border-color: var(--border-color);">
+            <i class="bi bi-box-seam"></i> <span class="hide-mobile">Add Product</span>
+        </a>
+        <a href="<?= base_url('reports') ?>" class="btn btn-sm btn-outline" style="background: var(--bg-elevated); border-color: var(--border-color);">
+            <i class="bi bi-file-earmark-bar-graph"></i> <span class="hide-mobile">Reports</span>
+        </a>
     </div>
 </div>
 
@@ -86,10 +100,10 @@ $stats = $stats ?? [];
     </div>
 </div>
 
-<!-- Section: Analytics & Actions -->
+<!-- Section: Analytics -->
 <div class="dashboard-section">
-    <h2 class="section-title">Analytics & Actions</h2>
-    <div class="dashboard-main-grid">
+    <h2 class="section-title">Analytics</h2>
+    <div class="dashboard-main-grid" style="grid-template-columns: 1fr;">
         <!-- Sales Trend Chart -->
         <div class="card card-analytics">
             <div class="card-header border-bottom-0">
@@ -99,42 +113,8 @@ $stats = $stats ?? [];
                 </h2>
             </div>
             <div class="card-body">
-                <div class="chart-container" style="height: 250px; position: relative;">
+                <div class="chart-container" style="height: 300px; position: relative;">
                     <canvas id="salesChart"></canvas>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Quick Actions -->
-        <div class="card card-quick-actions">
-            <div class="card-header border-bottom-0">
-                <h2 class="card-title">
-                    <i class="bi bi-lightning-charge"></i>
-                    Quick Actions
-                </h2>
-            </div>
-            <div class="card-body">
-                <div class="quick-actions-list">
-                    <a href="javascript:void(0);" onclick="location.reload()" class="quick-action-item">
-                        <div class="quick-action-icon"><i class="bi bi-arrow-clockwise"></i></div>
-                        <div class="quick-action-text">Refresh Dashboard</div>
-                    </a>
-                    <a href="<?= base_url('sales/register') ?>" class="quick-action-item highlight" >
-                        <div class="quick-action-icon"><i class="bi bi-cart-plus"></i></div>
-                        <div class="quick-action-text">New Point of Sale</div>
-                    </a>
-                    <a href="<?= base_url('customers/view/-1') ?>" class="quick-action-item" >
-                        <div class="quick-action-icon"><i class="bi bi-person-plus"></i></div>
-                        <div class="quick-action-text">Add Customer</div>
-                    </a>
-                    <a href="<?= base_url('products/view/-1') ?>" class="quick-action-item" >
-                        <div class="quick-action-icon"><i class="bi bi-box-seam"></i></div>
-                        <div class="quick-action-text">Add Product</div>
-                    </a>
-                    <a href="<?= base_url('reports') ?>" class="quick-action-item" >
-                        <div class="quick-action-icon"><i class="bi bi-file-earmark-bar-graph"></i></div>
-                        <div class="quick-action-text">View Reports</div>
-                    </a>
                 </div>
             </div>
         </div>

@@ -51,7 +51,7 @@ class AddBackupsModule extends Migration
         ]);
 
         $this->forge->addKey('backup_id', true);
-        $this->forge->createTable('shopsuite_backups', true);
+        $this->forge->createTable('backups', true);
 
         // 2. Register the backups module
         $this->db->table('shopsuite_modules')->ignore(true)->insert([
@@ -78,7 +78,7 @@ class AddBackupsModule extends Migration
 
     public function down(): void
     {
-        $this->forge->dropTable('shopsuite_backups', true);
+        $this->forge->dropTable('backups', true);
 
         $this->db->table('shopsuite_modules')->where('module_id', 'backups')->delete();
         $this->db->table('shopsuite_permissions')->where('permission_id', 'backups')->delete();

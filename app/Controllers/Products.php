@@ -723,6 +723,11 @@ class Products extends Secure_Controller
 
         $employee_id = $this->employee->get_logged_in_employee_info()->person_id;
 
+        if ($item_data['item_number'] != null && $this->item->item_number_exists($item_data['item_number'], (string)$item_id)) {
+            echo json_encode(['success' => false, 'message' => lang('Items.item_number_duplicate'), 'id' => -1]);
+            return;
+        }
+
         if ($this->item->save_value($item_data, $item_id)) {
             $success = true;
             $new_item = false;
@@ -736,8 +741,8 @@ class Products extends Secure_Controller
 
             if (!$use_destination_based_tax) {
                 $items_taxes_data = [];
-                $tax_names = $this->request->getPost('tax_names');
-                $tax_percents = $this->request->getPost('tax_percents');
+                $tax_names = $this->request->getPost('tax_names') ?? [];
+                $tax_percents = $this->request->getPost('tax_percents') ?? [];
 
                 $tax_name_index = 0;
 
@@ -810,7 +815,7 @@ class Products extends Secure_Controller
     private function upload_image(): array
     {
         $file = $this->request->getFile('items_image');
-        if (!$file) {
+        if (!$file || $file->getError() === UPLOAD_ERR_NO_FILE) {
             return [];
         }
 
@@ -896,34 +901,54 @@ class Products extends Secure_Controller
     {
         $employee_id = $this->employee->get_logged_in_employee_info()->person_id;
         $cur_item_info = $this->item->get_info($item_id);
-        $location_id = $this->request->getPost('stock_location');
+        $location_id = (int) $this->request->getPost('stock_location');
         $new_quantity = $this->request->getPost('newquantity');
+
+        if ($item_id === NEW_ENTRY || !$this->item->exists($item_id)) {
+            echo json_encode(['success' => false, 'message' => lang('Items.error_adding_updating'), 'id' => NEW_ENTRY]);
+
+            return;
+        }
+
+        if ($location_id <= 0 || !is_numeric($new_quantity)) {
+            echo json_encode(['success' => false, 'message' => lang('Items.error_adding_updating') . " $cur_item_info->name", 'id' => $item_id]);
+
+            return;
+        }
+
+        $quantity_delta = parse_quantity($new_quantity);
         $inv_data = [
             'trans_date'      => date('Y-m-d H:i:s'),
             'trans_items'     => $item_id,
             'trans_user'      => $employee_id,
             'trans_location'  => $location_id,
             'trans_comment'   => $this->request->getPost('trans_comment'),
-            'trans_inventory' => parse_quantity($new_quantity)
+            'trans_inventory' => $quantity_delta
         ];
 
-        $this->inventory->insert($inv_data, false);
-
-        // Update stock quantity
         $item_quantity = $this->item_quantity->get_item_quantity($item_id, $location_id);
         $item_quantity_data = [
             'item_id'     => $item_id,
             'location_id' => $location_id,
-            'quantity'    => $item_quantity->quantity + parse_quantity($this->request->getPost('newquantity'))
+            'quantity'    => $item_quantity->quantity + $quantity_delta
         ];
 
-        if ($this->item_quantity->save_value($item_quantity_data, $item_id, $location_id)) {
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        $this->inventory->insert($inv_data, false);
+        $saved = $this->item_quantity->save_value($item_quantity_data, $item_id, $location_id);
+
+        $db->transComplete();
+
+        if ($saved && $db->transStatus()) {
             $message = lang('Items.successful_updating') . " $cur_item_info->name";
 
             echo json_encode(['success' => true, 'message' => $message, 'id' => $item_id]);
         } else {
             $message = lang('Items.error_adding_updating') . " $cur_item_info->name";
 
+            log_message('error', 'postSaveInventory failed for item ' . $item_id);
             echo json_encode(['success' => false, 'message' => $message, 'id' => NEW_ENTRY]);
         }
     }
@@ -1398,5 +1423,10 @@ class Products extends Secure_Controller
 
             $this->attribute->saveAttributeLink($itemId, $definitionId, $attributeId);
         }
+    }
+
+    public function getCheckNumeric(): void
+    {
+        parent::getCheckNumeric();
     }
 }

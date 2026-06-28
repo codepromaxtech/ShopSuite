@@ -166,16 +166,25 @@ class Reports extends Secure_Controller
             show_404();
             return;
         }
-        
-        // Get selected report type from POST (form submit), GET (dropdown change), or use first one
+
         $selectedType = $this->request->getPost('report_type') 
                      ?? $this->request->getGet('type') 
                      ?? array_key_first($categoryConfig['types']);
         $typeConfig = $categoryConfig['types'][$selectedType] ?? null;
+
+        $this->checkUnifiedReportGrant($category, $typeConfig['model'] ?? null);
         
         if (!$typeConfig) {
             show_404();
             return;
+        }
+        
+        $category_results = $this->item->get_category_suggestions('');
+        $categories = ['' => lang('Items.none')];
+        foreach ($category_results as $cat) {
+            if (!empty($cat['label'])) {
+                $categories[$cat['label']] = $cat['label'];
+            }
         }
         
         // Prepare data for view
@@ -186,7 +195,7 @@ class Reports extends Secure_Controller
             'type_config' => $typeConfig,
             'filter_configs' => $reportsConfig->filters,
             'locations' => $this->stock_location->get_allowed_locations('reports'),
-            'categories' => [] // TODO: Load categories
+            'categories' => $categories
         ];
         
         // If form submitted, generate report
@@ -260,7 +269,65 @@ class Reports extends Secure_Controller
             }
         }
         
+        if (ENVIRONMENT === 'production') {
+            unset($data['debug_info']);
+        }
+
         echo view('reports/unified_viewer', $data);
+    }
+
+    /**
+     * Map report model names to legacy grant permission IDs.
+     */
+    private function getReportGrantFromModel(string $modelName): string
+    {
+        $map = [
+            'Summary_sales'              => 'reports_sales',
+            'Detailed_sales'             => 'reports_sales',
+            'Summary_sales_taxes'        => 'reports_sales_taxes',
+            'Summary_payments'           => 'reports_payments',
+            'Summary_taxes'              => 'reports_taxes',
+            'Summary_items'              => 'reports_items',
+            'Summary_categories'         => 'reports_categories',
+            'Summary_discounts'          => 'reports_discounts',
+            'Inventory_summary'          => 'reports_inventory',
+            'Inventory_low'              => 'reports_inventory',
+            'Inventory_expiring'         => 'reports_inventory',
+            'Summary_customers'          => 'reports_customers',
+            'Specific_customer'          => 'reports_customers',
+            'Summary_suppliers'          => 'reports_suppliers',
+            'Detailed_receivings'        => 'reports_receivings',
+            'Summary_employees'          => 'reports_employees',
+            'Summary_expenses'           => 'reports_expenses_categories',
+            'Summary_expenses_categories'=> 'reports_expenses_categories',
+        ];
+
+        return $map[$modelName] ?? 'reports_sales';
+    }
+
+    /**
+     * Enforce per-report submodule grants (matches legacy Reports controller behavior).
+     */
+    private function checkUnifiedReportGrant(string $category, ?string $modelName = null): void
+    {
+        $categoryDefaults = [
+            'sales'     => 'reports_sales',
+            'products'  => 'reports_items',
+            'customers' => 'reports_customers',
+            'suppliers' => 'reports_suppliers',
+            'employees' => 'reports_employees',
+            'financial' => 'reports_expenses_categories',
+        ];
+
+        $permissionId = $modelName
+            ? $this->getReportGrantFromModel($modelName)
+            : ($categoryDefaults[$category] ?? 'reports_' . $category);
+
+        $personId = $this->employee->get_logged_in_employee_info()->person_id;
+
+        if (!$this->employee->has_grant($permissionId, $personId)) {
+            redirect('no_access/reports/' . $permissionId);
+        }
     }
     
     /**
@@ -279,6 +346,8 @@ class Reports extends Secure_Controller
             show_404();
             return;
         }
+
+        $this->checkUnifiedReportGrant($category, $typeConfig['model']);
         
         // Get filters and generate report
         $filters = $this->getFiltersFromRequest();

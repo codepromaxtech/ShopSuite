@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class Backup extends Model
 {
-    protected $table            = 'shopsuite_backups';
+    protected $table            = 'backups';
     protected $primaryKey       = 'backup_id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'object';
@@ -24,10 +24,10 @@ class Backup extends Model
      */
     public function get_all_backups()
     {
-        return $this->db->table('shopsuite_backups')
-            ->select('shopsuite_backups.*, people.first_name, people.last_name')
-            ->join('shopsuite_people', 'shopsuite_people.person_id = shopsuite_backups.created_by', 'left')
-            ->orderBy('shopsuite_backups.created_at', 'DESC')
+        return $this->db->table('backups')
+            ->select('backups.*, people.first_name, people.last_name')
+            ->join('people', 'people.person_id = backups.created_by', 'left')
+            ->orderBy('backups.created_at', 'DESC')
             ->get()
             ->getResult();
     }

@@ -300,8 +300,10 @@ class Receivings extends Secure_Controller
         $data['selected_supplier_name'] = !empty($receiving_info['supplier_id']) ? $receiving_info['company_name'] : '';
         $data['selected_supplier_id'] = $receiving_info['supplier_id'];
         $data['receiving_info'] = $receiving_info;
+        $data['config'] = $this->config;
+        $data['controller_name'] = 'receivings';
 
-        echo view('receivings/form', $data);
+        echo view('receivings/form_modern', $data);
     }
 
     /**
@@ -313,9 +315,22 @@ class Receivings extends Secure_Controller
      */
     public function getDeleteItem($item_number): void
     {
+        redirect()->to(site_url('receivings'))->send();
+        exit;
+    }
+
+    /**
+     * Deletes an item from the current receiving (POST + CSRF).
+     *
+     * @param $item_number
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postDeleteItem($item_number): void
+    {
         $this->receiving_lib->delete_item($item_number);
 
-        $this->_reload();    // TODO: Hungarian notation
+        $this->_reload();
     }
 
     /**
@@ -349,10 +364,22 @@ class Receivings extends Secure_Controller
      */
     public function getRemoveSupplier(): void
     {
+        redirect()->to(site_url('receivings'))->send();
+        exit;
+    }
+
+    /**
+     * Removes a supplier from a receiving (POST + CSRF).
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postRemoveSupplier(): void
+    {
         $this->receiving_lib->remove_reference();
         $this->receiving_lib->remove_supplier();
 
-        $this->_reload();    // TODO: Hungarian notation
+        $this->_reload();
     }
 
     /**

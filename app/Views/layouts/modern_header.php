@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="theme-color" content="#0ea5e9">
+    <meta name="csrf-token-name" content="<?= esc(config('Security')->tokenName) ?>">
+    <meta name="csrf-cookie-name" content="<?= esc(config('Security')->cookieName) ?>">
     <title><?= esc($title ?? 'ShopSuite - Modern ERP System') ?></title>
     
     <!-- Favicon -->
@@ -251,12 +253,23 @@
                     </button>
                     
                     <!-- Notifications -->
-                    <button class="header-action" data-dropdown-toggle="notificationsDropdown">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                        </svg>
-                        <span class="header-action-badge">3</span>
-                    </button>
+                    <div class="dropdown">
+                        <button class="header-action" data-dropdown-toggle="notificationsDropdown">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                            </svg>
+                            <span class="header-action-badge d-none" id="globalNotificationBadge">0</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right d-none" id="notificationsDropdown" style="width: 320px; padding: 0;">
+                            <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="font-size: 14px; color: var(--text-primary);">Notifications</strong>
+                                <a href="#" id="markAllNotificationsReadBtn" style="font-size: 12px; color: var(--primary-600); text-decoration: none;">Mark all read</a>
+                            </div>
+                            <div id="globalNotificationsList" style="max-height: 300px; overflow-y: auto;">
+                                <div style="padding: 16px; text-align: center; color: var(--text-tertiary); font-size: 13px;">No new notifications</div>
+                            </div>
+                        </div>
+                    </div>
                     
                     <!-- User Menu -->
                     <div class="dropdown">

@@ -10,18 +10,19 @@ class ShopSuiteApp {
             inputMode: 'regular',
             sidebarCollapsed: false
         };
-        
+
         this.init();
     }
-    
+
     init() {
         this.loadSettings();
         this.applyTheme();
         this.applyInputMode();
         this.setupEventListeners();
         this.initSidebar();
+        this.initNotifications();
     }
-    
+
     // ============================================
     // SETTINGS MANAGEMENT
     // ============================================
@@ -31,25 +32,25 @@ class ShopSuiteApp {
             this.settings = { ...this.settings, ...JSON.parse(saved) };
         }
     }
-    
+
     saveSettings() {
         localStorage.setItem('shopsuite_settings', JSON.stringify(this.settings));
     }
-    
+
     // ============================================
     // THEME MANAGEMENT
     // ============================================
     applyTheme() {
         document.documentElement.setAttribute('data-theme', this.settings.theme);
     }
-    
+
     toggleTheme() {
         this.settings.theme = this.settings.theme === 'light' ? 'dark' : 'light';
         this.applyTheme();
         this.saveSettings();
         this.showToast('Theme Changed', `Switched to ${this.settings.theme} mode`, 'success');
     }
-    
+
     setTheme(theme) {
         if (['light', 'dark'].includes(theme)) {
             this.settings.theme = theme;
@@ -57,21 +58,21 @@ class ShopSuiteApp {
             this.saveSettings();
         }
     }
-    
+
     // ============================================
     // INPUT MODE MANAGEMENT
     // ============================================
     applyInputMode() {
         document.documentElement.setAttribute('data-input-mode', this.settings.inputMode);
     }
-    
+
     toggleInputMode() {
         this.settings.inputMode = this.settings.inputMode === 'regular' ? 'touch' : 'regular';
         this.applyInputMode();
         this.saveSettings();
         this.showToast('Input Mode Changed', `Switched to ${this.settings.inputMode} mode`, 'success');
     }
-    
+
     setInputMode(mode) {
         if (['regular', 'touch'].includes(mode)) {
             this.settings.inputMode = mode;
@@ -79,28 +80,28 @@ class ShopSuiteApp {
             this.saveSettings();
         }
     }
-    
+
     // ============================================
     // SIDEBAR MANAGEMENT
     // ============================================
     initSidebar() {
         const sidebar = document.querySelector('.sidebar');
         if (!sidebar) return;
-        
+
         if (this.settings.sidebarCollapsed) {
             sidebar.classList.add('collapsed');
         }
-        
+
         // Mobile: Close sidebar by default
         if (window.innerWidth < 1024) {
             sidebar.classList.remove('open');
         }
     }
-    
+
     toggleSidebar() {
         const sidebar = document.querySelector('.sidebar');
         if (!sidebar) return;
-        
+
         if (window.innerWidth < 1024) {
             // Mobile: Toggle open/close
             sidebar.classList.toggle('open');
@@ -112,7 +113,7 @@ class ShopSuiteApp {
             this.saveSettings();
         }
     }
-    
+
     toggleSidebarOverlay() {
         let overlay = document.querySelector('.sidebar-overlay');
         if (!overlay) {
@@ -123,7 +124,7 @@ class ShopSuiteApp {
         }
         overlay.classList.toggle('show');
     }
-    
+
     closeSidebar() {
         const sidebar = document.querySelector('.sidebar');
         if (sidebar) {
@@ -134,7 +135,7 @@ class ShopSuiteApp {
             overlay.classList.remove('show');
         }
     }
-    
+
     // ============================================
     // DROPDOWN MANAGEMENT
     // ============================================
@@ -151,12 +152,12 @@ class ShopSuiteApp {
                 }
             });
         });
-        
+
         // Close dropdowns when clicking outside
         document.addEventListener('click', () => {
             this.closeAllDropdowns();
         });
-        
+
         // Prevent dropdown from closing when clicking inside
         document.querySelectorAll('.dropdown-menu').forEach(menu => {
             menu.addEventListener('click', (e) => {
@@ -164,13 +165,13 @@ class ShopSuiteApp {
             });
         });
     }
-    
+
     closeAllDropdowns() {
         document.querySelectorAll('.dropdown-menu').forEach(menu => {
             menu.style.display = 'none';
         });
     }
-    
+
     // ============================================
     // MODAL MANAGEMENT
     // ============================================
@@ -181,7 +182,7 @@ class ShopSuiteApp {
             document.body.style.overflow = 'hidden';
         }
     }
-    
+
     closeModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -189,7 +190,7 @@ class ShopSuiteApp {
             document.body.style.overflow = '';
         }
     }
-    
+
     setupModals() {
         // Close modal when clicking backdrop
         document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
@@ -200,7 +201,7 @@ class ShopSuiteApp {
                 }
             });
         });
-        
+
         // Close modal buttons
         document.querySelectorAll('[data-modal-close]').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -208,7 +209,7 @@ class ShopSuiteApp {
                 this.closeModal(modalId);
             });
         });
-        
+
         // Open modal buttons
         document.querySelectorAll('[data-modal-open]').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -217,7 +218,7 @@ class ShopSuiteApp {
             });
         });
     }
-    
+
     // ============================================
     // TOAST NOTIFICATIONS
     // ============================================
@@ -228,17 +229,17 @@ class ShopSuiteApp {
             container.className = 'toast-container';
             document.body.appendChild(container);
         }
-        
+
         const toast = document.createElement('div');
         toast.className = 'toast';
-        
+
         const icons = {
             success: '<svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>',
             error: '<svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>',
             warning: '<svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>',
             info: '<svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
         };
-        
+
         toast.innerHTML = `
             ${icons[type] || icons.info}
             <div class="toast-content">
@@ -251,9 +252,9 @@ class ShopSuiteApp {
                 </svg>
             </button>
         `;
-        
+
         container.appendChild(toast);
-        
+
         if (duration > 0) {
             setTimeout(() => {
                 toast.style.animation = 'slideOutRight 0.3s ease-out';
@@ -261,7 +262,103 @@ class ShopSuiteApp {
             }, duration);
         }
     }
-    
+
+    // ============================================
+    // APPLICATION NOTIFICATIONS (DROPDOWN)
+    // ============================================
+    initNotifications() {
+        this.fetchNotifications();
+
+        // Poll every 60 seconds
+        setInterval(() => this.fetchNotifications(), 60000);
+
+        // Setup mark all as read
+        const markAllBtn = document.getElementById('markAllNotificationsReadBtn');
+        if (markAllBtn) {
+            markAllBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.markAllNotificationsRead();
+            });
+        }
+    }
+
+    async fetchNotifications() {
+        try {
+            // Assume CI4 base URL relative path /notifications/get_unread
+            const baseUrl = typeof window.shopsuiteConfig !== 'undefined' ? window.shopsuiteConfig.baseUrl : '';
+            const response = await fetch(baseUrl + '/notifications/get_unread', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            });
+            if (!response.ok) return;
+
+            const data = await response.json();
+            if (data.success) {
+                this.updateNotificationUI(data.notifications, data.count);
+            }
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
+    }
+
+    updateNotificationUI(notifications, count) {
+        const badge = document.getElementById('globalNotificationBadge');
+        const list = document.getElementById('globalNotificationsList');
+
+        if (!badge || !list) return;
+
+        if (count > 0) {
+            badge.textContent = count;
+            badge.classList.remove('d-none');
+        } else {
+            badge.textContent = '0';
+            badge.classList.add('d-none');
+        }
+
+        if (notifications.length === 0) {
+            list.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-tertiary); font-size: 13px;">No new notifications</div>';
+            return;
+        }
+
+        let html = '';
+        notifications.forEach(notif => {
+            let dateStr = new Date(notif.created_at).toLocaleString();
+            html += `
+                <div class="notification-item" style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); cursor: pointer;" onclick="window.location.href='${notif.link || '#'}'">
+                    <div style="font-weight: 600; font-size: 13px; color: var(--text-primary); margin-bottom: 4px;">${notif.title}</div>
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 6px;">${notif.message}</div>
+                    <div style="font-size: 11px; color: var(--text-tertiary);">${dateStr}</div>
+                </div>
+            `;
+        });
+
+        list.innerHTML = html;
+
+        // Add hover styles dynamically
+        const items = list.querySelectorAll('.notification-item');
+        items.forEach(item => {
+            item.addEventListener('mouseenter', () => { item.style.backgroundColor = 'var(--bg-secondary)'; });
+            item.addEventListener('mouseleave', () => { item.style.backgroundColor = 'transparent'; });
+        });
+    }
+
+    async markAllNotificationsRead() {
+        try {
+            const formData = new FormData();
+            const baseUrl = typeof window.shopsuiteConfig !== 'undefined' ? window.shopsuiteConfig.baseUrl : '';
+            const response = await fetch(baseUrl + '/notifications/mark_all_read', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: formData
+            });
+            const data = await response.json();
+            if (data.success) {
+                this.fetchNotifications();
+            }
+        } catch (error) {
+            console.error('Error marking notifications as read:', error);
+        }
+    }
+
     // ============================================
     // CONFIRMATION DIALOG
     // ============================================
@@ -269,7 +366,7 @@ class ShopSuiteApp {
         const confirmModal = document.createElement('div');
         confirmModal.className = 'modal-backdrop';
         confirmModal.style.display = 'flex';
-        
+
         confirmModal.innerHTML = `
             <div class="modal" style="max-width: 400px;">
                 <div class="modal-header">
@@ -284,25 +381,25 @@ class ShopSuiteApp {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(confirmModal);
         document.body.style.overflow = 'hidden';
-        
+
         const removeModal = () => {
             confirmModal.remove();
             document.body.style.overflow = '';
         };
-        
+
         confirmModal.querySelector('[data-action="confirm"]').addEventListener('click', () => {
             removeModal();
             if (onConfirm) onConfirm();
         });
-        
+
         confirmModal.querySelector('[data-action="cancel"]').addEventListener('click', () => {
             removeModal();
             if (onCancel) onCancel();
         });
-        
+
         confirmModal.addEventListener('click', (e) => {
             if (e.target === confirmModal) {
                 removeModal();
@@ -310,7 +407,7 @@ class ShopSuiteApp {
             }
         });
     }
-    
+
     // ============================================
     // LOADING STATE
     // ============================================
@@ -329,53 +426,93 @@ class ShopSuiteApp {
         }
         overlay.style.display = 'flex';
     }
-    
+
     hideLoading() {
         const overlay = document.querySelector('.loading-overlay');
         if (overlay) {
             overlay.style.display = 'none';
         }
     }
-    
+
+    // ============================================
+    // CSRF (cookie-based, for fetch POST actions)
+    // ============================================
+    getCsrfTokenName() {
+        return document.querySelector('meta[name="csrf-token-name"]')?.content || 'csrf_shopsuite_v4';
+    }
+
+    getCsrfCookieName() {
+        return document.querySelector('meta[name="csrf-cookie-name"]')?.content || 'csrf_cookie_shopsuite_v4';
+    }
+
+    getCsrfToken() {
+        const cookieName = this.getCsrfCookieName();
+        const escaped = cookieName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const match = document.cookie.match(new RegExp('(?:^|; )' + escaped + '=([^;]*)'));
+
+        return match ? decodeURIComponent(match[1]) : '';
+    }
+
+    getCsrfFormBody(extraParams = {}) {
+        const body = new URLSearchParams();
+
+        Object.entries(extraParams).forEach(([key, value]) => {
+            body.set(key, value);
+        });
+        body.set(this.getCsrfTokenName(), this.getCsrfToken());
+
+        return body;
+    }
+
+    postAction(url, extraParams = {}) {
+        return fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: this.getCsrfFormBody(extraParams).toString(),
+        });
+    }
+
     // ============================================
     // EVENT LISTENERS SETUP
     // ============================================
     setupEventListeners() {
         // Sidebar toggle
         document.addEventListener('click', (e) => {
-            if (e.target.matches('[data-action="toggle-sidebar"]') || 
+            if (e.target.matches('[data-action="toggle-sidebar"]') ||
                 e.target.closest('[data-action="toggle-sidebar"]')) {
                 this.toggleSidebar();
             }
-            
+
             // Theme toggle
             if (e.target.matches('[data-action="toggle-theme"]') ||
                 e.target.closest('[data-action="toggle-theme"]')) {
                 this.toggleTheme();
             }
-            
+
             // Input mode toggle
             if (e.target.matches('[data-action="toggle-input-mode"]') ||
                 e.target.closest('[data-action="toggle-input-mode"]')) {
                 this.toggleInputMode();
             }
         });
-        
+
         // Setup dropdowns after DOM is ready
         this.setupDropdowns();
         this.setupModals();
-        
+
         // Close sidebar on window resize
         window.addEventListener('resize', () => {
             if (window.innerWidth >= 1024) {
                 this.closeSidebar();
             }
         });
-        
+
         // Active menu highlighting
         this.highlightActiveMenu();
     }
-    
+
     // ============================================
     // ACTIVE MENU HIGHLIGHTING
     // ============================================
@@ -390,7 +527,7 @@ class ShopSuiteApp {
             }
         });
     }
-    
+
     // ============================================
     // UTILITY FUNCTIONS
     // ============================================
@@ -400,18 +537,18 @@ class ShopSuiteApp {
             currency: currency
         }).format(amount);
     }
-    
+
     formatDate(date, format = 'short') {
-        const options = format === 'long' 
+        const options = format === 'long'
             ? { year: 'numeric', month: 'long', day: 'numeric' }
             : { year: 'numeric', month: 'short', day: 'numeric' };
         return new Intl.DateTimeFormat('en-US', options).format(new Date(date));
     }
-    
+
     formatNumber(number) {
         return new Intl.NumberFormat('en-US').format(number);
     }
-    
+
     debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {

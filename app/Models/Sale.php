@@ -5,6 +5,7 @@ namespace App\Models;
 use CodeIgniter\Database\BaseBuilder;
 use CodeIgniter\Database\ResultInterface;
 use CodeIgniter\Model;
+use App\Libraries\Notification_lib;
 use App\Libraries\Sale_lib;
 use Config\ShopSuite;
 use ReflectionException;
@@ -28,7 +29,8 @@ class Sale extends Model
         'invoice_number',
         'dinner_table_id',
         'work_order_number',
-        'sale_type'
+        'sale_type',
+        'cashup_id'
     ];
 
     public function __construct()
@@ -545,6 +547,19 @@ class Sale extends Model
             'sale_type'         => $sale_type
         ];
 
+        if (
+            $sale_id == NEW_ENTRY
+            && $sale_status == COMPLETED
+            && $sale_type == SALE_TYPE_POS
+            && $this->db->fieldExists('cashup_id', 'sales')
+        ) {
+            $cashup_lib = new \App\Libraries\Cashup_lib();
+            $active_cashup_id = $cashup_lib->get_active_cashup_id();
+            if ($active_cashup_id !== null) {
+                $sales_data['cashup_id'] = $active_cashup_id;
+            }
+        }
+
         // Run these queries as a transaction, we want to make sure we do all or nothing
         $this->db->transStart();
 
@@ -577,8 +592,8 @@ class Sale extends Model
                 'sale_id'         => $sale_id,
                 'payment_type'    => $payment['payment_type'],
                 'payment_amount'  => $payment['payment_amount'],
-                'cash_refund'     => $payment['cash_refund'],
-                'cash_adjustment' => $payment['cash_adjustment'],
+                'cash_refund'     => $payment['cash_refund'] ?? 0,
+                'cash_adjustment' => $payment['cash_adjustment'] ?? 0,
                 'employee_id'     => $employee_id
             ];
 
@@ -618,18 +633,15 @@ class Sale extends Model
             $builder->insert($sales_items_data);
 
             if ($cur_item_info->stock_type == HAS_STOCK && $sale_status == COMPLETED) {    // TODO: === ?
-                // Update stock quantity if item type is a standard stock item and the sale is a standard sale
-                $item_quantity_data = $item_quantity->get_item_quantity($item_data['item_id'], $item_data['item_location']);
-
-                $item_quantity->save_value(
-                    [
-                        'quantity'    => $item_quantity_data->quantity - $item_data['quantity'],
-                        'item_id'     => $item_data['item_id'],
-                        'location_id' => $item_data['item_location']
-                    ],
+                if (!$item_quantity->adjust_quantity_for_sale(
                     $item_data['item_id'],
-                    $item_data['item_location']
-                );
+                    $item_data['item_location'],
+                    (float) $item_data['quantity']
+                )) {
+                    $this->db->transRollback();
+
+                    return -1;
+                }
 
                 // If an items was deleted but later returned it's restored with this rule
                 if ($item_data['quantity'] < 0) {
@@ -648,6 +660,21 @@ class Sale extends Model
                 ];
 
                 $inventory->insert($inv_data, false);
+
+                $quantity_after = $item_quantity->get_item_quantity($item_data['item_id'], $item_data['item_location']);
+                if (
+                    $quantity_after !== null
+                    && (float) $quantity_after->quantity <= (float) $cur_item_info->reorder_level
+                    && (float) $cur_item_info->reorder_level > 0
+                ) {
+                    $notification_lib = new Notification_lib();
+                    $notification_lib->notify_by_permission(
+                        'items',
+                        'Low Stock Alert',
+                        $cur_item_info->name . ' is at or below reorder level.',
+                        site_url('products/view/' . $item_data['item_id'])
+                    );
+                }
             }
 
             $attribute->copy_attribute_links($item_data['item_id'], 'sale_id', $sale_id);
@@ -760,15 +787,32 @@ class Sale extends Model
     }
 
     /**
-     * Restores list of sales
+     * Restores canceled sales back to suspended status.
      */
-    public function restore_list(array $sale_ids, int $employee_id, bool $update_inventory = true): bool    // TODO: $employee_id and $update_inventory are never used in the function.
+    public function restore_list(array $sale_ids, int $employee_id, bool $update_inventory = true): bool
     {
+        unset($update_inventory);
+
+        $this->db->transStart();
+
         foreach ($sale_ids as $sale_id) {
+            $sale_id = (int) $sale_id;
+            if ($sale_id <= 0) {
+                continue;
+            }
+
+            if ($this->get_sale_status($sale_id) !== CANCELED) {
+                $this->db->transRollback();
+
+                return false;
+            }
+
             $this->update_sale_status($sale_id, SUSPENDED);
         }
 
-        return true;
+        $this->db->transComplete();
+
+        return $this->db->transStatus();
     }
 
     /**
@@ -898,6 +942,54 @@ class Sale extends Model
         $builder->where('sale_id', $sale_id);
 
         return $builder->get();
+    }
+
+    /**
+     * Payment totals for sales linked to a cashup session.
+     *
+     * @return array{cash: float, due: float, card: float, check: float, has_sales: bool}
+     */
+    public function get_payment_summary_by_cashup(int $cashup_id): array
+    {
+        $totals = [
+            'cash'       => 0.0,
+            'due'        => 0.0,
+            'card'       => 0.0,
+            'check'      => 0.0,
+            'has_sales'  => false,
+        ];
+
+        if (!$this->db->fieldExists('cashup_id', 'sales')) {
+            return $totals;
+        }
+
+        $builder = $this->db->table('sales AS sales');
+        $builder->select('sales_payments.payment_type, SUM(payment_amount - cash_refund) AS amount, COUNT(DISTINCT sales.sale_id) AS sale_count');
+        $builder->join('sales_payments AS sales_payments', 'sales.sale_id = sales_payments.sale_id');
+        $builder->where('sales.cashup_id', $cashup_id);
+        $builder->where('sales.sale_status', COMPLETED);
+        $builder->groupBy('sales_payments.payment_type');
+
+        foreach ($builder->get()->getResultArray() as $row) {
+            if ((int) $row['sale_count'] > 0) {
+                $totals['has_sales'] = true;
+            }
+
+            $amount = (float) $row['amount'];
+            $payment_type = $row['payment_type'];
+
+            if ($payment_type == lang('Sales.cash')) {
+                $totals['cash'] += $amount;
+            } elseif ($payment_type == lang('Sales.due')) {
+                $totals['due'] += $amount;
+            } elseif ($payment_type == lang('Sales.debit') || $payment_type == lang('Sales.credit')) {
+                $totals['card'] += $amount;
+            } elseif ($payment_type == lang('Sales.check')) {
+                $totals['check'] += $amount;
+            }
+        }
+
+        return $totals;
     }
 
     /**

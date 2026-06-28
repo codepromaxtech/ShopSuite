@@ -46,16 +46,60 @@ class Cashup extends Model
     }
 
     /**
-     * Gets employee info
+     * Whether a cash_up row represents an open (not yet closed) register session.
      */
-    public function get_employee(int $cashup_id): object    // TODO: This function is never called and if it were called, would not yield proper results.  There is no employee_id field in the cash_up table.
+    public static function is_open_session_row(object $row): bool
+    {
+        if ((int) ($row->deleted ?? 0) !== 0) {
+            return false;
+        }
+
+        return floatval($row->closed_amount_cash ?? 0) == 0
+            && floatval($row->closed_amount_due ?? 0) == 0
+            && floatval($row->closed_amount_card ?? 0) == 0
+            && floatval($row->closed_amount_check ?? 0) == 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function is_open_session(int $cashup_id): bool
+    {
+        if ($cashup_id <= 0 || !$this->exists($cashup_id)) {
+            return false;
+        }
+
+        return self::is_open_session_row($this->get_info($cashup_id));
+    }
+
+    /**
+     * Most recent open cashup for an employee, if any.
+     */
+    public function get_open_cashup_id_for_employee(int $employee_id): ?int
     {
         $builder = $this->db->table('cash_up');
-        $builder->where('cashup_id', $cashup_id);
+        $builder->select('cashup_id, deleted, closed_amount_cash, closed_amount_due, closed_amount_card, closed_amount_check');
+        $builder->where('deleted', 0);
+        $builder->where('open_employee_id', $employee_id);
+        $builder->orderBy('open_date', 'DESC');
 
-        $employee = model(Employee::class);
+        foreach ($builder->get()->getResult() as $row) {
+            if (self::is_open_session_row($row)) {
+                return (int) $row->cashup_id;
+            }
+        }
 
-        return $employee->get_info($builder->get()->getRow()->employee_id);
+        return null;
+    }
+
+    /**
+     * Gets the employee who opened the cashup session.
+     */
+    public function get_employee(int $cashup_id): object
+    {
+        $info = $this->get_info($cashup_id);
+
+        return model(Employee::class)->get_info((int) ($info->open_employee_id ?? NEW_ENTRY));
     }
 
     /**

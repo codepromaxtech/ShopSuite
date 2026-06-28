@@ -4162,3 +4162,594 @@ input:checked+.toggle-slider:before {
 .dashboard-sub-grid>.card {
     min-width: 0;
 }
+/* Modern styling adapter for legacy config forms */
+.config-form-card {
+    color: var(--text-primary);
+}
+.config-form-card .control-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: var(--space-2);
+}
+.config-form-card .form-group {
+    margin-bottom: var(--space-6);
+}
+.config-form-card .input-group-addon {
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-right: none;
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+}
+.config-form-card .input-group .form-control {
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+.config-form-card .form-control {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: none;
+}
+.config-form-card .form-control:focus {
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(14,165,233,0.1);
+}
+.config-form-card .form-control[disabled] {
+    background-color: var(--bg-tertiary);
+    color: var(--text-tertiary);
+}
+.config-form-card .radio-inline, 
+.config-form-card .checkbox-inline {
+    color: var(--text-primary);
+}
+.config-form-card legend,
+.config-form-card fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+#required_fields_message {
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-color);
+}
+[data-theme="dark"] .config-form-card .btn-default {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+[data-theme="dark"] .config-form-card .btn-default:hover {
+    background-color: var(--secondary-700);
+}
+[data-theme="dark"] .config-form-card .dropdown-menu {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+}
+[data-theme="dark"] .config-form-card .dropdown-menu > li > a {
+    color: var(--text-primary);
+}
+[data-theme="dark"] .config-form-card .dropdown-menu > li > a:hover {
+    background-color: var(--bg-tertiary);
+}
+[data-theme="dark"] .config-form-card .thumbnail {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
+
+/* Fix UI/UX for legacy text fields and dropdowns */
+.config-form-card .input-sm,
+.config-form-card .btn-sm,
+.config-form-card .form-group-sm .form-control {
+    height: 42px !important;
+    font-size: var(--text-sm) !important;
+    padding: var(--space-2) var(--space-3) !important;
+    border-radius: var(--radius-lg) !important;
+}
+
+.config-form-card select.form-control:not([multiple]) {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23888' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+    background-position: right 10px center !important;
+    background-repeat: no-repeat !important;
+    background-size: 1.5em 1.5em !important;
+    padding-right: 32px !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+.config-form-card .bootstrap-select > .btn {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-lg) !important;
+    height: 42px !important;
+    box-shadow: none !important;
+    display: flex !important;
+    align-items: center !important;
+    outline: none !important;
+}
+.config-form-card .bootstrap-select > .btn:hover,
+.config-form-card .bootstrap-select > .btn:focus,
+.config-form-card .bootstrap-select.open > .btn {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 3px rgba(14,165,233,0.1) !important;
+}
+.config-form-card .bootstrap-select .dropdown-menu {
+    border-radius: var(--radius-lg) !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border-color) !important;
+    padding: 0 !important;
+    margin-top: 4px !important;
+}
+.config-form-card .bootstrap-select .dropdown-menu li a {
+    color: var(--text-primary) !important;
+    padding: 10px 15px !important;
+    border-radius: 0 !important;
+    transition: background-color 0.2s !important;
+}
+.config-form-card .bootstrap-select .dropdown-menu li a:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+.config-form-card .bootstrap-select .dropdown-menu .selected a {
+    background-color: var(--primary-50) !important;
+    color: var(--primary-600) !important;
+    font-weight: 500 !important;
+}
+[data-theme="dark"] .config-form-card .bootstrap-select .dropdown-menu .selected a {
+    background-color: var(--primary-900) !important;
+    color: var(--primary-100) !important;
+}
+.config-form-card .bootstrap-select .bs-searchbox .form-control {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    margin-bottom: 5px !important;
+}
+.config-form-card .bootstrap-select .caret {
+    display: none !important;
+}
+.config-form-card .bootstrap-select > .btn::after {
+    content: "";
+    width: 1.5em;
+    height: 1.5em;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23888' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    right: 10px;
+}
+
+.config-page-card {
+    margin-bottom: var(--space-8);
+}
+.config-page-card > .card-body {
+    padding: var(--space-6);
+}
+.config-legacy-form .form-horizontal .form-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-2);
+}
+.config-legacy-form .form-horizontal .control-label {
+    flex: 0 0 25%;
+    max-width: 25%;
+    padding-top: var(--space-2);
+}
+.config-legacy-form .form-horizontal .col-xs-8,
+.config-legacy-form .form-horizontal .col-xs-4 {
+    flex: 1 1 0;
+    max-width: 100%;
+    padding: 0;
+}
+.config-legacy-form .form-horizontal a.control-label {
+    text-align: left;
+    color: var(--primary-600);
+    text-decoration: none;
+}
+.config-legacy-form .form-horizontal a.control-label:hover {
+    text-decoration: underline;
+}
+@media (max-width: 767px) {
+    .config-legacy-form .form-horizontal .control-label {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* POS cashup session badge */
+.pos-cashup-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--success-500) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--success-500) 35%, transparent);
+    color: var(--success-600);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.pos-cashup-badge:hover {
+    background: color-mix(in srgb, var(--success-500) 20%, transparent);
+    border-color: color-mix(in srgb, var(--success-500) 50%, transparent);
+    color: var(--success-700);
+    text-decoration: none;
+}
+
+.pos-cashup-badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success-500);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--success-500) 25%, transparent);
+    animation: pos-cashup-pulse 2s ease-in-out infinite;
+}
+
+@keyframes pos-cashup-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
+
+.pos-cashup-open {
+    white-space: nowrap;
+}
+
+/* Sale documents: invoice, quote, work order, tax invoice */
+.sale-doc-container {
+    max-width: 900px;
+}
+
+.sale-doc-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-5);
+}
+
+.sale-doc-company-col {
+    max-width: 50%;
+}
+
+.sale-doc-logo {
+    max-height: 80px;
+    margin-bottom: var(--space-2);
+}
+
+.sale-doc-company-name {
+    margin: 0 0 5px 0;
+    font-size: var(--text-2xl);
+    color: var(--text-primary);
+}
+
+.sale-doc-company-info {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-size: var(--text-sm);
+}
+
+.sale-doc-meta-col {
+    text-align: right;
+}
+
+.sale-doc-title {
+    margin: 0 0 var(--space-4) 0;
+    font-size: 36px;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.sale-doc-meta-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: var(--text-sm);
+}
+
+.sale-doc-meta-label {
+    padding: var(--space-1) var(--space-2) var(--space-1) 0;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+.sale-doc-meta-value {
+    padding: var(--space-1) 0;
+    font-weight: 500;
+    text-align: right;
+}
+
+.sale-doc-meta-label-total {
+    padding: var(--space-2) var(--space-2) var(--space-1) 0;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: right;
+}
+
+.sale-doc-meta-value-total {
+    padding: var(--space-2) 0 var(--space-1) 0;
+    font-weight: 700;
+    font-size: var(--text-base);
+    text-align: right;
+    color: var(--primary-600);
+}
+
+.sale-doc-customer-box {
+    margin-bottom: var(--space-8);
+    padding: var(--space-5);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.sale-doc-section-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    margin-bottom: var(--space-2);
+    letter-spacing: 0.5px;
+}
+
+.sale-doc-customer-info {
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+.sale-doc-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--space-8);
+    border: 1px solid var(--border-color);
+}
+
+.sale-doc-items-thead tr {
+    background: var(--bg-secondary);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.sale-doc-th {
+    padding: var(--space-3);
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.sale-doc-th-left {
+    text-align: left;
+}
+
+.sale-doc-th-center {
+    text-align: center;
+}
+
+.sale-doc-th-right {
+    text-align: right;
+}
+
+.sale-doc-td {
+    padding: var(--space-3);
+    font-size: var(--text-sm);
+}
+
+.sale-doc-td-center {
+    text-align: center;
+}
+
+.sale-doc-td-right {
+    text-align: right;
+}
+
+.sale-doc-td-bold {
+    font-weight: 500;
+}
+
+.sale-doc-td-total {
+    font-weight: 600;
+}
+
+.sale-doc-row {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sale-doc-row-serial {
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.sale-doc-serial-cell {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+}
+
+.sale-doc-totals-wrap {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--space-8);
+}
+
+.sale-doc-totals-table {
+    width: 350px;
+    border-collapse: collapse;
+}
+
+.sale-doc-total-row-label {
+    padding: var(--space-2) 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.sale-doc-total-row-value {
+    padding: var(--space-2) 0;
+    font-size: var(--text-sm);
+    text-align: right;
+    font-weight: 500;
+}
+
+.sale-doc-grand-total-label {
+    padding: var(--space-4) 0;
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-primary);
+    border-top: 2px solid var(--border-color);
+}
+
+.sale-doc-grand-total-value {
+    padding: var(--space-4) 0;
+    font-size: var(--text-lg);
+    font-weight: 700;
+    text-align: right;
+    color: var(--primary-600);
+    border-top: 2px solid var(--border-color);
+}
+
+.sale-doc-change-row {
+    background: var(--bg-secondary);
+}
+
+.sale-doc-change-label {
+    padding: var(--space-3) var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.sale-doc-change-value {
+    padding: var(--space-3) var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-align: right;
+    color: var(--text-primary);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.sale-doc-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border-color);
+}
+
+.sale-doc-terms {
+    max-width: 60%;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.sale-doc-terms-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.sale-doc-terms-block {
+    margin-bottom: var(--space-2);
+}
+
+.sale-doc-barcode-col {
+    text-align: right;
+}
+
+.sale-doc-barcode-wrap {
+    margin-bottom: 5px;
+}
+
+.sale-doc-barcode-id {
+    font-size: var(--text-xs);
+    font-family: 'Roboto Mono', monospace;
+    letter-spacing: 2px;
+}
+
+.sale-doc-actions {
+    margin-top: var(--space-10);
+}
+
+.sale-doc-icon-primary {
+    background: var(--primary-100);
+    color: var(--primary-600);
+}
+
+.sale-doc-icon-info {
+    background: var(--info-100);
+    color: var(--info-600);
+}
+
+.sale-doc-icon-warning {
+    background: var(--warning-100);
+    color: var(--warning-600);
+}
+
+.sale-doc-btn-discard {
+    border: 2px solid var(--danger-300);
+    color: var(--danger-600);
+    background: transparent;
+}
+
+.sale-doc-error-link {
+    background: var(--info-600);
+    color: white;
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.sale-doc-serial-sn {
+    margin-top: var(--space-1);
+}
+
+.sale-doc-hsn-cell {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    text-align: center;
+}
+
+.sale-doc-totals-with-signature {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: var(--space-8);
+}
+
+.sale-doc-signature-col {
+    flex: 1;
+    padding-right: var(--space-10);
+}
+
+.sale-doc-signature-line {
+    margin-top: var(--space-10);
+    border-top: 1px dashed var(--border-color);
+    padding-top: var(--space-2);
+    width: 250px;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.sale-doc-barcode-img {
+    max-width: 250px;
+}
+
+.btn-action.btn-email-sent {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.btn-action.btn-email-default {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}

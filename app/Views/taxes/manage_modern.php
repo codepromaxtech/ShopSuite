@@ -191,11 +191,45 @@ echo view('layouts/modern_header', ['title' => $title]);
                     <h2>Tax Codes</h2>
                     <p>Manage tax code identifiers</p>
                 </div>
+                <div class="tab-actions">
+                    <a href="<?= base_url('tax_codes/view/-1') ?>" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i>
+                        <span>Add Code</span>
+                    </a>
+                </div>
             </div>
-            <div class="empty-state">
-                <i class="bi bi-code"></i>
-                <h3>Tax Codes Management</h3>
-                <p>Tax codes configuration will be available here</p>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>City</th>
+                            <th>State</th>
+                            <th class="u-width-15pct">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($tax_codes) && !empty($tax_codes[0]['tax_code'])): ?>
+                            <?php foreach ($tax_codes as $code): ?>
+                                <?php if (empty($code['tax_code'])) continue; ?>
+                                <tr>
+                                    <td><span class="cell-title"><?= esc($code['tax_code']) ?></span></td>
+                                    <td><?= esc($code['tax_code_name'] ?? '') ?></td>
+                                    <td><?= esc($code['city'] ?? '') ?></td>
+                                    <td><?= esc($code['state'] ?? '') ?></td>
+                                    <td>
+                                        <a href="<?= base_url('tax_codes/view/' . (int) ($code['tax_code_id'] ?? -1)) ?>" class="btn btn-sm btn-primary" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr><td colspan="5"><div class="empty-state"><p>No tax codes yet.</p></div></td></tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -206,11 +240,39 @@ echo view('layouts/modern_header', ['title' => $title]);
                     <h2>Tax Categories</h2>
                     <p>Product and service tax categories</p>
                 </div>
+                <div class="tab-actions">
+                    <a href="<?= base_url('taxes/view_tax_categories/-1') ?>" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i>
+                        <span>Add Category</span>
+                    </a>
+                </div>
             </div>
-            <div class="empty-state">
-                <i class="bi bi-tag"></i>
-                <h3>Tax Categories Management</h3>
-                <p>Tax categories configuration will be available here</p>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th class="u-width-15pct">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($tax_categories) && !empty($tax_categories[0]['tax_category'])): ?>
+                            <?php foreach ($tax_categories as $category): ?>
+                                <?php if (empty($category['tax_category'])) continue; ?>
+                                <tr>
+                                    <td><span class="cell-title"><?= esc($category['tax_category']) ?></span></td>
+                                    <td>
+                                        <a href="<?= base_url('taxes/view_tax_categories/' . (int) ($category['tax_category_id'] ?? -1)) ?>" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr><td colspan="2"><div class="empty-state"><p>No tax categories yet.</p></div></td></tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -221,11 +283,39 @@ echo view('layouts/modern_header', ['title' => $title]);
                     <h2>Tax Jurisdictions</h2>
                     <p>Geographic tax areas and regions</p>
                 </div>
+                <div class="tab-actions">
+                    <a href="<?= base_url('taxes/view_tax_jurisdictions/-1') ?>" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i>
+                        <span>Add Jurisdiction</span>
+                    </a>
+                </div>
             </div>
-            <div class="empty-state">
-                <i class="bi bi-geo-alt"></i>
-                <h3>Tax Jurisdictions Management</h3>
-                <p>Tax jurisdictions configuration will be available here</p>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Jurisdiction</th>
+                            <th class="u-width-15pct">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($tax_jurisdictions) && !empty($tax_jurisdictions[0]['jurisdiction_name'])): ?>
+                            <?php foreach ($tax_jurisdictions as $jurisdiction): ?>
+                                <?php if (empty($jurisdiction['jurisdiction_name'])) continue; ?>
+                                <tr>
+                                    <td><span class="cell-title"><?= esc($jurisdiction['jurisdiction_name']) ?></span></td>
+                                    <td>
+                                        <a href="<?= base_url('taxes/view_tax_jurisdictions/' . (int) ($jurisdiction['jurisdiction_id'] ?? -1)) ?>" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr><td colspan="2"><div class="empty-state"><p>No jurisdictions yet.</p></div></td></tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -304,6 +394,14 @@ function filterTable(tableId) {
         tr[i].style.display = found ? '' : 'none';
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab && document.getElementById('tab-' + tab)) {
+        switchTab(tab);
+    }
+});
 </script>
 
 <?= view('layouts/modern_footer') ?>

@@ -228,6 +228,24 @@ class Config extends Secure_Controller
      */
     public function getIndex(): void
     {
+        $this->renderConfigView();
+    }
+
+    public function getInfo(): void { $this->renderConfigView('info'); }
+    public function getGeneral(): void { $this->renderConfigView('general'); }
+    public function getTax(): void { $this->renderConfigView('tax'); }
+    public function getLocale(): void { $this->renderConfigView('locale'); }
+    public function getBarcode(): void { $this->renderConfigView('barcode'); }
+    public function getStock(): void { $this->renderConfigView('stock'); }
+    public function getReceipt(): void { $this->renderConfigView('receipt'); }
+    public function getInvoice(): void { $this->renderConfigView('invoice'); }
+    public function getReward(): void { $this->renderConfigView('reward'); }
+    public function getTable(): void { $this->renderConfigView('table'); }
+    public function getSystem(): void { $this->renderConfigView('system'); }
+    public function getEmail(): void { $this->renderConfigView('email'); }
+
+    private function renderConfigView(?string $active_tab = null): void
+    {
         $data['stock_locations'] = $this->stock_location->get_all()->getResultArray();
         $data['dinner_tables'] = $this->dinner_table->get_all()->getResultArray();
         $data['customer_rewards'] = $this->customer_rewards->get_all()->getResultArray();
@@ -259,7 +277,7 @@ class Config extends Secure_Controller
         // Integrations Related fields
         $data['mailchimp']    = [];
 
-        if (check_encryption()) {    // TODO: Hungarian notation
+        if (check_encryption()) {
             if (!isset($this->encrypter)) {
                 helper('security');
                 $this->encrypter = Services::encrypter();
@@ -268,10 +286,7 @@ class Config extends Secure_Controller
             $data['mailchimp']['api_key'] = (isset($this->config['mailchimp_api_key']) && !empty($this->config['mailchimp_api_key']))
                 ? $this->encrypter->decrypt($this->config['mailchimp_api_key'])
                 : '';
-
-            $data['mailchimp']['list_id'] = (isset($this->config['mailchimp_list_id']) && !empty($this->config['mailchimp_list_id']))
-                ? $this->encrypter->decrypt($this->config['mailchimp_list_id'])
-                : '';
+            $data['mailchimp']['list_id'] = $this->config['mailchimp_list_id'] ?? '';
 
             // Remove any backup of .env created by check_encryption()
             remove_backup();
@@ -284,8 +299,14 @@ class Config extends Secure_Controller
         $data['allowed_modules'] = $this->global_view_data['allowed_modules'];
         $data['user_info'] = $this->global_view_data['user_info'];
         $data['config'] = $this->global_view_data['config'];
+        
+        $data['active_tab'] = $active_tab;
 
-        echo view('config/manage_modern', $data);
+        if ($active_tab === null) {
+            echo view('config/manage_modern', $data);
+        } else {
+            echo view('config/manage_modern_form', $data);
+        }
     }
 
     /**

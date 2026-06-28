@@ -5,8 +5,6 @@
  * @var object $user_info
  * @var array $config
  */
-?>
-
 $title = 'My Settings';
 echo view('layouts/modern_header', ['title' => $title]);
 ?>

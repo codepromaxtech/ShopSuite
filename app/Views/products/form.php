@@ -28,7 +28,7 @@
 <div id="required_fields_message"><?= lang('Common.fields_required_message') ?></div>
 <ul id="error_message_box" class="error_message_box"></ul>
 
-<?= form_open("items/save/$item_info->item_id", ['id' => 'item_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) ?>
+<?= form_open("products/save/$item_info->item_id", ['id' => 'item_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) ?>
     <fieldset id="item_basic_info">
 
         <div class="form-group form-group-sm">
@@ -81,7 +81,7 @@
 
         <div id="attributes">
             <script type="text/javascript">
-                $('#attributes').load('<?= "items/attributes/$item_info->item_id" ?>');
+                $('#attributes').load('<?= "products/attributes/$item_info->item_id" ?>');
             </script>
         </div>
 
@@ -535,7 +535,7 @@
                             } else {
                                 dialog_support.hide();
                             }
-                            table_support.handle_submit('<?= 'items' ?>', response, stay_open);
+                            table_support.handle_submit('<?= 'products' ?>', response, stay_open);
                             init_validation();
                         },
                         dataType: 'json'

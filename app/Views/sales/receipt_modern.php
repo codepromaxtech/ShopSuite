@@ -23,10 +23,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#10b981">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('css/modern-pages.css') ?>">
     <title>Receipt #<?= $sale_id ?> - Sale Complete</title>
     <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <?= view('sales/partials/document_csrf') ?>
 </head>
 <body class="u-margin-0_padding-0_font-family--apple">
 
@@ -184,7 +186,7 @@
                 </button>
                 
                 <?php if (!empty($customer_email)): ?>
-                <button onclick="sendEmail()" id="email_button" class="btn-action btn-email">
+                <button onclick="sendEmail()" id="email_button" class="btn-action btn-email btn-email-default">
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                     </svg>
@@ -210,46 +212,19 @@
     </div>
 </div>
 
-<script>
 <?php if (!empty($customer_email)): ?>
-function sendEmail() {
-    const btn = document.getElementById('email_button');
-    btn.disabled = true;
-    btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Sending...';
-    
-    fetch('<?= base_url("sales/sendPdf/$sale_id_num/receipt") ?>')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Sent!';
-                btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-                setTimeout(() => {
-                    btn.disabled = false;
-                    btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Email Receipt';
-                    btn.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
-                }, 3000);
-            } else {
-                btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Failed';
-                btn.disabled = false;
-            }
-        })
-        .catch(() => {
-            btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Error';
-            btn.disabled = false;
-        });
-}
-
-<?php if (!empty($email_receipt)): ?>
-// Auto-send email if requested
-sendEmail();
-<?php endif; ?>
+<?= view('sales/partials/document_email_script', [
+    'post_url' => base_url('sales/sendPdf/' . $sale_id . '/receipt'),
+    'button_label' => '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Email Receipt',
+    'auto_send' => !empty($email_receipt),
+]) ?>
 <?php endif; ?>
 
-// Auto-print if enabled
 <?php if (!empty($print_after_sale)): ?>
+<script>
 setTimeout(() => window.print(), 500);
-<?php endif; ?>
 </script>
+<?php endif; ?>
 
 </body>
 </html>

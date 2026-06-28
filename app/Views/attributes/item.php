@@ -142,7 +142,7 @@
             var definition_id = $("#definition_name option:selected").val();
             var attribute_values = definition_values();
             attribute_values[definition_id] = '';
-            $('#attributes').load('<?= "items/attributes/$item_id" ?>', {
+            $('#attributes').load('<?= "products/attributes/$item_id" ?>', {
                 'definition_ids': JSON.stringify(attribute_values)
             }, enable_delete);
         };

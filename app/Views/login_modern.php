@@ -17,7 +17,7 @@
     <div class="split-login-wrapper">
         
         <!-- Left: Visual Side -->
-        <div class="login-visual-side" class="visual-container">
+        <div class="login-visual-side visual-container">
             
             <!-- Upgraded Abstract Graphics -->
             <div class="visual-bg-element orb-1"></div>
@@ -50,7 +50,7 @@
                 </div>
             </div>
             
-            <div class="visual-content" class="visual-hero-text">
+            <div class="visual-content visual-hero-text">
                 <h2>Unleash Your<br>Business Potential.</h2>
                 <p>With ShopSuite, you manage inventory, point of sale, employees, and sales seamlessly. Innovate faster, manage effortlessly, and grow your enterprise locally and globally.</p>
             </div>

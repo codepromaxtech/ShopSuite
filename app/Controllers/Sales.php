@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Libraries\Barcode_lib;
+use App\Libraries\Cashup_lib;
 use App\Libraries\Email_lib;
 use App\Libraries\Sale_lib;
 use App\Libraries\Tax_lib;
@@ -167,11 +168,13 @@ class Sales extends Secure_Controller
             $sales = $db->query($sql);
             
             // Get total count
-            $count_sql = "SELECT COUNT(DISTINCT s.sale_id) as count FROM {$prefix}sales s WHERE s.sale_status = 0";
+            $count_sql = "SELECT COUNT(DISTINCT s.sale_id) as count FROM {$prefix}sales s";
             if (!empty($search)) {
                 $search_safe = $db->escapeString($search);
                 $count_sql .= " LEFT JOIN {$prefix}people p ON s.customer_id = p.person_id";
-                $count_sql .= " WHERE (p.first_name LIKE '%{$search_safe}%' OR p.last_name LIKE '%{$search_safe}%' OR s.sale_id LIKE '%{$search_safe}%')";
+                $count_sql .= " WHERE s.sale_status = 0 AND (p.first_name LIKE '%{$search_safe}%' OR p.last_name LIKE '%{$search_safe}%' OR s.sale_id LIKE '%{$search_safe}%')";
+            } else {
+                $count_sql .= " WHERE s.sale_status = 0";
             }
             $total_rows = $db->query($count_sql)->getRow()->count;
             
@@ -526,11 +529,24 @@ class Sales extends Secure_Controller
      */
     public function getDeletePayment(string $payment_id): void
     {
+        redirect()->to(site_url('sales'))->send();
+        exit;
+    }
+
+    /**
+     * Remove a payment from the current sale (POST + CSRF).
+     *
+     * @param string $payment_id
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postDeletePayment(string $payment_id): void
+    {
         helper('url');
 
         $this->sale_lib->delete_payment(base64url_decode($payment_id));
 
-        $this->_reload();    // TODO: Hungarian notation
+        $this->_reload();
     }
 
     /**
@@ -668,21 +684,66 @@ class Sales extends Secure_Controller
      */
     public function getDeleteItem(int $item_id): void
     {
+        redirect()->to(site_url('sales'))->send();
+        exit;
+    }
+
+    /**
+     * Deletes an item from the shopping cart (POST + CSRF).
+     *
+     * @param int $item_id
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postDeleteItem(int $item_id): void
+    {
         $this->sale_lib->delete_item($item_id);
 
         $this->sale_lib->empty_payments();
 
-        $this->_reload();    // TODO: Hungarian notation
+        $this->_reload();
     }
 
     /**
-     * Clear/cancel the current sale and start fresh (Clear Cart button)
+     * Clear/cancel the current sale (GET deprecated — use POST).
      *
      * @return void
      * @noinspection PhpUnused
      */
     public function getCancel(): void
     {
+        redirect()->to(site_url('sales'))->send();
+        exit;
+    }
+
+    /**
+     * Clear/cancel the current sale and start fresh (POST + CSRF).
+     * Completed sales cannot be removed; work orders are marked canceled.
+     *
+     * @throws ReflectionException
+     * @noinspection PhpUnused
+     */
+    public function postCancel(): void
+    {
+        $sale_id = $this->sale_lib->get_sale_id();
+        if ($sale_id != NEW_ENTRY && $sale_id != '') {
+            $sale_type = $this->sale_lib->get_sale_type();
+
+            if ($this->config['dinner_table_enable']) {
+                $dinner_table = $this->sale_lib->get_dinner_table();
+                $this->dinner_table->release($dinner_table);
+            }
+
+            if ($sale_type == SALE_TYPE_WORK_ORDER) {
+                $this->sale->update_sale_status($sale_id, CANCELED);
+            } else {
+                $this->sale->delete($sale_id);
+                $this->session->set('sale_id', NEW_ENTRY);
+            }
+        } else {
+            $this->sale_lib->remove_temp_items();
+        }
+
         $this->sale_lib->clear_all();
         $this->_reload();
     }
@@ -719,6 +780,18 @@ class Sales extends Secure_Controller
      */
     public function getRemoveCustomer(): void
     {
+        redirect()->to(site_url('sales'))->send();
+        exit;
+    }
+
+    /**
+     * Remove the current customer from the sale (POST + CSRF).
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postRemoveCustomer(): void
+    {
         $this->sale_lib->clear_giftcard_remainder();
         $this->sale_lib->clear_rewards_remainder();
         $this->sale_lib->delete_payment(lang('Sales.rewards'));
@@ -726,7 +799,34 @@ class Sales extends Secure_Controller
         $this->sale_lib->clear_quote_number();
         $this->sale_lib->remove_customer();
 
-        $this->_reload();    // TODO: Hungarian notation
+        $this->_reload();
+    }
+
+    /**
+     * Validate cart, stock, and payment before persisting a sale.
+     */
+    private function validateBeforeSave(array $data, bool $requirePayment, bool $completeSale): ?string
+    {
+        if (empty($data['cart'])) {
+            return lang('Sales.no_items_in_cart');
+        }
+
+        if ($completeSale) {
+            foreach ($data['cart'] as $item) {
+                if ((float) $item['quantity'] > 0 && ($item['stock_type'] ?? null) == HAS_STOCK) {
+                    $stockMessage = $this->sale_lib->out_of_stock($item['item_id'], $item['item_location']);
+                    if ($stockMessage === lang('Sales.quantity_less_than_zero')) {
+                        return lang('Sales.item_insufficient_of_stock');
+                    }
+                }
+            }
+        }
+
+        if ($requirePayment && empty($data['payments_cover_total'])) {
+            return lang('Sales.payment_not_cover_total');
+        }
+
+        return null;
     }
 
     /**
@@ -826,6 +926,18 @@ class Sales extends Secure_Controller
 
                 $data['payments'] += $payment;
             }
+        }
+
+        $requirePayment = $this->sale_lib->is_invoice_mode()
+            || (!$this->sale_lib->is_work_order_mode() && !$this->sale_lib->is_quote_mode());
+        $completeSale = $requirePayment;
+
+        $validationError = $this->validateBeforeSave($data, $requirePayment, $completeSale);
+        if ($validationError !== null) {
+            $data['error'] = $validationError;
+            $this->_reload($data);
+
+            return;
         }
 
         $data['print_price_info'] = true;
@@ -954,14 +1066,35 @@ class Sales extends Secure_Controller
     }
 
     /**
-     * Email PDF invoice to customer. Used in app/Views/sales/form.php, invoice.php, quote.php, tax_invoice.php and work_order.php
+     * Email PDF invoice to customer (GET deprecated — use POST).
      *
      * @param int $sale_id
      * @param string $type
-     * @return bool
      * @noinspection PhpUnused
      */
-    public function getSendPdf(int $sale_id, string $type = 'invoice'): bool
+    public function getSendPdf(int $sale_id, string $type = 'invoice'): void
+    {
+        redirect()->to(site_url('sales/manage'))->send();
+        exit;
+    }
+
+    /**
+     * Email PDF document to customer (POST + CSRF).
+     *
+     * @param int $sale_id
+     * @param string $type
+     * @noinspection PhpUnused
+     */
+    public function postSendPdf(int $sale_id, string $type = 'invoice'): void
+    {
+        $this->_send_pdf_email($sale_id, $type);
+    }
+
+    /**
+     * @param int $sale_id
+     * @param string $type
+     */
+    private function _send_pdf_email(int $sale_id, string $type = 'invoice'): void
     {
         $sale_data = $this->_load_sale_data($sale_id);
 
@@ -999,18 +1132,35 @@ class Sales extends Secure_Controller
         echo json_encode(['success' => $result, 'message' => $message, 'id' => $sale_id]);
 
         $this->sale_lib->clear_all();
-
-        return $result;
     }
 
     /**
-     * Emails sales receipt to customer. Used in app/Views/sales/receipt.php
+     * Emails sales receipt to customer (GET deprecated — use POST).
      *
      * @param int $sale_id
-     * @return bool
      * @noinspection PhpUnused
      */
-    public function getSendReceipt(int $sale_id): bool
+    public function getSendReceipt(int $sale_id): void
+    {
+        redirect()->to(site_url('sales/manage'))->send();
+        exit;
+    }
+
+    /**
+     * Emails sales receipt to customer (POST + CSRF).
+     *
+     * @param int $sale_id
+     * @noinspection PhpUnused
+     */
+    public function postSendReceipt(int $sale_id): void
+    {
+        $this->_send_receipt_email($sale_id);
+    }
+
+    /**
+     * @param int $sale_id
+     */
+    private function _send_receipt_email(int $sale_id): void
     {
         $sale_data = $this->_load_sale_data($sale_id);
 
@@ -1034,8 +1184,6 @@ class Sales extends Secure_Controller
         echo json_encode(['success' => $result, 'message' => $message, 'id' => $sale_id]);
 
         $this->sale_lib->clear_all();
-
-        return $result;
     }
 
     /**
@@ -1277,6 +1425,11 @@ class Sales extends Secure_Controller
         $data['items_module_allowed'] = $this->employee->has_grant('items', $this->employee->get_logged_in_employee_info()->person_id);
         $data['change_price'] = $this->employee->has_grant('sales_change_price', $this->employee->get_logged_in_employee_info()->person_id);
 
+        $logged_in_employee_id = (int) $this->employee->get_logged_in_employee_info()->person_id;
+        $cashup_lib = new Cashup_lib();
+        $data['active_cashup_id'] = $cashup_lib->ensure_active_cashup($logged_in_employee_id);
+        $data['cashups_allowed'] = $this->employee->has_grant('cashups', $logged_in_employee_id);
+
         $temp_invoice_number = $this->sale_lib->get_invoice_number();
         $invoice_format = $this->config['sales_invoice_format'];
 
@@ -1391,7 +1544,10 @@ class Sales extends Secure_Controller
 
         $data['new_payment_options'] = $payment_options;
 
-        echo view('sales/form', $data);
+        $data['config'] = $this->config;
+        $data['controller_name'] = 'sales';
+
+        echo view('sales/form_modern', $data);
     }
 
     /**
@@ -1540,40 +1696,6 @@ class Sales extends Secure_Controller
     }
 
     /**
-     * This is used to cancel a suspended pos sale, quote.
-     * Completed sales (POS Sales or Invoiced Sales) can not be removed from the system
-     * Work orders can be canceled but are not physically removed from the sales history.
-     * Used in app/Views/sales/register.php
-     *
-     * @throws ReflectionException
-     * @noinspection PhpUnused
-     */
-    public function postCancel(): void
-    {
-        $sale_id = $this->sale_lib->get_sale_id();
-        if ($sale_id != NEW_ENTRY && $sale_id != '') {
-            $sale_type = $this->sale_lib->get_sale_type();
-
-            if ($this->config['dinner_table_enable']) {
-                $dinner_table = $this->sale_lib->get_dinner_table();
-                $this->dinner_table->release($dinner_table);
-            }
-
-            if ($sale_type == SALE_TYPE_WORK_ORDER) {
-                $this->sale->update_sale_status($sale_id, CANCELED);
-            } else {
-                $this->sale->delete($sale_id);
-                $this->session->set('sale_id', NEW_ENTRY);
-            }
-        } else {
-            $this->sale_lib->remove_temp_items();
-        }
-
-        $this->sale_lib->clear_all();
-        $this->_reload();    // TODO: Hungarian notation
-    }
-
-    /**
      * Discards the suspended sale. Used in app/Views/sales/quote.php
      *
      * @return void
@@ -1616,9 +1738,9 @@ class Sales extends Secure_Controller
         $sale_status = SUSPENDED;
 
         $data = [];
-        $sales_taxes = [[], []];
+        $tax_details = $this->tax_lib->get_taxes($cart);
 
-        if ($this->sale->save_value($sale_id, $sale_status, $cart, $customer_id, $employee_id, $comment, $invoice_number, $work_order_number, $quote_number, $sale_type, $payments, $dinner_table, $sales_taxes) == '-1') {
+        if ($this->sale->save_value($sale_id, $sale_status, $cart, $customer_id, $employee_id, $comment, $invoice_number, $work_order_number, $quote_number, $sale_type, $payments, $dinner_table, $tax_details) === -1) {
             $data['error'] = lang('Sales.unsuccessfully_suspended_sale');
         } else {
             $data['success'] = lang('Sales.successfully_suspended_sale');

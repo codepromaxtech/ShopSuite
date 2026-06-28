@@ -84,6 +84,45 @@ class Item_quantity extends Model
     }
 
     /**
+     * Adjust stock for a completed sale line atomically.
+     * Positive quantity_purchased decrements stock (sale); negative increments (return).
+     */
+    public function adjust_quantity_for_sale(int $item_id, int $location_id, float $quantity_purchased): bool
+    {
+        $prefix = $this->db->getPrefix();
+
+        if ($quantity_purchased > 0) {
+            $sql = "UPDATE {$prefix}item_quantities SET quantity = quantity - ?"
+                . " WHERE item_id = ? AND location_id = ? AND quantity >= ?";
+            $this->db->query($sql, [$quantity_purchased, $item_id, $location_id, $quantity_purchased]);
+
+            return $this->db->affectedRows() > 0;
+        }
+
+        if ($quantity_purchased < 0) {
+            $sql = "UPDATE {$prefix}item_quantities SET quantity = quantity + ?"
+                . " WHERE item_id = ? AND location_id = ?";
+            $this->db->query($sql, [abs($quantity_purchased), $item_id, $location_id]);
+
+            if ($this->db->affectedRows() > 0) {
+                return true;
+            }
+
+            return $this->save_value(
+                [
+                    'item_id'     => $item_id,
+                    'location_id' => $location_id,
+                    'quantity'    => abs($quantity_purchased),
+                ],
+                $item_id,
+                $location_id
+            );
+        }
+
+        return true;
+    }
+
+    /**
      * changes to quantity of an item according to the given amount.
      * if $quantity_change is negative, it will be subtracted,
      * if it is positive, it will be added to the current quantity

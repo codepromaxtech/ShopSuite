@@ -82,7 +82,7 @@ function searchSale(event) {
     
     const searchTerm = document.getElementById('search_input').value.trim();
     if (!searchTerm) {
-        alert('Please enter a search term');
+        window.shopsuiteApp.showToast('Search Required', <?= json_encode(lang('Sales.return_exchange_search_required')) ?>, 'warning');
         return;
     }
     
@@ -108,7 +108,7 @@ function searchSale(event) {
             console.error('Error:', error);
             btn.disabled = false;
             btn.innerHTML = originalText;
-            alert('Error searching for sales. Please try again.');
+            window.shopsuiteApp.showToast('Search Failed', <?= json_encode(lang('Sales.return_exchange_search_error')) ?>, 'error');
         });
 }
 
@@ -169,9 +169,13 @@ function displayResults(sales) {
 }
 
 function processReturn(saleId) {
-    if (confirm('Load this sale into POS for return/exchange?')) {
-        window.location.href = '<?= base_url("sales/loadSaleForReturn") ?>/' + saleId;
-    }
+    window.shopsuiteApp.confirm(
+        <?= json_encode(lang('Sales.return_exchange_confirm_title')) ?>,
+        <?= json_encode(lang('Sales.return_exchange_confirm_load')) ?>,
+        () => {
+            window.location.href = '<?= base_url("sales/loadSaleForReturn") ?>/' + saleId;
+        }
+    );
 }
 </script>
 
