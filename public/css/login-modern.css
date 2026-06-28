@@ -120,8 +120,8 @@
             border-radius: var(--radius-2xl);
             box-shadow: var(--shadow-xl, 0 25px 50px -12px rgba(0, 0, 0, 0.15));
             transform: translateY(20px);
-            opacity: 0;
-            animation: slideUp 0.8s ease-out forwards 0.3s;
+            
+            transition: all 0.8s ease-out forwards 0.3s;
         }
 
         .visual-content h2 {
@@ -144,11 +144,11 @@
         /* Typography & Form Elements */
         .login-header {
             margin-bottom: var(--space-8);
-            animation: slideUp 0.5s ease-out forwards;
+            transition: all 0.5s ease-out forwards;
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from {  transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -184,8 +184,8 @@
         .premium-form-group {
             position: relative;
             margin-bottom: var(--space-6);
-            animation: slideUp 0.5s ease-out forwards 0.1s;
-            opacity: 0;
+            transition: all 0.5s ease-out forwards 0.1s;
+            
         }
         
         .premium-form-group:nth-child(3) { animation-delay: 0.2s; }
@@ -378,7 +378,7 @@
             border-radius: 0 var(--radius-md) var(--radius-md) 0;
             margin-bottom: var(--space-6);
             color: var(--danger-800);
-            animation: slideUp 0.3s ease-out;
+            transition: all 0.3s ease-out;
         }
 
         [data-theme="dark"] .premium-alert {

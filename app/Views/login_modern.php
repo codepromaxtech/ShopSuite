@@ -9,7 +9,7 @@
     <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>">
     <link rel="stylesheet" href="<?= base_url('css/design-system.min.css') ?>">
     <link rel="stylesheet" href="<?= base_url('css/components.min.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('css/login-modern.min.css') ?>?v=1.0">
+    <link rel="stylesheet" href="<?= base_url('css/login-modern.min.css') ?>?v=1.1">
     
     
 </head>
