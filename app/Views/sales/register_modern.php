@@ -516,12 +516,12 @@ function editCartItem(line, qty, price, discount, inStock) {
     let stockInfo = '';
     if (inStock !== null) {
         let stockClass = inStock <= 0 ? 'color: var(--pos-danger);' : 'color: var(--pos-success);';
-        stockInfo = \`<div style="margin-bottom: 12px; font-size: 0.85em; color: var(--pos-text-muted);">
-            Available Stock: <strong style="\${stockClass}">\${inStock}</strong>
-        </div>\`;
+        stockInfo = `<div style="margin-bottom: 12px; font-size: 0.85em; color: var(--pos-text-muted);">
+            Available Stock: <strong style="${stockClass}">${inStock}</strong>
+        </div>`;
     }
 
-    backdrop.innerHTML = \`
+    backdrop.innerHTML = `
         <div class="pos-modal">
             <div class="pos-modal-header">
                 <h3 class="pos-modal-title">Edit Item</h3>
@@ -531,10 +531,10 @@ function editCartItem(line, qty, price, discount, inStock) {
             </div>
             <div class="pos-modal-body">
                 <form id="edit_item_form">
-                    \${stockInfo}
+                    ${stockInfo}
                     <div class="pos-form-group">
                         <label class="pos-form-label">Quantity</label>
-                        <input type="number" class="pos-form-input" id="edit_quantity" name="quantity" min="0.01" step="0.01" value="\${qty}" required>
+                        <input type="number" class="pos-form-input" id="edit_quantity" name="quantity" min="0.01" step="0.01" value="${qty}" required>
                     </div>
                     <div class="pos-form-group">
                         <label class="pos-form-label">Price</label>
