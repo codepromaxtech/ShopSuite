@@ -338,7 +338,11 @@ function editCartItem(line, qty, price, discount, inStock) {
                     discount: document.getElementById('edit_discount').value
                 }).then(async r => {
                     const text = await r.text();
-                    if (text.includes('id="error_message_box"')) alert("Update failed. Please check your inputs.");
+                    const doc = (new DOMParser()).parseFromString(text, 'text/html');
+                    const errBox = doc.getElementById('error_message_box');
+                    if (errBox && errBox.textContent.trim().length > 0) {
+                        alert("Update failed: " + errBox.textContent.trim());
+                    }
                     window.location.reload();
                 }).catch(err => {
                     alert("Error updating item: " + err.message);
