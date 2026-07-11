@@ -112,7 +112,9 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                         ?>
                         <div class="pos-cart-item">
                             <div class="pos-cart-item-main">
-                                <div class="pos-cart-item-name"><?= esc($item['name']) ?></div>
+                                <a href="#" class="pos-cart-item-name" style="text-decoration: none; cursor: pointer; color: var(--pos-primary);" title="Click to edit item" onclick="editCartItem('<?= esc($line) ?>', <?= $qty ?>, <?= $price ?>, <?= $discount ?>, <?= $inStock ?>); return false;">
+                                    <?= esc($item['name']) ?>
+                                </a>
                                 <div class="pos-cart-item-price">$<?= number_format($price * $qty, 2) ?></div>
                             </div>
                             <?php if (!empty($item['discount']) && $item['discount'] > 0): ?>
@@ -274,6 +276,79 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
 // ============================
 // CORE LOGIC
 // ============================
+function editCartItem(line, qty, price, discount, inStock) {
+    document.getElementById('edit_item_backdrop')?.remove(); // Prevent DOM collision
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'pos-modal-backdrop';
+    backdrop.id = 'edit_item_backdrop';
+    
+    let stockInfo = '';
+    if (inStock !== null) {
+        let stockClass = inStock <= 0 ? 'color: var(--pos-danger);' : 'color: var(--pos-success);';
+        stockInfo = `<div style="margin-bottom: 12px; font-size: 0.85em; color: var(--pos-text-muted);">
+            Available Stock: <strong style="${stockClass}">${inStock}</strong>
+        </div>`;
+    }
+
+    backdrop.innerHTML = `
+        <div class="pos-modal">
+            <div class="pos-modal-header">
+                <h3 class="pos-modal-title">Edit Item</h3>
+                <button class="pos-modal-close" onclick="document.getElementById('edit_item_backdrop')?.remove()">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="pos-modal-body">
+                <form id="edit_item_form">
+                    ${stockInfo}
+                    <div class="pos-form-group">
+                        <label class="pos-form-label">Quantity</label>
+                        <input type="number" class="pos-form-input" id="edit_quantity" name="quantity" min="0.01" step="0.01" value="${qty}" required>
+                    </div>
+                    <div class="pos-form-group">
+                        <label class="pos-form-label">Price</label>
+                        <input type="number" class="pos-form-input" id="edit_price" name="price" min="0" step="0.01" value="${price}" required>
+                    </div>
+                    <div class="pos-form-group">
+                        <label class="pos-form-label">Discount (%)</label>
+                        <input type="number" class="pos-form-input" id="edit_discount" name="discount" min="0" max="100" step="0.01" value="${discount}">
+                    </div>
+                    <div class="pos-form-actions">
+                        <button type="submit" class="pos-btn-primary">Save Changes</button>
+                        <button type="button" class="pos-btn-secondary" onclick="document.getElementById('edit_item_backdrop')?.remove()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(backdrop);
+    backdrop.addEventListener('click', e => { if (e.target === backdrop) backdrop.remove(); });
+
+    setTimeout(() => {
+        const formEl = document.getElementById('edit_item_form');
+        if (formEl) {
+            formEl.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                window.shopsuiteApp.postAction('<?= base_url("sales/editItem") ?>/' + line, {
+                    quantity: document.getElementById('edit_quantity').value,
+                    price: document.getElementById('edit_price').value,
+                    discount: document.getElementById('edit_discount').value
+                }).then(async r => {
+                    const text = await r.text();
+                    if (text.includes('id="error_message_box"')) alert("Update failed. Please check your inputs.");
+                    window.location.reload();
+                }).catch(err => {
+                    alert("Error updating item: " + err.message);
+                    window.location.reload();
+                });
+            });
+        }
+    }, 50);
+}
+
 function updateQty(line, newQty, price, discount, inStock) {
     if (newQty <= 0) {
         removeCartItem(line);
