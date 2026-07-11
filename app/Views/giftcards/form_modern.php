@@ -58,7 +58,7 @@ $is_edit = isset($giftcard_id) && $giftcard_id > 0;
                             <label for="value" class="form-label form-label-required">Value</label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
-                                <input type="number" class="form-control" id="value" name="value" value="<?= esc($giftcard_value ?? '0.00') ?>" step="0.01" min="0" required>
+                                <input type="number" class="form-control" id="giftcard_amount" name="giftcard_amount" value="<?= esc($giftcard_value ?? '0.00') ?>" step="0.01" min="0" required>
                             </div>
                         </div>
                         
@@ -159,16 +159,20 @@ function deleteGiftcard() {
             'Delete Gift Card',
             'Are you sure you want to delete this gift card? This action cannot be undone.',
             function() {
+                const csrfName = document.querySelector('meta[name="csrf-token-name"]')?.content;
+                const csrfCookie = document.querySelector('meta[name="csrf-cookie-name"]')?.content;
+                const csrfValue = csrfCookie ? (document.cookie.match(new RegExp('(?:^|; )' + csrfCookie + '=([^;]*)')) || [])[1] : '';
+
+                const formData = new FormData();
+                formData.append('ids[]', <?= $giftcard_id ?? 0 ?>);
+                if (csrfName && csrfValue) {
+                    formData.append(csrfName, csrfValue);
+                }
+
                 fetch(`<?= base_url("giftcards/delete") ?>`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({ 
-                        ids: [<?= $giftcard_id ?? 0 ?>],
-                        <?= csrf_token() ?>: '<?= csrf_hash() ?>'
-                    })
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: formData
                 })
                 .then(response => response.json())
                 .then(data => {

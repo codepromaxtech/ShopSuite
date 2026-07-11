@@ -56,7 +56,7 @@ function initializeDataTable() {
                 field: 'giftcard_number', 
                 title: 'Card Number',
                 sortable: true,
-                render: (value) => `<span class="u-font-weight-font-medium_font-family-fo">${value}</span>`
+                render: (value) => `<span style="font-family: var(--font-mono); font-weight: 500;">${value}</span>`
             },
             { 
                 field: 'value', 
@@ -64,7 +64,7 @@ function initializeDataTable() {
                 sortable: true,
                 render: (value) => {
                     const formatted = parseFloat(value).toFixed(2);
-                    return `<span class="u-color-success-600_font-weight-font-sem">$${formatted}</span>`;
+                    return `<span style="color: var(--color-success-600); font-weight: 600;">$${formatted}</span>`;
                 }
             },
             { 
@@ -116,13 +116,20 @@ function deleteGiftcard(giftcard) {
             'Delete Gift Card',
             `Are you sure you want to delete gift card ${giftcard.giftcard_number}? This action cannot be undone.`,
             function() {
+                const csrfName = document.querySelector('meta[name="csrf-token-name"]')?.content;
+                const csrfCookie = document.querySelector('meta[name="csrf-cookie-name"]')?.content;
+                const csrfValue = csrfCookie ? (document.cookie.match(new RegExp('(?:^|; )' + csrfCookie + '=([^;]*)')) || [])[1] : '';
+
+                const formData = new FormData();
+                formData.append('ids[]', giftcard.giftcard_id);
+                if (csrfName && csrfValue) {
+                    formData.append(csrfName, csrfValue);
+                }
+
                 fetch(`<?= base_url("giftcards/delete") ?>`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({ ids: [giftcard.giftcard_id] })
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: formData
                 })
                 .then(response => response.json())
                 .then(data => {

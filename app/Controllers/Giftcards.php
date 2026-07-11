@@ -197,8 +197,18 @@ class Giftcards extends Secure_Controller
         // Set JSON header
         $this->response->setContentType('application/json');
         
-        // Get POST data - CodeIgniter handles ids[] as 'ids'
-        $giftcards_to_delete = $this->request->getVar('ids');
+        // Support both form-encoded (ids[]) and raw JSON ({ ids: [...] }) payloads
+        $giftcards_to_delete = $this->request->getPost('ids');
+
+        if (empty($giftcards_to_delete)) {
+            $json = $this->request->getJSON(true);
+            $giftcards_to_delete = $json['ids'] ?? null;
+        }
+
+        if (empty($giftcards_to_delete) || !is_array($giftcards_to_delete)) {
+            echo json_encode(['success' => false, 'message' => lang('Giftcards.cannot_be_deleted')]);
+            exit;
+        }
 
         if ($this->giftcard->delete_list($giftcards_to_delete)) {
             echo json_encode([
