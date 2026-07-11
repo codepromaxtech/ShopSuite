@@ -147,7 +147,7 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                         </div>
                     <?php else: ?>
                         <?php foreach ($cart as $line => $item): ?>
-                            <div class="pos-cart-item" onclick="editCartItem(<?= $line ?>)">
+                            <div class="pos-cart-item" onclick="editCartItem(<?= $line ?>, <?= (float)$item['quantity'] ?>, <?= (float)$item['price'] ?>, <?= (float)($item['discount'] ?? 0) ?>)">
                                 <div class="pos-cart-item-info">
                                     <div class="pos-cart-item-name"><?= esc($item['name']) ?></div>
                                     <div class="pos-cart-item-meta">
@@ -508,7 +508,7 @@ function addComment() {
 // ============================
 // EDIT CART ITEM
 // ============================
-function editCartItem(line) {
+function editCartItem(line, qty, price, discount) {
     const backdrop = document.createElement('div');
     backdrop.className = 'pos-modal-backdrop';
     backdrop.id = 'edit_item_backdrop';
@@ -525,15 +525,15 @@ function editCartItem(line) {
                 <form id="edit_item_form">
                     <div class="pos-form-group">
                         <label class="pos-form-label">Quantity</label>
-                        <input type="number" class="pos-form-input" id="edit_quantity" name="quantity" min="0.01" step="0.01" required>
+                        <input type="number" class="pos-form-input" id="edit_quantity" name="quantity" min="0.01" step="0.01" value="${qty}" required>
                     </div>
                     <div class="pos-form-group">
                         <label class="pos-form-label">Price</label>
-                        <input type="number" class="pos-form-input" id="edit_price" name="price" min="0" step="0.01" required>
+                        <input type="number" class="pos-form-input" id="edit_price" name="price" min="0" step="0.01" value="${price}" required>
                     </div>
                     <div class="pos-form-group">
                         <label class="pos-form-label">Discount (%)</label>
-                        <input type="number" class="pos-form-input" id="edit_discount" name="discount" min="0" max="100" step="0.01" value="0">
+                        <input type="number" class="pos-form-input" id="edit_discount" name="discount" min="0" max="100" step="0.01" value="${discount}">
                     </div>
                     <div class="pos-form-actions">
                         <button type="submit" class="pos-btn-primary">Save Changes</button>
@@ -550,10 +550,13 @@ function editCartItem(line) {
     setTimeout(() => {
         document.getElementById('edit_item_form')?.addEventListener('submit', function(e) {
             e.preventDefault();
-            fetch('<?= base_url("sales/editItem") ?>/' + line, {
-                method: 'POST',
-                body: new FormData(this)
-            }).then(() => window.location.reload());
+            
+            window.shopsuiteApp.postAction('<?= base_url("sales/editItem") ?>/' + line, {
+                quantity: document.getElementById('edit_quantity').value,
+                price: document.getElementById('edit_price').value,
+                discount: document.getElementById('edit_discount').value
+            }).then(() => window.location.reload())
+              .catch(err => console.error('Error updating item:', err));
         });
     }, 50);
 }
