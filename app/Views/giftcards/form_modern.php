@@ -47,8 +47,8 @@ $is_edit = isset($giftcard_id) && $giftcard_id > 0;
                 <div class="card-body">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="form-group">
-                            <label for="giftcard_number" class="form-label form-label-required">Card Number</label>
-                            <input type="text" class="form-control" id="giftcard_number" name="giftcard_number" value="<?= esc($giftcard_number ?? '') ?>" required style="font-family: var(--font-mono);">
+                            <label for="giftcard_number" class="form-label <?= $is_edit ? 'form-label-required' : '' ?>">Card Number</label>
+                            <input type="text" class="form-control" id="giftcard_number" name="giftcard_number" value="<?= esc($giftcard_number ?? '') ?>" <?= $is_edit ? 'required' : '' ?> style="font-family: var(--font-mono);">
                             <?php if (!$is_edit): ?>
                                 <span class="form-help">Leave blank to auto-generate</span>
                             <?php endif; ?>
