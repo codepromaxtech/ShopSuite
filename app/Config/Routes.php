@@ -58,6 +58,7 @@ $routes->post('notifications/mark_all_read', 'Notifications::mark_all_read');
 // POS / SALES — GET
 // ============================================
 $routes->get('sales', 'Sales::getIndex');
+$routes->get('sales/add', 'Sales::getIndex'); // Fallback for accidental GET redirects
 $routes->get('sales/register', 'Sales::getIndex');
 $routes->get('sales/manage', 'Sales::getManage');
 $routes->get('sales/suspended', 'Sales::getSuspended');
