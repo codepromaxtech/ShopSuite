@@ -22,6 +22,80 @@
     --pos-radius-lg: 20px;
 }
 
+[data-theme="dark"] {
+    --pos-bg: #111827;
+    /* Gray 900 */
+    --pos-surface: #1F2937;
+    /* Gray 800 */
+    --pos-border: rgba(255, 255, 255, 0.1);
+    --pos-text: #F9FAFB;
+    /* Gray 50 */
+    --pos-text-muted: #9CA3AF;
+    /* Gray 400 */
+    --pos-primary: #3B82F6;
+    /* Blue 500 */
+    --pos-primary-hover: #60A5FA;
+    /* Blue 400 */
+    --pos-success: #10B981;
+    --pos-danger: #F87171;
+    --pos-shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --pos-shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.4);
+    --pos-shadow-elevated: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Mode Panels */
+.pos-mode-panel {
+    padding: 10px 12px;
+    border-radius: var(--pos-radius-sm);
+    margin-bottom: 12px;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.pos-mode-panel .mode-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.pos-mode-panel.mode-return {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.pos-mode-panel.mode-return .mode-title {
+    color: var(--pos-danger);
+}
+
+.pos-mode-panel.mode-invoice {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.pos-mode-panel.mode-invoice .mode-title {
+    color: var(--pos-primary);
+}
+
+.pos-mode-panel.mode-quote {
+    background: rgba(168, 85, 247, 0.08);
+    border-color: rgba(168, 85, 247, 0.2);
+}
+
+.pos-mode-panel.mode-quote .mode-title {
+    color: #C084FC;
+}
+
+.pos-mode-panel.mode-work-order {
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.2);
+}
+
+.pos-mode-panel.mode-work-order .mode-title {
+    color: #FBBF24;
+}
+
 body.pos-shell-active {
     font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
     background-color: var(--pos-bg) !important;
@@ -1030,10 +1104,12 @@ body.pos-shell-active {
         display: none;
     }
 }
+
 @media (max-width: 1024px) {
     .pos-action-btn span {
         display: none;
     }
+
     .pos-action-btn {
         padding: 6px;
     }

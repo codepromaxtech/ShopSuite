@@ -148,21 +148,21 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                 <?php endif; ?>
 
                 <?php if (!empty($invoice_number) && ($mode ?? '') === 'sale_invoice'): ?>
-                <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: #F9FAFB; border-radius: 10px; font-size: 12px; margin-bottom: 12px; border: 1px solid var(--pos-border);">
+                <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: var(--pos-bg); border-radius: 10px; font-size: 12px; margin-bottom: 12px; border: 1px solid var(--pos-border);">
                     <span style="color: var(--pos-text-muted); font-weight: 600;">Invoice #</span>
-                    <span style="font-weight: 700;"><?= esc($invoice_number) ?></span>
+                    <span style="color: var(--pos-text); font-weight: 700;"><?= esc($invoice_number) ?></span>
                 </div>
                 <?php endif; ?>
                 <?php if (!empty($quote_number) && ($mode ?? '') === 'sale_quote'): ?>
-                <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: #F9FAFB; border-radius: 10px; font-size: 12px; margin-bottom: 12px; border: 1px solid var(--pos-border);">
+                <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: var(--pos-bg); border-radius: 10px; font-size: 12px; margin-bottom: 12px; border: 1px solid var(--pos-border);">
                     <span style="color: var(--pos-text-muted); font-weight: 600;">Quote #</span>
-                    <span style="font-weight: 700;"><?= esc($quote_number) ?></span>
+                    <span style="color: var(--pos-text); font-weight: 700;"><?= esc($quote_number) ?></span>
                 </div>
                 <?php endif; ?>
                 <?php if (!empty($work_order_number) && ($mode ?? '') === 'sale_work_order'): ?>
-                <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: #F9FAFB; border-radius: 10px; font-size: 12px; margin-bottom: 12px; border: 1px solid var(--pos-border);">
+                <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: var(--pos-bg); border-radius: 10px; font-size: 12px; margin-bottom: 12px; border: 1px solid var(--pos-border);">
                     <span style="color: var(--pos-text-muted); font-weight: 600;">Work Order #</span>
-                    <span style="font-weight: 700;"><?= esc($work_order_number) ?></span>
+                    <span style="color: var(--pos-text); font-weight: 700;"><?= esc($work_order_number) ?></span>
                 </div>
                 <?php endif; ?>
 
@@ -170,8 +170,8 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
 
                 <?php if (($mode ?? 'sale') === 'return'): ?>
                 <!-- Return Mode: Sale Lookup -->
-                <div class="pos-mode-panel" style="padding: 10px 12px; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; margin-bottom: 12px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #ef4444; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">🔄 Return Mode</div>
+                <div class="pos-mode-panel mode-return">
+                    <div class="mode-title">🔄 Return Mode</div>
                     <div style="font-size: 12px; color: var(--pos-text-muted); margin-bottom: 8px;">Search for a previous sale to load items for return.</div>
                     <input type="text" id="return_sale_search" class="pos-search-input" style="padding: 10px 12px; font-size: 13px; width: 100%; box-sizing: border-box;" placeholder="Search by receipt #, customer, or item...">
                     <div id="return_sale_autocomplete" class="pos-autocomplete"></div>
@@ -180,8 +180,8 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
 
                 <?php if (($mode ?? 'sale') === 'sale_invoice' && !empty($config['invoice_enable'])): ?>
                 <!-- Invoice Mode: Invoice Number Input -->
-                <div class="pos-mode-panel" style="padding: 10px 12px; background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.2); border-radius: 10px; margin-bottom: 12px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">📋 Invoice Mode</div>
+                <div class="pos-mode-panel mode-invoice">
+                    <div class="mode-title">📋 Invoice Mode</div>
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <label for="sales_invoice_number" style="font-size: 12px; font-weight: 600; color: var(--pos-text); white-space: nowrap;">Invoice #</label>
                         <input type="text" id="sales_invoice_number" name="sales_invoice_number" class="pos-form-input" style="padding: 8px 10px; font-size: 13px; flex: 1;" value="<?= esc($invoice_number ?? '') ?>" placeholder="Auto or enter manually">
@@ -191,16 +191,16 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
 
                 <?php if (($mode ?? 'sale') === 'sale_quote'): ?>
                 <!-- Quote Mode: Info Banner -->
-                <div class="pos-mode-panel" style="padding: 10px 12px; background: rgba(168,85,247,0.06); border: 1px solid rgba(168,85,247,0.2); border-radius: 10px; margin-bottom: 12px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #a855f7; text-transform: uppercase; letter-spacing: 0.5px;">📝 Quote Mode</div>
+                <div class="pos-mode-panel mode-quote">
+                    <div class="mode-title">📝 Quote Mode</div>
                     <div style="font-size: 12px; color: var(--pos-text-muted); margin-top: 4px;">Items will be saved as a quote. No payment is required.</div>
                 </div>
                 <?php endif; ?>
 
                 <?php if (($mode ?? 'sale') === 'sale_work_order'): ?>
                 <!-- Work Order Mode: Price Toggle -->
-                <div class="pos-mode-panel" style="padding: 10px 12px; background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); border-radius: 10px; margin-bottom: 12px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">🔧 Work Order Mode</div>
+                <div class="pos-mode-panel mode-work-order">
+                    <div class="mode-title">🔧 Work Order Mode</div>
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--pos-text);">
                         <input type="checkbox" id="price_work_orders" name="price_work_orders" value="1" <?= !empty($price_work_orders) ? 'checked' : '' ?> style="width: 16px; height: 16px; accent-color: #f59e0b;">
                         Include Prices on Work Order
