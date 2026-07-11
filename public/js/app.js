@@ -484,6 +484,7 @@ class ShopSuiteApp {
     postAction(url, extraParams = {}) {
         return fetch(url, {
             method: 'POST',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRF-TOKEN': this.getCsrfToken(),
