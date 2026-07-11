@@ -280,6 +280,16 @@
         ),
       ),
     ),
+    'Language/en/Login.php' => 
+    array (
+      'php' => 
+      array (
+        0 => 
+        array (
+          0 => '/home/erp/ShopSuite/app/Language/en/Login.php',
+        ),
+      ),
+    ),
   ),
   'findQualifiedNameFromPath' => 
   array (

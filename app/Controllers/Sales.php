@@ -713,7 +713,18 @@ class Sales extends Secure_Controller
                 ? parse_quantity($this->request->getPost('discount'))
                 : parse_decimals($this->request->getPost('discount'));
 
+            $item_id = $this->sale_lib->get_item_id($line);
             $item_location = $this->request->getPost('location', FILTER_SANITIZE_NUMBER_INT) ?? $this->sale_lib->get_sale_location();
+            
+            // STRICT STOCK ENFORCEMENT
+            $item_info = $this->item->get_info_by_id_or_number($item_id);
+            if ($item_info && $item_info->stock_type == HAS_STOCK) {
+                $item_quantity = $this->item_quantity->get_item_quantity($item_id, $item_location)->quantity;
+                if ($quantity > $item_quantity) {
+                    $quantity = $item_quantity; // Cap it
+                }
+            }
+
             $discounted_total = $this->request->getPost('discounted_total') != ''
                 ? parse_decimals($this->request->getPost('discounted_total') ?? '')
                 : null;

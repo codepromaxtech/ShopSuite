@@ -125,7 +125,7 @@ class Database extends Config
                 $this->defaultGroup = 'tests';
                 break;
             case 'development';
-                $this->defaultGroup = 'development';
+                $this->defaultGroup = 'default';
                 break;
         }
 

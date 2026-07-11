@@ -563,6 +563,11 @@ function editCartItem(line, qty, price, discount, inStock) {
         if (formEl) {
             formEl.addEventListener('submit', function(e) {
                 e.preventDefault();
+                const newQty = parseFloat(document.getElementById('edit_quantity').value);
+                if (inStock !== null && newQty > inStock && inStock > 0) {
+                    alert("Insufficient stock. Only " + inStock + " available.");
+                    return;
+                }
                 
                 window.shopsuiteApp.postAction('<?= base_url("sales/editItem") ?>/' + line, {
                     quantity: document.getElementById('edit_quantity').value,
