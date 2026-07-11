@@ -200,7 +200,7 @@ $(document).ready(function() {
         const $masterSwitch = $card.find('.module-master-switch');
         
         // Add "Select All" button
-        const $selectAllBtn = $('<button type="button" class="btn btn-sm btn-outline-primary ms-2">Select All</button>');
+        const $selectAllBtn = $('<button type="button" class="btn  btn-outline-primary ms-2">Select All</button>');
         $selectAllBtn.on('click', function(e) {
             e.preventDefault();
             if ($masterSwitch.is(':checked')) {

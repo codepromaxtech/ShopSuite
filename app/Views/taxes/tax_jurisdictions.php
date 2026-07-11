@@ -5,9 +5,9 @@
  */
 ?>
 
-<?= form_open('taxes/save_tax_jurisdictions/', ['id' => 'tax_jurisdictions_form', 'class' => 'form-horizontal']) ?>
-    <div id="config_wrapper">
-        <fieldset id="config_info">
+<?= form_open('taxes/save_tax_jurisdictions/', ['id' => 'tax_jurisdictions_form', 'class' => 'config-form']) ?>
+    <div class="config-wrapper">
+        
 
             <div id="required_fields_message"><?= lang('Common.fields_required_message') ?></div>
             <ul id="tax_jurisdictions_error_message_box" class="error_message_box"></ul>
@@ -20,10 +20,10 @@
                 'name'  => 'submit_tax_jurisdictions',
                 'id'    => 'submit_tax_jurisdictions',
                 'value' => lang('Common.submit'),
-                'class' => 'btn btn-primary btn-sm pull-right'
+                'class' => 'btn btn-primary  pull-right'
             ]) ?>
 
-        </fieldset>
+        
     </div>
 <?= form_close() ?>
 

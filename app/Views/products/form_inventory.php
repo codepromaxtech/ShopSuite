@@ -10,14 +10,14 @@
 <div id="required_fields_message"><?= lang('Common.fields_required_message') ?></div>
 <ul id="error_message_box" class="error_message_box"></ul>
 
-<?= form_open("products/saveInventory/$item_info->item_id", ['id' => 'item_form', 'class' => 'form-horizontal']) ?>
-    <fieldset id="inv_item_basic_info">
+<?= form_open("products/saveInventory/$item_info->item_id", ['id' => 'item_form', 'class' => 'config-form']) ?>
+    
 
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.item_number'), 'name', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+        <div class="form-group mb-4">
+            <?= form_label(lang('Items.item_number'), 'name', ['class' => 'form-label']) ?>
+            <div>
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-barcode"></span></span>
+                    <span class="input-group-addon input-sm"><i class="bi bi-upc-scan text-muted"></i></span>
                     <?= form_input([
                         'name'     => 'item_number',
                         'id'       => 'item_number',
@@ -29,9 +29,9 @@
             </div>
         </div>
 
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.name'), 'name', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+        <div class="form-group mb-4">
+            <?= form_label(lang('Items.name'), 'name', ['class' => 'form-label']) ?>
+            <div>
                 <?= form_input([
                     'name'     => 'name',
                     'id'       => 'name',
@@ -42,11 +42,11 @@
             </div>
         </div>
 
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.category'), 'category', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+        <div class="form-group mb-4">
+            <?= form_label(lang('Items.category'), 'category', ['class' => 'form-label']) ?>
+            <div>
                 <div class="input-group">
-                    <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-tag"></span></span>
+                    <span class="input-group-addon input-sm"><i class="bi bi-tag text-muted"></i></span>
                     <?= form_input([
                         'name'     => 'category',
                         'id'       => 'category',
@@ -58,16 +58,16 @@
             </div>
         </div>
 
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.stock_location'), 'stock_location', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+        <div class="form-group mb-4">
+            <?= form_label(lang('Items.stock_location'), 'stock_location', ['class' => 'form-label']) ?>
+            <div>
                 <?= form_dropdown('stock_location', $stock_locations, current($stock_locations), ['onchange' => 'fill_quantity(this.value)', 'class' => 'form-control']) ?>
             </div>
         </div>
 
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.current_quantity'), 'quantity', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+        <div class="form-group mb-4">
+            <?= form_label(lang('Items.current_quantity'), 'quantity', ['class' => 'form-label']) ?>
+            <div>
                 <?= form_input([
                     'name'     => 'quantity',
                     'id'       => 'quantity',
@@ -78,9 +78,9 @@
             </div>
         </div>
 
-        <div class="form-group form-group-sm">
+        <div class="form-group mb-4">
             <?= form_label(lang('Items.add_minus'), 'quantity', ['class' => 'required control-label col-xs-3']) ?>
-            <div class="col-xs-4">
+            <div>
                 <?= form_input([
                     'name'  => 'newquantity',
                     'id'    => 'newquantity',
@@ -89,9 +89,9 @@
             </div>
         </div>
 
-        <div class="form-group form-group-sm">
-            <?= form_label(lang('Items.inventory_comments'), 'description', ['class' => 'control-label col-xs-3']) ?>
-            <div class="col-xs-8">
+        <div class="form-group mb-4">
+            <?= form_label(lang('Items.inventory_comments'), 'description', ['class' => 'form-label']) ?>
+            <div>
                 <?= form_textarea([
                     'name'  => 'trans_comment',
                     'id'    => 'trans_comment',
@@ -100,7 +100,7 @@
             </div>
         </div>
 
-    </fieldset>
+    
 <?= form_close() ?>
 
 <script type="text/javascript">

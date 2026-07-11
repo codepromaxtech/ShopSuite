@@ -1,27 +1,27 @@
 <ul id="error_message_box" class="error_message_box"></ul>
 
-<?= form_open_multipart('products/importCsvFile/', ['id' => 'csv_form', 'class' => 'form-horizontal']) ?>
-    <fieldset id="item_basic_info">
+<?= form_open_multipart('products/importCsvFile/', ['id' => 'csv_form', 'class' => 'config-form']) ?>
+    
 
-        <div class="form-group form-group-sm">
-            <div class="col-xs-12">
+        <div class="form-group mb-4">
+            <div>
                 <a href="<?= esc('products/generateCsvFile', 'attr') ?>"><?= lang('Common.download_import_template') ?></a>
             </div>
         </div>
 
-        <div class="form-group form-group-sm">
-            <div class="col-xs-12">
+        <div class="form-group mb-4">
+            <div>
                 <div class="fileinput fileinput-new input-group" data-provides="fileinput">
                     <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i><span class="fileinput-filename"></span></div>
-                    <span class="input-group-addon input-sm btn btn-default btn-file">
+                    <span class="input-group-addon input-sm btn btn-outline btn-file">
                         <span class="fileinput-new"><?= lang('Common.import_select_file') ?></span><span class="fileinput-exists"><?= lang('Common.import_change_file') ?></span><input type="file" id="file_path" name="file_path" accept=".csv">
                     </span>
-                    <a href="#" class="input-group-addon input-sm btn btn-default fileinput-exists" data-dismiss="fileinput"><?= lang('Common.import_remove_file') ?></a>
+                    <a href="#" class="input-group-addon input-sm btn btn-outline fileinput-exists" data-dismiss="fileinput"><?= lang('Common.import_remove_file') ?></a>
                 </div>
             </div>
         </div>
 
-    </fieldset>
+    
 <?= form_close() ?>
 
 <script type="text/javascript">

@@ -7,9 +7,9 @@
  */
 ?>
 
-<div class="form-group form-group-sm">
-    <?= form_label(lang('Attributes.definition_name'), 'definition_name_label', ['class' => 'control-label col-xs-3']) ?>
-    <div class="col-xs-8">
+<div class="form-group mb-4">
+    <?= form_label(lang('Attributes.definition_name'), 'definition_name_label', ['class' => 'form-label']) ?>
+    <div>
         <?= form_dropdown([
             'name'     => 'definition_name',
             'options'  => $definition_names,
@@ -22,9 +22,9 @@
 
 <?php foreach ($definition_values as $definition_id => $definition_value) { ?>
 
-    <div class="form-group form-group-sm">
-        <?= form_label($definition_value['definition_name'], $definition_value['definition_name'], ['class' => 'control-label col-xs-3']) ?>
-        <div class="col-xs-8">
+    <div class="form-group mb-4">
+        <?= form_label($definition_value['definition_name'], $definition_value['definition_name'], ['class' => 'form-label']) ?>
+        <div>
             <div class="input-group">
                 <?php
                 echo form_hidden("attribute_ids[$definition_id]", strval($definition_value['attribute_id']));
@@ -91,8 +91,8 @@
                         break;
                 }
                 ?>
-                <span class="input-group-addon input-sm btn btn-default remove_attribute_btn">
-                    <span class="glyphicon glyphicon-trash"></span>
+                <span class="input-group-addon input-sm btn btn-outline remove_attribute_btn">
+                    <i class="bi bi-trash text-muted"></i>
                 </span>
             </div>
         </div>

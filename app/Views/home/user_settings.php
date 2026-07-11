@@ -12,7 +12,7 @@ echo view('layouts/modern_header', ['title' => $title]);
 <div class="container-fluid">
     <div class="row">
         <!-- Settings Sidebar -->
-        <div class="col-lg-3 mb-4">
+        <div class="  mb-4">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title mb-3">
@@ -34,7 +34,7 @@ echo view('layouts/modern_header', ['title' => $title]);
         </div>
 
         <!-- Settings Content -->
-        <div class="col-lg-9">
+        <div>
             <!-- Personal Information -->
             <div class="card border-0 shadow-sm mb-4 settings-panel" id="personal">
                 <div class="card-header bg-primary">
@@ -45,21 +45,21 @@ echo view('layouts/modern_header', ['title' => $title]);
                 <div class="card-body">
                     <form id="personalInfoForm">
                         <div class="row g-3">
-                            <div class="col-md-6">
+                            <div>
                                 <label class="form-label">First Name</label>
                                 <input type="text" class="form-control" value="<?= esc($user_info->first_name ?? '') ?>" disabled>
                                 <small class="text-secondary">Contact administrator to change</small>
                             </div>
-                            <div class="col-md-6">
+                            <div>
                                 <label class="form-label">Last Name</label>
                                 <input type="text" class="form-control" value="<?= esc($user_info->last_name ?? '') ?>" disabled>
                                 <small class="text-secondary">Contact administrator to change</small>
                             </div>
-                            <div class="col-md-6">
+                            <div>
                                 <label class="form-label">Username</label>
                                 <input type="text" class="form-control" value="<?= esc($user_info->username ?? '') ?>" disabled>
                             </div>
-                            <div class="col-md-6">
+                            <div>
                                 <label class="form-label">Email</label>
                                 <input type="email" class="form-control" value="<?= esc($user_info->email ?? '') ?>" disabled>
                                 <small class="text-secondary">Contact administrator to change</small>
@@ -89,16 +89,16 @@ echo view('layouts/modern_header', ['title' => $title]);
                         <input type="hidden" name="person_id" value="<?= $user_info->person_id ?? '' ?>">
                         
                         <div class="row g-3">
-                            <div class="col-md-12">
+                            <div>
                                 <label class="form-label">Current Password *</label>
                                 <input type="password" class="form-control" name="current_password" required>
                             </div>
-                            <div class="col-md-6">
+                            <div>
                                 <label class="form-label">New Password *</label>
                                 <input type="password" class="form-control" name="password" id="new_password" required minlength="8">
                                 <small class="text-secondary">Minimum 8 characters</small>
                             </div>
-                            <div class="col-md-6">
+                            <div>
                                 <label class="form-label">Confirm New Password *</label>
                                 <input type="password" class="form-control" name="confirm_password" id="confirm_password" required>
                             </div>
@@ -122,7 +122,7 @@ echo view('layouts/modern_header', ['title' => $title]);
                 <div class="card-body">
                     <h6 class="mb-3">Appearance</h6>
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div>
                             <label class="form-label">Theme</label>
                             <div class="btn-group w-100" role="group">
                                 <input type="radio" class="btn-check" name="theme" id="theme-light" value="light" autocomplete="off">
@@ -147,12 +147,12 @@ echo view('layouts/modern_header', ['title' => $title]);
 
                     <h6 class="mb-3">Preview</h6>
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div>
                             <div class="card">
                                 <div class="card-body">
                                     <h6 class="card-title">Sample Card</h6>
                                     <p class="card-text">This is how your interface will look with the selected theme.</p>
-                                    <button class="btn btn-primary btn-sm">Sample Button</button>
+                                    <button class="btn btn-primary ">Sample Button</button>
                                 </div>
                             </div>
                         </div>
