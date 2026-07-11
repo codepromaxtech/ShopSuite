@@ -779,7 +779,7 @@ function quickAddGiftCard() {
         formData.append('giftcard_number', document.getElementById('quick_giftcard_number').value);
         formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
 
-        fetch('<?= base_url("sales/addGiftcard") ?>', { method: 'POST', body: formData })
+        fetch('<?= base_url("sales/addGiftcard") ?>', { method: 'POST', body: formData, credentials: 'same-origin' })
             .then(() => {
                 closeGiftCardModal();
                 window.location.reload();
@@ -848,8 +848,17 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.innerHTML = '...';
             btn.disabled = true;
 
-            fetch(this.action, { method: 'POST', body: new FormData(this) })
-                .then(() => window.location.reload())
+            fetch(this.action, { method: 'POST', body: new FormData(this), credentials: 'same-origin' })
+                .then(async r => {
+                    const text = await r.text();
+                    if (text.includes('id="error_message_box"')) {
+                        // In case the backend returned an error, the raw HTML will contain the error box
+                        const errMsg = text.substring(text.indexOf('id="error_message_box"'));
+                        const cleanErr = errMsg.substring(errMsg.indexOf('>') + 1, errMsg.indexOf('</div>')).replace(/<[^>]+>/g, '').trim();
+                        alert(cleanErr || "Failed to add payment.");
+                    }
+                    window.location.reload();
+                })
                 .catch(err => {
                     console.error('Error adding payment:', err);
                     btn.innerHTML = og;
