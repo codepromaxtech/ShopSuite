@@ -6,6 +6,33 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
 <script>document.querySelector('.app-shell')?.classList.add('pos-shell-active');</script>
 
 <div class="pos-shell" id="posShell">
+    <!-- ===== TOP BAR ===== -->
+    <div class="pos-topbar">
+        <!-- Mode Switch (hidden form) -->
+        <?= form_open("sales/changeMode", ['id' => 'mode_form', 'style' => 'display:none']) ?>
+        <input type="hidden" name="mode" id="mode_input" value="<?= $mode ?? 'sale' ?>">
+        <?= form_close() ?>
+
+        <div class="pos-mode-tabs">
+            <button class="pos-mode-tab <?= ($mode ?? 'sale') == 'sale' ? 'active' : '' ?>" onclick="changeMode('sale')">Sale</button>
+            <button class="pos-mode-tab <?= ($mode ?? '') == 'return' ? 'active' : '' ?>" onclick="changeMode('return')">Return</button>
+            <button class="pos-mode-tab <?= ($mode ?? '') == 'sale_invoice' ? 'active' : '' ?>" onclick="changeMode('sale_invoice')">Invoice</button>
+            <button class="pos-mode-tab <?= ($mode ?? '') == 'sale_quote' ? 'active' : '' ?>" onclick="changeMode('sale_quote')">Quote</button>
+            <button class="pos-mode-tab <?= ($mode ?? '') == 'sale_work_order' ? 'active' : '' ?>" onclick="changeMode('sale_work_order')">Work Order</button>
+        </div>
+
+        <div class="pos-topbar-actions">
+            <?php if (!empty($active_cashup_id)): ?>
+            <a href="<?= base_url('cashups/view/' . (int) $active_cashup_id) ?>" class="pos-cashup-live" title="Active Cashup">
+                <span class="pos-cashup-dot"></span>
+                Cashup #<?= (int) $active_cashup_id ?>
+            </a>
+            <?php elseif (!empty($cashups_allowed)): ?>
+            <a href="<?= base_url('cashups/view/-1') ?>" class="pos-topbar-link">Open Cashup</a>
+            <?php endif; ?>
+        </div>
+    </div>
+
     <!-- ===== MAIN BODY ===== -->
     <div class="pos-body">
         
@@ -44,11 +71,29 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                     </div>
                     <div class="pos-catalog-item-name">Clear Cart</div>
                 </div>
+                <div class="pos-catalog-item" onclick="window.location.href='<?= base_url('sales/suspended') ?>'">
+                    <div class="pos-catalog-item-initials" style="color:#6366F1; background:#EEF2FF;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div class="pos-catalog-item-name">Suspended</div>
+                </div>
+                <div class="pos-catalog-item" onclick="window.location.href='<?= base_url('sales/manage') ?>'">
+                    <div class="pos-catalog-item-initials" style="color:#0891B2; background:#ECFEFF;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div class="pos-catalog-item-name">History</div>
+                </div>
                 <div class="pos-catalog-item" onclick="window.location.href='<?= base_url('home') ?>'">
-                    <div class="pos-catalog-item-initials" style="color:#8B5CF6; background:#FEF3C7;">
+                    <div class="pos-catalog-item-initials" style="color:#8B5CF6; background:#F5F3FF;">
                         <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                     </div>
                     <div class="pos-catalog-item-name">Dashboard</div>
+                </div>
+                <div class="pos-catalog-item" onclick="addComment()">
+                    <div class="pos-catalog-item-initials" style="color:#D97706; background:#FEF3C7;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                    </div>
+                    <div class="pos-catalog-item-name">Add Note</div>
                 </div>
             </div>
         </div>
@@ -58,6 +103,29 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
             
             <!-- Header (Customer & Actions) -->
             <div class="pos-right-header">
+                <?php if (!empty($customer_required)): ?>
+                    <div style="color: var(--pos-danger); font-size: 12px; font-weight: 600; margin-bottom: 8px;">⚠ <?= esc($customer_required) ?></div>
+                <?php endif; ?>
+
+                <?php if (!empty($invoice_number) && ($mode ?? '') === 'sale_invoice'): ?>
+                <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: #F9FAFB; border-radius: 10px; font-size: 12px; margin-bottom: 12px; border: 1px solid var(--pos-border);">
+                    <span style="color: var(--pos-text-muted); font-weight: 600;">Invoice #</span>
+                    <span style="font-weight: 700;"><?= esc($invoice_number) ?></span>
+                </div>
+                <?php endif; ?>
+                <?php if (!empty($quote_number) && ($mode ?? '') === 'sale_quote'): ?>
+                <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: #F9FAFB; border-radius: 10px; font-size: 12px; margin-bottom: 12px; border: 1px solid var(--pos-border);">
+                    <span style="color: var(--pos-text-muted); font-weight: 600;">Quote #</span>
+                    <span style="font-weight: 700;"><?= esc($quote_number) ?></span>
+                </div>
+                <?php endif; ?>
+                <?php if (!empty($work_order_number) && ($mode ?? '') === 'sale_work_order'): ?>
+                <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: #F9FAFB; border-radius: 10px; font-size: 12px; margin-bottom: 12px; border: 1px solid var(--pos-border);">
+                    <span style="color: var(--pos-text-muted); font-weight: 600;">Work Order #</span>
+                    <span style="font-weight: 700;"><?= esc($work_order_number) ?></span>
+                </div>
+                <?php endif; ?>
+
                 <?php if (isset($customer_id) && $customer_id > 0): ?>
                     <div class="pos-customer-card">
                         <div class="pos-customer-info">
@@ -130,10 +198,17 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                 <?php else: ?>
                     <div class="pos-total-row"><span>Tax</span><span>$<?= number_format(($total ?? 0) - ($subtotal ?? 0), 2) ?></span></div>
                 <?php endif; ?>
+                <?php if (!empty($discount) && $discount > 0): ?>
+                <div class="pos-total-row"><span>Discount</span><span>-<?= esc($discount) ?>%</span></div>
+                <?php endif; ?>
                 <div class="pos-total-row grand-total">
                     <span>Total</span>
                     <span>$<?= number_format($total ?? 0, 2) ?></span>
                 </div>
+                <?php if (!empty($payments)): ?>
+                <div class="pos-total-row" style="font-weight: 600; color: var(--pos-text);"><span>Paid</span><span>$<?= number_format($payments_total ?? 0, 2) ?></span></div>
+                <?php endif; ?>
+                <div class="pos-total-row" style="font-weight: 700; color: var(--pos-text);"><span>Amount Due</span><span>$<?= number_format($amount_due ?? $total ?? 0, 2) ?></span></div>
                 
                 <!-- Added Payments -->
                 <?php if (!empty($payments)): ?>
@@ -164,9 +239,6 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
 
                 <div style="display: flex; gap: 10px;">
                     <div style="display:none;">
-                        <?= form_open("sales/changeMode", ['id' => 'mode_form']) ?>
-                        <input type="hidden" name="mode" id="mode_input" value="<?= $mode ?? 'sale' ?>">
-                        <?= form_close() ?>
                         <?= form_open("sales/complete", ['id' => 'complete_sale_form']) ?>
                         <button type="submit" id="hidden_complete_btn"></button>
                         <?= form_close() ?>
@@ -279,8 +351,36 @@ document.getElementById('add_payment_form')?.addEventListener('submit', function
         }).catch(err => { console.error(err); window.location.reload(); });
 });
 
-// Auto focus
+// Auto focus & init
 document.getElementById('item')?.focus();
+toggleGiftCardInput();
+
+// Mode Switching
+function changeMode(mode) {
+    document.getElementById('mode_input').value = mode;
+    document.getElementById('mode_form').submit();
+}
+
+// Add Comment
+function addComment() {
+    const comment = prompt('Add a note to this sale:', '<?= esc($comment ?? '') ?>');
+    if (comment !== null) {
+        fetch('<?= base_url("sales/setComment") ?>', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'comment=' + encodeURIComponent(comment)
+        }).catch(err => console.error('Error saving comment:', err));
+    }
+}
+
+// Keyboard Shortcuts
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F1') { e.preventDefault(); window.location.href = '<?= base_url("sales/salesKeyboardHelp") ?>'; }
+    else if (e.key === 'F2') { e.preventDefault(); suspendSale(); }
+    else if (e.key === 'F3') { e.preventDefault(); quickAddGiftCard(); }
+    else if (e.key === 'F4') { e.preventDefault(); document.getElementById('hidden_complete_btn')?.click(); }
+    else if (e.key === 'Escape') { e.preventDefault(); clearCart(); }
+});
 
 // Complete Sale Guard
 document.getElementById('complete_sale_form')?.addEventListener('submit', function(e) {

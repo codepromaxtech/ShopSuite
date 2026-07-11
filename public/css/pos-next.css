@@ -47,12 +47,126 @@ body.pos-shell-active {
 }
 
 /* ============================================
+   TOP BAR
+   ============================================ */
+.pos-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    background: var(--pos-surface);
+    border-bottom: 1px solid var(--pos-border);
+    flex-shrink: 0;
+    z-index: 30;
+}
+
+.pos-mode-tabs {
+    display: flex;
+    gap: 4px;
+    background: #F3F4F6;
+    padding: 4px;
+    border-radius: 12px;
+}
+
+.pos-mode-tab {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--pos-text-muted);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+}
+
+.pos-mode-tab:hover {
+    color: var(--pos-text);
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.pos-mode-tab.active {
+    background: var(--pos-surface);
+    color: var(--pos-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.pos-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pos-cashup-live {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 20px;
+    color: var(--pos-success);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.pos-cashup-live:hover {
+    background: rgba(16, 185, 129, 0.15);
+}
+
+.pos-cashup-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--pos-success);
+    border-radius: 50%;
+    animation: posPulse 2s infinite;
+}
+
+@keyframes posPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.pos-topbar-link {
+    padding: 6px 14px;
+    background: #F3F4F6;
+    border-radius: 20px;
+    color: var(--pos-text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.pos-topbar-link:hover {
+    background: #E5E7EB;
+    color: var(--pos-text);
+}
+
+/* ============================================
    MAIN LAYOUT
    ============================================ */
+.pos-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
 .pos-body {
     display: flex;
-    height: 100vh;
-    width: 100vw;
+    flex: 1;
+    min-height: 0;
     background: var(--pos-bg);
 }
 
@@ -749,7 +863,8 @@ body.pos-shell-active {
     .pos-right-pane {
         width: 100%;
         min-width: unset;
-        height: 60vh;
+        flex: 1;
+        height: auto;
         border-radius: 0;
         box-shadow: none;
         z-index: 0;
@@ -788,6 +903,25 @@ body.pos-shell-active {
 
     .pos-catalog-item-name {
         font-size: 12px;
+    }
+
+    .pos-topbar {
+        flex-wrap: wrap;
+        padding: 8px 12px;
+        gap: 8px;
+    }
+
+    .pos-mode-tabs {
+        order: 2;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .pos-mode-tab {
+        padding: 6px 12px;
+        font-size: 12px;
+        min-height: 36px;
     }
 }
 
