@@ -453,9 +453,8 @@ class Sales extends Secure_Controller
         } else {
             if ($payment_type === lang('Sales.giftcard')) {
                 // In the case of giftcard payment the register input amount_tendered becomes the giftcard number
-                $amount_tendered = parse_decimals($this->request->getPost('amount_tendered'));
-                $giftcard_num = $amount_tendered;
-
+                $giftcard_num = $this->request->getPost('amount_tendered');
+                
                 $payments = $this->sale_lib->get_payments();
                 $payment_type = $payment_type . ':' . $giftcard_num;
                 $current_payments_with_giftcard = isset($payments[$payment_type]) ? $payments[$payment_type]['payment_amount'] : 0;
@@ -466,8 +465,10 @@ class Sales extends Secure_Controller
                 if (isset($cur_giftcard_customer) && $cur_giftcard_customer != $customer_id) {
                     $data['error'] = lang('Giftcards.cannot_use', [$giftcard_num]);
                 } elseif (($cur_giftcard_value - $current_payments_with_giftcard) <= 0 && $this->sale_lib->get_mode() === 'sale') {
-                    $data['error'] = lang('Giftcards.remaining_balance', [$giftcard_num, $cur_giftcard_value]);
+                    $data['error'] = lang('Giftcards.remaining_balance', [$giftcard_num, (string)$cur_giftcard_value]);
                 } else {
+                    $new_giftcard_value = $cur_giftcard_value - $current_payments_with_giftcard;
+                    $amount_tendered = min($this->sale_lib->get_amount_due(), $new_giftcard_value);
                     $new_giftcard_value = $giftcard->get_giftcard_value($giftcard_num) - $this->sale_lib->get_amount_due();
                     $new_giftcard_value = max($new_giftcard_value, 0);
                     $this->sale_lib->set_giftcard_remainder($new_giftcard_value);
