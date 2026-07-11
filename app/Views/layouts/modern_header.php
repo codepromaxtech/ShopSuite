@@ -35,8 +35,8 @@
         };
     </script>
     <!-- Core JavaScript (loaded in head for ModernDataTable) -->
-    <script src="<?= base_url('js/app.js') ?>"></script>
-    <script src="<?= base_url('js/modern-datatable.js') ?>"></script>
+    <script src="<?= base_url('js/app.js') ?>?v=<?= filemtime(FCPATH . 'js/app.js') ?>"></script>
+    <script src="<?= base_url('js/modern-datatable.js') ?>?v=<?= filemtime(FCPATH . 'js/modern-datatable.js') ?>"></script>
 </head>
 <body>
     <!-- App Shell -->

@@ -569,13 +569,6 @@ function editCartItem(line, qty, price, discount, inStock) {
                     price: document.getElementById('edit_price').value,
                     discount: document.getElementById('edit_discount').value
                 }).then(async r => {
-                    const text = await r.text();
-                    if (text.includes('id="error_message_box"')) {
-                        // Extract debug text from CI4 output
-                        const errMsg = text.substring(text.indexOf('Validation failed:'), text.indexOf('POST:') + 300).replace(/<[^>]+>/g, '');
-                        if (errMsg.length > 5) alert(errMsg);
-                        else alert("Update failed. Please check your inputs.");
-                    }
                     window.location.reload();
                 }).catch(err => {
                     alert("Error updating item: " + err.message);

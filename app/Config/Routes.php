@@ -58,7 +58,11 @@ $routes->post('notifications/mark_all_read', 'Notifications::mark_all_read');
 // POS / SALES — GET
 // ============================================
 $routes->get('sales/log', function() {
-    readfile(WRITEPATH . 'logs/' . trim(shell_exec('ls -1t ' . WRITEPATH . 'logs/ | head -n 1')));
+    $files = glob(WRITEPATH . 'logs/*.log');
+    if ($files) { 
+        rsort($files);
+        readfile($files[0]);
+    }
     exit;
 });
 $routes->get('sales', 'Sales::getIndex');
