@@ -4,16 +4,16 @@
  */
 ?>
 
-<?= form_open('config/saveMessage/', ['id' => 'message_config_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) ?>
-    <div id="config_wrapper">
-        <fieldset id="config_info">
+<?= form_open('config/saveMessage/', ['id' => 'message_config_form', 'enctype' => 'multipart/form-data', 'class' => 'config-form']) ?>
+    <div class="config-wrapper">
+        
 
             <div id="required_fields_message"><?= lang('Common.fields_required_message') ?></div>
             <ul id="message_error_message_box" class="error_message_box"></ul>
 
-            <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.msg_uid'), 'msg_uid', ['class' => 'control-label col-xs-2 required']) ?>
-                <div class="col-xs-4">
+            <div class="form-group mb-4">
+                <?= form_label(lang('Config.msg_uid'), 'msg_uid', ['class' => 'form-label']) ?>
+                <div>
                     <div class="input-group">
                         <span class="input-group-addon input-sm">
                             <span class="glyphicon glyphicon-user"></span>
@@ -28,9 +28,9 @@
                 </div>
             </div>
 
-            <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.msg_pwd'), 'msg_pwd', ['class' => 'control-label col-xs-2 required']) ?>
-                <div class="col-xs-4">
+            <div class="form-group mb-4">
+                <?= form_label(lang('Config.msg_pwd'), 'msg_pwd', ['class' => 'form-label']) ?>
+                <div>
                     <div class="input-group">
                         <span class="input-group-addon input-sm">
                             <span class="glyphicon glyphicon-lock"></span>
@@ -45,9 +45,9 @@
                 </div>
             </div>
 
-            <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.msg_src'), 'msg_src', ['class' => 'control-label col-xs-2 required']) ?>
-                <div class="col-xs-4">
+            <div class="form-group mb-4">
+                <?= form_label(lang('Config.msg_src'), 'msg_src', ['class' => 'form-label']) ?>
+                <div>
                     <div class="input-group">
                         <span class="input-group-addon input-sm">
                             <span class="glyphicon glyphicon-bullhorn"></span>
@@ -62,9 +62,9 @@
                 </div>
             </div>
 
-            <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.msg_msg'), 'msg_msg', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-4">
+            <div class="form-group mb-4">
+                <?= form_label(lang('Config.msg_msg'), 'msg_msg', ['class' => 'form-label']) ?>
+                <div>
                     <?= form_textarea([
                         'name'        => 'msg_msg',
                         'id'          => 'msg_msg',
@@ -79,10 +79,10 @@
                 'name'  => 'submit_message',
                 'id'    => 'submit_message',
                 'value' => lang('Common.submit'),
-                'class' => 'btn btn-primary btn-sm pull-right'
+                'class' => 'btn btn-primary  pull-right'
             ]) ?>
 
-        </fieldset>
+        
     </div>
 <?= form_close() ?>
 

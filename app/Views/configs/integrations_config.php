@@ -5,17 +5,17 @@
  */
 ?>
 
-<?= form_open('config/saveMailchimp/', ['id' => 'mailchimp_config_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) ?>
-    <div id="config_wrapper">
-        <fieldset id="config_info">
+<?= form_open('config/saveMailchimp/', ['id' => 'mailchimp_config_form', 'enctype' => 'multipart/form-data', 'class' => 'config-form']) ?>
+    <div class="config-wrapper">
+        
 
             <div id="required_fields_message"><?= lang('Common.fields_required_message') ?></div>
             <div id="integrations_header"><?= lang('Config.mailchimp_configuration') ?></div>
             <ul id="mailchimp_error_message_box" class="error_message_box"></ul>
 
-            <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.mailchimp_api_key'), 'mailchimp_api_key', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-4">
+            <div class="form-group mb-4">
+                <?= form_label(lang('Config.mailchimp_api_key'), 'mailchimp_api_key', ['class' => 'form-label']) ?>
+                <div>
                     <div class="input-group">
                         <span class="input-group-addon input-sm">
                             <span class="glyphicon glyphicon-cloud"></span>
@@ -28,8 +28,8 @@
                         ]) ?>
                     </div>
                 </div>
-                <div class="col-xs-1">
-                    <label class="control-label">
+                <div>
+                    <label class="form-label">
                         <a href="https://eepurl.com/b9a05b" target="_blank">
                             <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="<?= lang('Config.mailchimp_tooltip') ?>"></span>
                         </a>
@@ -37,9 +37,9 @@
                 </div>
             </div>
 
-            <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.mailchimp_lists'), 'mailchimp_list_id', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-4">
+            <div class="form-group mb-4">
+                <?= form_label(lang('Config.mailchimp_lists'), 'mailchimp_list_id', ['class' => 'form-label']) ?>
+                <div>
                     <div class="input-group">
                         <span class="input-group-addon input-sm">
                             <span class="glyphicon glyphicon-user"></span>
@@ -58,10 +58,10 @@
                 'name'  => 'submit_mailchimp',
                 'id'    => 'submit_mailchimp',
                 'value' => lang('Common.submit'),
-                'class' => 'btn btn-primary btn-sm pull-right'
+                'class' => 'btn btn-primary  pull-right'
             ]) ?>
 
-        </fieldset>
+        
     </div>
 <?= form_close() ?>
 

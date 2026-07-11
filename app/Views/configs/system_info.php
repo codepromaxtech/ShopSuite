@@ -12,18 +12,18 @@ use Config\ShopSuite;
 
 <script type="text/javascript" src="js/clipboard.min.js"></script>
 
-<div id="config_wrapper" class="col-sm-12">
+<div class="config-wrapper" >
     <?= lang('Config.server_notice') ?>
     <div class="container">
         <div class="row">
-            <div class="col-sm-2 text-left"><br>
+            <div class="  text-left"><br>
                 <strong>
                     <p class="u-min-height-147em">General Info</p>
                     <p class="u-min-height-105em">User Setup</p><br>
                     <p>Permissions</p>
                 </strong>
             </div>
-            <div class="col-sm-8 text-left" id="issuetemplate"><br>
+            <div class="  text-left" id="issuetemplate"><br>
                 <?= lang('Config.shopsuite_info') . ':' ?>
                 <?= esc(config('App')->application_version) ?> - <?= esc(substr(config(ShopSuite::class)->commit_sha1, 0, 6)) ?><br>
                 Language Code: <?= current_language_code() ?><br><br>

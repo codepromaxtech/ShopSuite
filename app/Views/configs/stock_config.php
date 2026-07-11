@@ -4,9 +4,9 @@
  */
 ?>
 
-<?= form_open('config/saveLocations/', ['id' => 'location_config_form', 'class' => 'form-horizontal']) ?>
-    <div id="config_wrapper">
-        <fieldset id="config_info">
+<?= form_open('config/saveLocations/', ['id' => 'location_config_form', 'class' => 'config-form']) ?>
+    <div class="config-wrapper">
+        
 
             <div id="required_fields_message"><?= lang('Common.fields_required_message') ?></div>
             <ul id="stock_error_message_box" class="error_message_box"></ul>
@@ -19,10 +19,10 @@
                 'name'  => 'submit_stock',
                 'id'    => 'submit_stock',
                 'value' => lang('Common.submit'),
-                'class' => 'btn btn-primary btn-sm pull-right'
+                'class' => 'btn btn-primary  pull-right'
             ]) ?>
 
-        </fieldset>
+        
     </div>
 <?= form_close() ?>
 

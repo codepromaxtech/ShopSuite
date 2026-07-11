@@ -4,17 +4,17 @@
  */
 ?>
 
-<?= form_open('', ['id' => 'license_config_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) ?>
-    <div id="config_wrapper">
-        <fieldset>
+<?= form_open('', ['id' => 'license_config_form', 'enctype' => 'multipart/form-data', 'class' => 'config-form']) ?>
+    <div class="config-wrapper">
+        
 
             <?php
             $counter = 0;
             foreach ($licenses as $license) {
             ?>
-                <div class="form-group form-group-sm">
-                    <?= form_label($license['title'], 'license', ['class' => 'control-label col-xs-3']) ?>
-                    <div class="col-xs-6">
+                <div class="form-group mb-4">
+                    <?= form_label($license['title'], 'license', ['class' => 'form-label']) ?>
+                    <div>
                         <?= form_textarea([
                             'name'     => 'license',
                             'id'       => 'license_' . $counter++,    // TODO: String Interpolation
@@ -27,6 +27,6 @@
                 </div>
             <?php } ?>
 
-        </fieldset>
+        
     </div>
 <?= form_close() ?>

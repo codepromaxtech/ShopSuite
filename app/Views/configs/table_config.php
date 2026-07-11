@@ -5,16 +5,16 @@
  */
 ?>
 
-<?= form_open('config/saveTables/', ['id' => 'table_config_form', 'class' => 'form-horizontal']) ?>
-    <div id="config_wrapper">
-        <fieldset id="config_info">
+<?= form_open('config/saveTables/', ['id' => 'table_config_form', 'class' => 'config-form']) ?>
+    <div class="config-wrapper">
+        
 
             <div id="required_fields_message"><?= lang('Common.fields_required_message') ?></div>
             <ul id="table_error_message_box" class="error_message_box"></ul>
 
-            <div class="form-group form-group-sm">
-                <?= form_label(lang('Config.dinner_table_enable'), 'dinner_table_enable', ['class' => 'control-label col-xs-2']) ?>
-                <div class="col-xs-1">
+            <div class="form-group mb-4">
+                <?= form_label(lang('Config.dinner_table_enable'), 'dinner_table_enable', ['class' => 'form-label']) ?>
+                <div>
                     <?= form_checkbox([
                         'name'    => 'dinner_table_enable',
                         'value'   => 'dinner_table_enable',
@@ -32,10 +32,10 @@
                 'name'  => 'submit_table',
                 'id'    => 'submit_table',
                 'value' => lang('Common.submit'),
-                'class' => 'btn btn-primary btn-sm pull-right'
+                'class' => 'btn btn-primary  pull-right'
             ]) ?>
 
-        </fieldset>
+        
     </div>
 <?= form_close() ?>
 
