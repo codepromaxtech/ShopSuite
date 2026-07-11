@@ -13,12 +13,51 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
         <input type="hidden" name="mode" id="mode_input" value="<?= $mode ?? 'sale' ?>">
         <?= form_close() ?>
 
-        <div class="pos-mode-tabs">
-            <button class="pos-mode-tab <?= ($mode ?? 'sale') == 'sale' ? 'active' : '' ?>" onclick="changeMode('sale')">Sale</button>
-            <button class="pos-mode-tab <?= ($mode ?? '') == 'return' ? 'active' : '' ?>" onclick="changeMode('return')">Return</button>
-            <button class="pos-mode-tab <?= ($mode ?? '') == 'sale_invoice' ? 'active' : '' ?>" onclick="changeMode('sale_invoice')">Invoice</button>
-            <button class="pos-mode-tab <?= ($mode ?? '') == 'sale_quote' ? 'active' : '' ?>" onclick="changeMode('sale_quote')">Quote</button>
-            <button class="pos-mode-tab <?= ($mode ?? '') == 'sale_work_order' ? 'active' : '' ?>" onclick="changeMode('sale_work_order')">Work Order</button>
+        <div class="pos-topbar-left">
+            <div class="pos-mode-tabs">
+                <button class="pos-mode-tab <?= ($mode ?? 'sale') == 'sale' ? 'active' : '' ?>" onclick="changeMode('sale')">Sale</button>
+                <button class="pos-mode-tab <?= ($mode ?? '') == 'return' ? 'active' : '' ?>" onclick="changeMode('return')">Return</button>
+                <button class="pos-mode-tab <?= ($mode ?? '') == 'sale_invoice' ? 'active' : '' ?>" onclick="changeMode('sale_invoice')">Invoice</button>
+                <button class="pos-mode-tab <?= ($mode ?? '') == 'sale_quote' ? 'active' : '' ?>" onclick="changeMode('sale_quote')">Quote</button>
+                <button class="pos-mode-tab <?= ($mode ?? '') == 'sale_work_order' ? 'active' : '' ?>" onclick="changeMode('sale_work_order')">Work Order</button>
+            </div>
+
+            <div class="pos-toolbar-divider"></div>
+
+            <div class="pos-action-bar">
+                <button class="pos-action-btn" onclick="quickAddGiftCard()" title="Sell Gift Card">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Gift Card</span>
+                </button>
+                <button class="pos-action-btn" onclick="suspendSale()" title="Hold Sale">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Hold</span>
+                </button>
+                <button class="pos-action-btn" onclick="window.location.href='<?= base_url('sales/returnExchange') ?>'" title="Return / Exchange">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+                    <span>Return</span>
+                </button>
+                <button class="pos-action-btn" onclick="clearCart()" title="Clear Cart">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    <span>Clear</span>
+                </button>
+                <button class="pos-action-btn" onclick="window.location.href='<?= base_url('sales/suspended') ?>'" title="Suspended Sales">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                    <span>Suspended</span>
+                </button>
+                <button class="pos-action-btn" onclick="window.location.href='<?= base_url('sales/manage') ?>'" title="Sales History">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>History</span>
+                </button>
+                <button class="pos-action-btn" onclick="window.location.href='<?= base_url('home') ?>'" title="Dashboard">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <span>Home</span>
+                </button>
+                <button class="pos-action-btn" onclick="addComment()" title="Add Note">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                    <span>Note</span>
+                </button>
+            </div>
         </div>
 
         <div class="pos-topbar-actions">
@@ -36,7 +75,7 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
     <!-- ===== MAIN BODY ===== -->
     <div class="pos-body">
         
-        <!-- ===== LEFT PANE: Catalog & Search ===== -->
+        <!-- ===== LEFT PANE: Search & Cart ===== -->
         <div class="pos-left-pane">
             <div class="pos-search-area">
                 <?= form_open("sales/add", ['id' => 'add_item_form']) ?>
@@ -47,54 +86,53 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                 <div id="item_autocomplete" class="pos-autocomplete" style="width: calc(100% - 64px); left: 32px;"></div>
                 <?= form_close() ?>
             </div>
-            
-            <div class="pos-items-area">
-                <div class="pos-catalog-item" onclick="quickAddGiftCard()">
-                    <div class="pos-catalog-item-initials">GC</div>
-                    <div class="pos-catalog-item-name">Sell Gift Card</div>
-                </div>
-                <div class="pos-catalog-item" onclick="suspendSale()">
-                    <div class="pos-catalog-item-initials" style="color:var(--pos-danger); background:#FEE2E2;">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+
+            <!-- Cart Items (moved from right pane) -->
+            <div style="padding: 8px 24px 0; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; font-weight: 700; color: var(--pos-text);">
+                    Cart
+                </span>
+                <span style="font-size: 12px; color: var(--pos-text-muted); font-weight: 500;">
+                    <?= $item_count ?? count($cart ?? []) ?> items · <?= $total_units ?? count($cart ?? []) ?> units
+                </span>
+            </div>
+            <div class="pos-cart-area" id="cartItemsContainer">
+                <?php if (empty($cart)): ?>
+                    <div class="pos-empty-cart">
+                        <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <span>Cart is Empty</span>
                     </div>
-                    <div class="pos-catalog-item-name">Hold Sale</div>
-                </div>
-                <div class="pos-catalog-item" onclick="window.location.href='<?= base_url('sales/returnExchange') ?>'">
-                    <div class="pos-catalog-item-initials" style="color:#F59E0B; background:#FEF3C7;">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
-                    </div>
-                    <div class="pos-catalog-item-name">Return / Exch</div>
-                </div>
-                <div class="pos-catalog-item" onclick="clearCart()">
-                    <div class="pos-catalog-item-initials" style="color:var(--pos-text-muted); background:#E5E7EB;">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </div>
-                    <div class="pos-catalog-item-name">Clear Cart</div>
-                </div>
-                <div class="pos-catalog-item" onclick="window.location.href='<?= base_url('sales/suspended') ?>'">
-                    <div class="pos-catalog-item-initials" style="color:#6366F1; background:#EEF2FF;">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <div class="pos-catalog-item-name">Suspended</div>
-                </div>
-                <div class="pos-catalog-item" onclick="window.location.href='<?= base_url('sales/manage') ?>'">
-                    <div class="pos-catalog-item-initials" style="color:#0891B2; background:#ECFEFF;">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <div class="pos-catalog-item-name">History</div>
-                </div>
-                <div class="pos-catalog-item" onclick="window.location.href='<?= base_url('home') ?>'">
-                    <div class="pos-catalog-item-initials" style="color:#8B5CF6; background:#F5F3FF;">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    </div>
-                    <div class="pos-catalog-item-name">Dashboard</div>
-                </div>
-                <div class="pos-catalog-item" onclick="addComment()">
-                    <div class="pos-catalog-item-initials" style="color:#D97706; background:#FEF3C7;">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
-                    </div>
-                    <div class="pos-catalog-item-name">Add Note</div>
-                </div>
+                <?php else: ?>
+                    <?php foreach ($cart as $line => $item): ?>
+                        <?php 
+                        $inStock = isset($item['in_stock']) ? (float)$item['in_stock'] : 'null';
+                        $price = (float)$item['price'];
+                        $discount = (float)($item['discount'] ?? 0);
+                        $qty = (float)$item['quantity'];
+                        ?>
+                        <div class="pos-cart-item">
+                            <div class="pos-cart-item-main">
+                                <div class="pos-cart-item-name"><?= esc($item['name']) ?></div>
+                                <div class="pos-cart-item-price">$<?= number_format($price * $qty, 2) ?></div>
+                            </div>
+                            <?php if (!empty($item['discount']) && $item['discount'] > 0): ?>
+                                <div style="margin-top: 4px;">
+                                    <span class="pos-discount-badge" style="font-size: 11px; margin-left: 0;">-<?= esc($item['discount']) ?>%</span>
+                                </div>
+                            <?php endif; ?>
+                            <div class="pos-cart-item-controls">
+                                <div class="pos-stepper">
+                                    <button class="pos-stepper-btn" onclick="updateQty(<?= $line ?>, <?= $qty - 1 ?>, <?= $price ?>, <?= $discount ?>, <?= $inStock ?>)">-</button>
+                                    <div class="pos-stepper-value"><?= esc($qty) ?></div>
+                                    <button class="pos-stepper-btn" onclick="updateQty(<?= $line ?>, <?= $qty + 1 ?>, <?= $price ?>, <?= $discount ?>, <?= $inStock ?>)">+</button>
+                                </div>
+                                <button type="button" class="pos-cart-item-delete" onclick="removeCartItem(<?= $line ?>)">
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -145,53 +183,7 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                 <?php endif; ?>
             </div>
 
-            <!-- Cart Items -->
-            <div style="padding: 8px 24px 0; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 13px; font-weight: 700; color: var(--pos-text);">
-                    Cart
-                </span>
-                <span style="font-size: 12px; color: var(--pos-text-muted); font-weight: 500;">
-                    <?= $item_count ?? count($cart ?? []) ?> items · <?= $total_units ?? count($cart ?? []) ?> units
-                </span>
-            </div>
-            <div class="pos-cart-area" id="cartItemsContainer">
-                <?php if (empty($cart)): ?>
-                    <div class="pos-empty-cart">
-                        <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        <span>Cart is Empty</span>
-                    </div>
-                <?php else: ?>
-                    <?php foreach ($cart as $line => $item): ?>
-                        <?php 
-                        $inStock = isset($item['in_stock']) ? (float)$item['in_stock'] : 'null';
-                        $price = (float)$item['price'];
-                        $discount = (float)($item['discount'] ?? 0);
-                        $qty = (float)$item['quantity'];
-                        ?>
-                        <div class="pos-cart-item">
-                            <div class="pos-cart-item-main">
-                                <div class="pos-cart-item-name"><?= esc($item['name']) ?></div>
-                                <div class="pos-cart-item-price">$<?= number_format($price * $qty, 2) ?></div>
-                            </div>
-                            <?php if (!empty($item['discount']) && $item['discount'] > 0): ?>
-                                <div style="margin-top: 4px;">
-                                    <span class="pos-discount-badge" style="font-size: 11px; margin-left: 0;">-<?= esc($item['discount']) ?>%</span>
-                                </div>
-                            <?php endif; ?>
-                            <div class="pos-cart-item-controls">
-                                <div class="pos-stepper">
-                                    <button class="pos-stepper-btn" onclick="updateQty(<?= $line ?>, <?= $qty - 1 ?>, <?= $price ?>, <?= $discount ?>, <?= $inStock ?>)">-</button>
-                                    <div class="pos-stepper-value"><?= esc($qty) ?></div>
-                                    <button class="pos-stepper-btn" onclick="updateQty(<?= $line ?>, <?= $qty + 1 ?>, <?= $price ?>, <?= $discount ?>, <?= $inStock ?>)">+</button>
-                                </div>
-                                <button type="button" class="pos-cart-item-delete" onclick="removeCartItem(<?= $line ?>)">
-                                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
+
 
             <!-- Checkout Board (Bottom Fixed) -->
             <div class="pos-checkout-board">

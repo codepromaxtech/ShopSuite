@@ -53,11 +53,68 @@ body.pos-shell-active {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 24px;
+    padding: 8px 16px;
     background: var(--pos-surface);
     border-bottom: 1px solid var(--pos-border);
     flex-shrink: 0;
     z-index: 30;
+    gap: 12px;
+}
+
+.pos-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.pos-toolbar-divider {
+    width: 1px;
+    height: 28px;
+    background: var(--pos-border);
+    flex-shrink: 0;
+}
+
+.pos-action-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.pos-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 10px;
+    border: none;
+    background: transparent;
+    border-radius: var(--pos-radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--pos-text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.pos-action-btn:hover {
+    background: #F3F4F6;
+    color: var(--pos-text);
+}
+
+.pos-action-btn:active {
+    background: #E5E7EB;
+    transform: scale(0.97);
+}
+
+.pos-action-btn svg {
+    flex-shrink: 0;
+}
+
+.pos-action-btn span {
+    display: inline;
 }
 
 .pos-mode-tabs {
@@ -971,5 +1028,13 @@ body.pos-shell-active {
 @media print {
     .pos-shell {
         display: none;
+    }
+}
+@media (max-width: 1024px) {
+    .pos-action-btn span {
+        display: none;
+    }
+    .pos-action-btn {
+        padding: 6px;
     }
 }
