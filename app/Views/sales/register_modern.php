@@ -509,6 +509,8 @@ function addComment() {
 // EDIT CART ITEM
 // ============================
 function editCartItem(line, qty, price, discount, inStock) {
+    document.getElementById('edit_item_backdrop')?.remove(); // Prevent DOM collision
+
     const backdrop = document.createElement('div');
     backdrop.className = 'pos-modal-backdrop';
     backdrop.id = 'edit_item_backdrop';
@@ -557,16 +559,28 @@ function editCartItem(line, qty, price, discount, inStock) {
     backdrop.addEventListener('click', e => { if (e.target === backdrop) backdrop.remove(); });
 
     setTimeout(() => {
-        document.getElementById('edit_item_form')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            window.shopsuiteApp.postAction('<?= base_url("sales/editItem") ?>/' + line, {
-                quantity: document.getElementById('edit_quantity').value,
-                price: document.getElementById('edit_price').value,
-                discount: document.getElementById('edit_discount').value
-            }).then(() => window.location.reload())
-              .catch(err => console.error('Error updating item:', err));
-        });
+        const formEl = document.getElementById('edit_item_form');
+        if (formEl) {
+            formEl.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                window.shopsuiteApp.postAction('<?= base_url("sales/editItem") ?>/' + line, {
+                    quantity: document.getElementById('edit_quantity').value,
+                    price: document.getElementById('edit_price').value,
+                    discount: document.getElementById('edit_discount').value
+                }).then(async r => {
+                    const text = await r.text();
+                    if (text.includes('id="error_message_box"')) {
+                        // CI4 rendered the error view
+                        alert("Update failed. Please check your inputs.");
+                    }
+                    window.location.reload();
+                }).catch(err => {
+                    alert("Error updating item: " + err.message);
+                    window.location.reload();
+                });
+            });
+        }
     }, 50);
 }
 
