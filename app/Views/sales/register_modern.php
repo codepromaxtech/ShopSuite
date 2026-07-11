@@ -147,7 +147,7 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                         </div>
                     <?php else: ?>
                         <?php foreach ($cart as $line => $item): ?>
-                            <div class="pos-cart-item" onclick="editCartItem(<?= $line ?>, <?= (float)$item['quantity'] ?>, <?= (float)$item['price'] ?>, <?= (float)($item['discount'] ?? 0) ?>)">
+                            <div class="pos-cart-item" onclick="editCartItem(<?= $line ?>, <?= (float)$item['quantity'] ?>, <?= (float)$item['price'] ?>, <?= (float)($item['discount'] ?? 0) ?>, <?= isset($item['in_stock']) ? (float)$item['in_stock'] : 'null' ?>)">
                                 <div class="pos-cart-item-info">
                                     <div class="pos-cart-item-name"><?= esc($item['name']) ?></div>
                                     <div class="pos-cart-item-meta">
@@ -508,12 +508,20 @@ function addComment() {
 // ============================
 // EDIT CART ITEM
 // ============================
-function editCartItem(line, qty, price, discount) {
+function editCartItem(line, qty, price, discount, inStock) {
     const backdrop = document.createElement('div');
     backdrop.className = 'pos-modal-backdrop';
     backdrop.id = 'edit_item_backdrop';
+    
+    let stockInfo = '';
+    if (inStock !== null) {
+        let stockClass = inStock <= 0 ? 'color: var(--pos-danger);' : 'color: var(--pos-success);';
+        stockInfo = \`<div style="margin-bottom: 12px; font-size: 0.85em; color: var(--pos-text-muted);">
+            Available Stock: <strong style="\${stockClass}">\${inStock}</strong>
+        </div>\`;
+    }
 
-    backdrop.innerHTML = `
+    backdrop.innerHTML = \`
         <div class="pos-modal">
             <div class="pos-modal-header">
                 <h3 class="pos-modal-title">Edit Item</h3>
@@ -523,9 +531,10 @@ function editCartItem(line, qty, price, discount) {
             </div>
             <div class="pos-modal-body">
                 <form id="edit_item_form">
+                    \${stockInfo}
                     <div class="pos-form-group">
                         <label class="pos-form-label">Quantity</label>
-                        <input type="number" class="pos-form-input" id="edit_quantity" name="quantity" min="0.01" step="0.01" value="${qty}" required>
+                        <input type="number" class="pos-form-input" id="edit_quantity" name="quantity" min="0.01" step="0.01" value="\${qty}" required>
                     </div>
                     <div class="pos-form-group">
                         <label class="pos-form-label">Price</label>
