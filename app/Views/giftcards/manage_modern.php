@@ -116,19 +116,16 @@ function deleteGiftcard(giftcard) {
             'Delete Gift Card',
             `Are you sure you want to delete gift card ${giftcard.giftcard_number}? This action cannot be undone.`,
             function() {
-                const csrfName = document.querySelector('meta[name="csrf-token-name"]')?.content;
-                const csrfCookie = document.querySelector('meta[name="csrf-cookie-name"]')?.content;
-                const csrfValue = csrfCookie ? (document.cookie.match(new RegExp('(?:^|; )' + csrfCookie + '=([^;]*)')) || [])[1] : '';
-
                 const formData = new FormData();
                 formData.append('ids[]', giftcard.giftcard_id);
-                if (csrfName && csrfValue) {
-                    formData.append(csrfName, csrfValue);
-                }
+                formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
 
                 fetch(`<?= base_url("giftcards/delete") ?>`, {
                     method: 'POST',
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
+                    },
                     body: formData
                 })
                 .then(response => response.json())
