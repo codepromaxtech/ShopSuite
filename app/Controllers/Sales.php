@@ -719,7 +719,7 @@ class Sales extends Secure_Controller
                 : null;
 
 
-            $this->sale_lib->edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $discounted_total);
+            $edit_result = $this->sale_lib->edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $discounted_total);
 
             $this->sale_lib->empty_payments();
 

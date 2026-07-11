@@ -39,6 +39,7 @@
     'Config\\View' => 'Config\\View',
     'Security' => 'Config\\Security',
     'Config\\Images' => 'Config\\Images',
+    'Config\\Encryption' => 'Config\\Encryption',
   ),
   'instances' => 
   array (
@@ -976,6 +977,17 @@
         'gd' => 'CodeIgniter\\Images\\Handlers\\GDHandler',
         'imagick' => 'CodeIgniter\\Images\\Handlers\\ImageMagickHandler',
       ),
+    )),
+    'Config\\Encryption' => 
+    \Config\Encryption::__set_state(array(
+       'key' => 'd8394f128eb035a39bae2aabd1bbdf22eeff7af48ebf24d7711c02145556b062',
+       'driver' => 'OpenSSL',
+       'blockSize' => 16,
+       'digest' => 'SHA512',
+       'rawData' => false,
+       'encryptKeyInfo' => '',
+       'authKeyInfo' => '',
+       'cipher' => 'AES-256-CTR',
     )),
   ),
 );
