@@ -330,7 +330,7 @@ function toggleGiftCardInput() {
         amountInput.placeholder = 'Amount';
         amountInput.step = '0.01';
         amountInput.min = '0.01';
-        amountInput.value = <?= (float)($amount_due ?? $total ?? 0) ?>.toFixed(2);
+        amountInput.value = (<?= (float)($amount_due ?? $total ?? 0) ?>).toFixed(2);
         if (quickRow) quickRow.style.display = 'flex';
     }
 }
