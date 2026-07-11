@@ -851,11 +851,10 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(this.action, { method: 'POST', body: new FormData(this), credentials: 'same-origin' })
                 .then(async r => {
                     const text = await r.text();
-                    if (text.includes('id="error_message_box"')) {
-                        // In case the backend returned an error, the raw HTML will contain the error box
-                        const errMsg = text.substring(text.indexOf('id="error_message_box"'));
-                        const cleanErr = errMsg.substring(errMsg.indexOf('>') + 1, errMsg.indexOf('</div>')).replace(/<[^>]+>/g, '').trim();
-                        alert(cleanErr || "Failed to add payment.");
+                    const doc = (new DOMParser()).parseFromString(text, "text/html");
+                    const errBox = doc.getElementById('error_message_box');
+                    if (errBox) {
+                        alert(errBox.innerText.trim() || 'Failed to add payment.');
                     }
                     window.location.reload();
                 })
