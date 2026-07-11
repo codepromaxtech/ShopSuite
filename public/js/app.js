@@ -458,22 +458,16 @@ class ShopSuiteApp {
     }
 
     // ============================================
-    // CSRF (cookie-based, for fetch POST actions)
+    // CSRF (meta-tag based, for fetch POST actions)
+    // Cookie is httpOnly so JS cannot read it directly.
+    // The hash is injected into a meta tag by the layout.
     // ============================================
     getCsrfTokenName() {
         return document.querySelector('meta[name="csrf-token-name"]')?.content || 'csrf_shopsuite_v4';
     }
 
-    getCsrfCookieName() {
-        return document.querySelector('meta[name="csrf-cookie-name"]')?.content || 'csrf_cookie_shopsuite_v4';
-    }
-
     getCsrfToken() {
-        const cookieName = this.getCsrfCookieName();
-        const escaped = cookieName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const match = document.cookie.match(new RegExp('(?:^|; )' + escaped + '=([^;]*)'));
-
-        return match ? decodeURIComponent(match[1]) : '';
+        return document.querySelector('meta[name="csrf-hash"]')?.content || '';
     }
 
     getCsrfFormBody(extraParams = {}) {
@@ -492,6 +486,7 @@ class ShopSuiteApp {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': this.getCsrfToken(),
             },
             body: this.getCsrfFormBody(extraParams).toString(),
         });

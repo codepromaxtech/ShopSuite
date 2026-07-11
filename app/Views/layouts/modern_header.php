@@ -6,6 +6,7 @@
     <meta name="theme-color" content="#0ea5e9">
     <meta name="csrf-token-name" content="<?= esc(config('Security')->tokenName) ?>">
     <meta name="csrf-cookie-name" content="<?= esc(config('Security')->cookieName) ?>">
+    <meta name="csrf-hash" content="<?= csrf_hash() ?>">
     <title><?= esc($title ?? 'ShopSuite - Modern ERP System') ?></title>
     
     <!-- Favicon -->
