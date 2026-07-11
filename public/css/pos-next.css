@@ -1,0 +1,1556 @@
+/* ============================================
+   SHOPSUITE POS — NEXT GENERATION
+   Premium Glassmorphism · Dark-Mode Native
+   Responsive: Desktop → Tablet → Mobile
+   ============================================ */
+
+/* === Animations === */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes cartItemPop {
+    0% {
+        opacity: 0;
+        transform: translateX(-12px) scale(0.96);
+    }
+
+    60% {
+        transform: translateX(3px) scale(1.01);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.25);
+    }
+
+    50% {
+        box-shadow: 0 0 0 8px rgba(14, 165, 233, 0);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes successPop {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   POS LAYOUT SHELL
+   ============================================ */
+.pos-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    background: var(--bg-secondary);
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ============================================
+   POS TOP BAR
+   ============================================ */
+.pos-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    z-index: 50;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.pos-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-600);
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.pos-brand svg {
+    color: var(--primary-500);
+}
+
+/* Mode Tabs (pill buttons) */
+.pos-mode-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--bg-secondary);
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.pos-mode-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    position: relative;
+}
+
+.pos-mode-tab:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.pos-mode-tab.active {
+    background: var(--primary-600);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+.pos-mode-tab svg {
+    flex-shrink: 0;
+    opacity: 0.8;
+}
+
+.pos-mode-tab.active svg {
+    opacity: 1;
+}
+
+/* Topbar Actions */
+.pos-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.pos-topbar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.pos-topbar-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--primary-300);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.pos-cashup-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: rgba(34, 197, 94, 0.08);
+    color: var(--success-600);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.pos-cashup-live:hover {
+    background: rgba(34, 197, 94, 0.14);
+}
+
+.pos-cashup-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--success-500);
+    border-radius: 50%;
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* ============================================
+   MAIN CONTENT (TWO-PANE)
+   ============================================ */
+.pos-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* === Left Pane: Search + Cart === */
+.pos-left-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-primary);
+    border-right: 1px solid var(--border-color);
+    overflow: hidden;
+    min-width: 0;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Search Area */
+.pos-search-area {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    background: var(--bg-primary);
+}
+
+.pos-search-wrap {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.pos-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    transition: color 0.2s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.pos-search-input {
+    width: 100%;
+    padding: 13px 18px 13px 46px;
+    border: 2px solid var(--border-color);
+    border-radius: 14px;
+    font-size: 14px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-weight: 400;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.pos-search-input::placeholder {
+    color: var(--text-tertiary);
+    font-weight: 400;
+}
+
+.pos-search-input:focus {
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+    background: var(--bg-primary);
+}
+
+.pos-search-input:focus~.pos-search-icon {
+    color: var(--primary-500);
+}
+
+/* Quick Actions Row */
+.pos-quick-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.pos-quick-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 10px 6px 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.pos-quick-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: inherit;
+}
+
+.pos-quick-btn:hover {
+    border-color: var(--primary-500);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+}
+
+.pos-quick-btn:hover::after {
+    opacity: 1;
+}
+
+.pos-quick-btn>* {
+    position: relative;
+    z-index: 1;
+}
+
+.pos-quick-btn:hover .pos-kbd {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.pos-kbd {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* ============================================
+   CART
+   ============================================ */
+.pos-cart-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.pos-cart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.pos-cart-title {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+}
+
+.pos-cart-count {
+    background: var(--primary-100);
+    color: var(--primary-700);
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+[data-theme="dark"] .pos-cart-count {
+    background: rgba(14, 165, 233, 0.15);
+    color: var(--primary-400);
+}
+
+.pos-cart-items {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 12px;
+    scroll-behavior: smooth;
+}
+
+/* Cart Item */
+.pos-cart-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: cartItemPop 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.pos-cart-item:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--primary-400);
+    box-shadow: 0 2px 10px rgba(14, 165, 233, 0.08);
+    transform: translateX(3px);
+}
+
+.pos-cart-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.pos-cart-item-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.pos-cart-item-meta {
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+}
+
+.pos-cart-item-total {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary-600);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+.pos-cart-item-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.pos-cart-item-remove:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger-500);
+}
+
+/* Empty Cart */
+.pos-cart-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    color: var(--text-tertiary);
+    text-align: center;
+    animation: fadeInUp 0.5s ease;
+}
+
+.pos-cart-empty svg {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+    opacity: 0.2;
+    stroke-width: 1.2;
+}
+
+.pos-cart-empty-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.pos-cart-empty-sub {
+    font-size: 13px;
+    color: var(--text-tertiary);
+}
+
+/* ============================================
+   RIGHT PANE: SIDEBAR
+   ============================================ */
+.pos-right-pane {
+    width: 360px;
+    min-width: 320px;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-primary);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px;
+    gap: 14px;
+    animation: slideInRight 0.3s ease;
+}
+
+/* Section Label */
+.pos-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+}
+
+/* ============================================
+   CUSTOMER SECTION
+   ============================================ */
+.pos-customer-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--primary-300);
+    background: rgba(14, 165, 233, 0.04);
+    transition: all 0.2s ease;
+}
+
+.pos-customer-card:hover {
+    background: rgba(14, 165, 233, 0.08);
+}
+
+.pos-customer-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-primary);
+}
+
+.pos-customer-id {
+    font-size: 11px;
+    color: var(--text-tertiary);
+}
+
+.pos-walkin-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border-radius: 12px;
+    border: 1.5px dashed var(--border-color);
+    color: var(--text-tertiary);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.pos-customer-search-wrap {
+    position: relative;
+    margin: 8px 0;
+}
+
+.pos-customer-search {
+    width: 100%;
+    padding: 9px 12px 9px 34px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 12px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.pos-customer-search:focus {
+    border-color: var(--primary-500);
+}
+
+.pos-customer-search-icon {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    pointer-events: none;
+}
+
+.pos-customer-autocomplete {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    margin-top: 4px;
+}
+
+.pos-new-customer-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pos-new-customer-btn:hover {
+    border-color: var(--primary-400);
+    color: var(--primary-600);
+    background: rgba(14, 165, 233, 0.04);
+}
+
+/* ============================================
+   TOTALS CARD (GLASSMORPHISM)
+   ============================================ */
+.pos-totals-card {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+    border-radius: 16px;
+    padding: 18px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.pos-totals-card::before {
+    content: '';
+    position: absolute;
+    top: -60%;
+    right: -40%;
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 65%);
+    pointer-events: none;
+}
+
+.pos-totals-card::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.pos-total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-size: 13px;
+    position: relative;
+    z-index: 1;
+}
+
+.pos-total-label {
+    opacity: 0.85;
+}
+
+.pos-total-value {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.pos-total-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 8px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.pos-total-grand {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0 2px;
+    font-size: 22px;
+    font-weight: 800;
+    position: relative;
+    z-index: 1;
+    letter-spacing: -0.02em;
+}
+
+.pos-total-due {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+    font-size: 13px;
+    position: relative;
+    z-index: 1;
+}
+
+.pos-total-due-value {
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* ============================================
+   PAYMENT SECTION
+   ============================================ */
+.pos-payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.pos-payment-due {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--danger-500);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Payment List */
+.pos-payment-list {
+    max-height: 100px;
+    overflow-y: auto;
+    margin-bottom: 8px;
+}
+
+.pos-payment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    margin-bottom: 4px;
+    animation: fadeIn 0.2s ease;
+}
+
+.pos-payment-method {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.pos-payment-amount {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--success-500);
+    font-variant-numeric: tabular-nums;
+}
+
+.pos-payment-remove {
+    background: none;
+    border: none;
+    color: var(--danger-500);
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+
+.pos-payment-remove:hover {
+    opacity: 1;
+}
+
+/* Add Payment Card */
+.pos-add-payment {
+    padding: 12px;
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+}
+
+.pos-payment-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.pos-payment-field {
+    position: relative;
+    flex: 1;
+}
+
+.pos-currency-sym {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    font-weight: 600;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.pos-payment-input {
+    width: 100%;
+    padding: 8px 10px 8px 24px;
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    font-size: 12px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    outline: none;
+    height: 36px;
+    transition: border-color 0.2s ease;
+}
+
+.pos-payment-input:focus {
+    border-color: var(--primary-500);
+}
+
+.pos-payment-select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    font-size: 12px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    outline: none;
+    height: 36px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.pos-add-payment-btn {
+    height: 36px;
+    padding: 0 14px;
+    background: var(--primary-600);
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.pos-add-payment-btn:hover {
+    background: var(--primary-700);
+    transform: translateY(-1px);
+}
+
+/* Quick Amount Pills */
+.pos-quick-amounts {
+    display: flex;
+    gap: 6px;
+}
+
+.pos-quick-pill {
+    flex: 1;
+    padding: 6px 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s ease;
+}
+
+.pos-quick-pill:hover {
+    border-color: var(--primary-400);
+    color: var(--primary-600);
+    background: rgba(14, 165, 233, 0.04);
+}
+
+/* ============================================
+   ACTION BUTTONS
+   ============================================ */
+.pos-actions {
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pos-complete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 24px;
+    background: linear-gradient(135deg, var(--success-500) 0%, var(--success-700) 100%);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.pos-complete-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.pos-complete-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);
+}
+
+.pos-complete-btn:hover:not(:disabled)::before {
+    width: 300px;
+    height: 300px;
+}
+
+.pos-complete-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.pos-complete-kbd {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    opacity: 0.7;
+    margin-left: 4px;
+    letter-spacing: 0.5px;
+}
+
+.pos-note-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pos-note-btn:hover {
+    border-color: var(--primary-400);
+    color: var(--primary-600);
+    background: rgba(14, 165, 233, 0.03);
+}
+
+/* ============================================
+   AUTOCOMPLETE DROPDOWN
+   ============================================ */
+.pos-autocomplete {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 200;
+    display: none;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+    margin-top: 6px;
+}
+
+.pos-autocomplete-item {
+    padding: 11px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 13px;
+    color: var(--text-primary);
+    transition: background 0.12s ease;
+    background: var(--bg-primary);
+}
+
+.pos-autocomplete-item:hover {
+    background: var(--bg-secondary);
+}
+
+.pos-autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+/* ============================================
+   MODAL (QUICK-ADD CUSTOMER, EDIT ITEM)
+   ============================================ */
+.pos-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5000;
+    animation: fadeIn 0.15s ease;
+}
+
+.pos-modal {
+    background: var(--bg-elevated);
+    border-radius: 20px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 440px;
+    overflow: hidden;
+    animation: successPop 0.25s ease;
+}
+
+.pos-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.pos-modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.pos-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: var(--bg-secondary);
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.pos-modal-close:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.pos-modal-body {
+    padding: 20px 24px 24px;
+}
+
+.pos-form-group {
+    margin-bottom: 14px;
+}
+
+.pos-form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.pos-form-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 13px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.pos-form-input:focus {
+    border-color: var(--primary-500);
+}
+
+.pos-form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.pos-btn-primary {
+    flex: 1;
+    padding: 11px 16px;
+    background: var(--primary-600);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pos-btn-primary:hover {
+    background: var(--primary-700);
+}
+
+.pos-btn-secondary {
+    flex: 1;
+    padding: 11px 16px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pos-btn-secondary:hover {
+    background: var(--bg-secondary);
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+.pos-shell ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.pos-shell ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.pos-shell ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
+}
+
+.pos-shell ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+
+/* ============================================
+   RESPONSIVE: LARGE DESKTOP
+   ============================================ */
+@media (max-width: 1400px) {
+    .pos-right-pane {
+        width: 340px;
+        min-width: 300px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE: TABLET LANDSCAPE
+   ============================================ */
+@media (max-width: 1024px) {
+    .pos-right-pane {
+        width: 300px;
+        min-width: 280px;
+    }
+
+    .pos-mode-tab {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .pos-mode-tab svg {
+        display: none;
+    }
+
+    .pos-topbar {
+        padding: 8px 14px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE: TABLET PORTRAIT / SMALL SCREENS
+   ============================================ */
+@media (max-width: 768px) {
+    .pos-body {
+        flex-direction: column;
+    }
+
+    .pos-left-pane {
+        flex: none;
+        height: 50vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .pos-right-pane {
+        width: 100%;
+        min-width: unset;
+        max-width: unset;
+        flex: 1;
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+        padding: 12px;
+    }
+
+    .pos-topbar {
+        flex-wrap: wrap;
+        padding: 8px 12px;
+        gap: 8px;
+    }
+
+    .pos-mode-tabs {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex-shrink: 0;
+    }
+
+    .pos-topbar-actions {
+        flex-wrap: wrap;
+    }
+
+    /* Touch-friendly targets */
+    .pos-quick-btn,
+    .pos-topbar-btn,
+    .pos-mode-tab {
+        min-height: 44px;
+    }
+
+    .pos-cart-item {
+        padding: 12px 14px;
+    }
+
+    .pos-complete-btn {
+        padding: 16px;
+        font-size: 16px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE: MOBILE
+   ============================================ */
+@media (max-width: 480px) {
+    .pos-brand {
+        display: none;
+    }
+
+    .pos-mode-tab {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+
+    .pos-topbar-btn span {
+        display: none;
+    }
+
+    .pos-totals-card {
+        padding: 14px;
+    }
+
+    .pos-total-grand {
+        font-size: 18px;
+    }
+
+    .pos-search-area {
+        padding: 12px;
+    }
+
+    .pos-right-pane {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .pos-left-pane {
+        height: 45vh;
+    }
+}
+
+/* ============================================
+   PRINT
+   ============================================ */
+@media print {
+    .pos-shell {
+        display: none;
+    }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.pos-hidden {
+    display: none !important;
+}
+
+.pos-flex {
+    display: flex;
+}
+
+.pos-items-center {
+    align-items: center;
+}
+
+.pos-gap-2 {
+    gap: 8px;
+}
+
+.pos-gap-1 {
+    gap: 4px;
+}
+
+.pos-flex-1 {
+    flex: 1;
+}
+
+.pos-text-center {
+    text-align: center;
+}
+
+.pos-text-right {
+    text-align: right;
+}
+
+.pos-mb-2 {
+    margin-bottom: 8px;
+}
+
+.pos-mt-2 {
+    margin-top: 8px;
+}
+
+/* ============================================
+   APP SHELL OVERRIDES (Full-screen POS)
+   ============================================ */
+.pos-shell-active>.sidebar,
+.pos-shell-active>.app-content>.app-header {
+    display: none !important;
+}
+
+.pos-shell-active {
+    display: block !important;
+}
+
+.pos-shell-active>.app-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+}
+
+.pos-shell-active>.app-content>.content-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+}
+
+/* ============================================
+   DOCUMENT NUMBER BADGE (Invoice/Quote/WO)
+   ============================================ */
+.pos-doc-number {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.pos-doc-number-label {
+    color: var(--text-tertiary);
+    font-weight: 600;
+}
+
+.pos-doc-number-value {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+/* ============================================
+   CART ITEM DISCOUNT BADGE
+   ============================================ */
+.pos-discount-badge {
+    color: var(--success-500);
+    margin-left: 6px;
+}
+
+/* ============================================
+   CUSTOMER REQUIRED WARNING
+   ============================================ */
+.pos-customer-warning {
+    color: var(--danger-500);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: normal;
+    margin-left: 6px;
+}
+
+/* ============================================
+   TOTALS: AMOUNT DUE BOLD & CHANGE ROW
+   ============================================ */
+.pos-total-label-bold {
+    opacity: 0.85;
+    font-weight: 700;
+}
+
+.pos-total-due-spaced {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+    font-size: 13px;
+    position: relative;
+    z-index: 1;
+    margin-top: 4px;
+}
+
+.pos-change-label {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.pos-change-value {
+    font-weight: 800;
+    color: #4ade80;
+}
+
+/* ============================================
+   PAYMENT ITEM INNER
+   ============================================ */
+.pos-payment-item-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+/* ============================================
+   SECTION LABEL VARIANT (no bottom margin)
+   ============================================ */
+.pos-section-label-flush {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 0;
+}
+
+/* ============================================
+   AUTOCOMPLETE: EMPTY STATE & NAME
+   ============================================ */
+.pos-autocomplete-empty {
+    padding: 16px;
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: 13px;
+}
+
+.pos-autocomplete-name {
+    font-weight: 600;
+}

@@ -10,7 +10,7 @@ $chartType = $chart_type ?? 'bar';
     <canvas id="reportChart"></canvas>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="<?= base_url('js/chart.umd.min.js') ?>"></script>
 <script>
 // Prepare chart data - handle both formats
 const reportData = <?= json_encode($report_data['summary'] ?? $report_data) ?>;

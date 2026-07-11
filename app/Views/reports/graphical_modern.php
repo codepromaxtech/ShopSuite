@@ -37,6 +37,7 @@ echo view('layouts/modern_header', ['title' => $page_title]);
 <div class="stats-grid u-margin-bottom-space-6">
     <?php $colors = ['primary', 'success', 'warning', 'info']; $index = 0; ?>
     <?php foreach ($summary_data as $key => $value): ?>
+        <?php $display_value = is_array($value) ? (reset($value) ?: '') : $value; ?>
         <div class="stat-card" >
             <div class="stat-card-icon u-background-rgba255-255-255-02">
                 <i class="bi bi-<?= $index === 0 ? 'currency-dollar' : ($index === 1 ? 'graph-up' : ($index === 2 ? 'bar-chart' : 'pie-chart')) ?>" ></i>
@@ -46,7 +47,7 @@ echo view('layouts/modern_header', ['title' => $page_title]);
                     <?= esc(str_replace('_', ' ', $key)) ?>
                 </div>
                 <div class="stat-card-value" >
-                    <?= esc($value) ?>
+                    <?= esc($display_value) ?>
                 </div>
             </div>
         </div>
@@ -98,7 +99,17 @@ echo view('layouts/modern_header', ['title' => $page_title]);
                 <thead>
                     <tr>
                         <?php foreach ($headers as $header): ?>
-                            <th><?= esc($header) ?></th>
+                            <?php
+                                if (is_array($header)) {
+                                    $header_label = '';
+                                    foreach ($header as $k => $v) {
+                                        if (is_string($v)) { $header_label = $v; break; }
+                                    }
+                                } else {
+                                    $header_label = (string) $header;
+                                }
+                            ?>
+                            <th><?= esc($header_label) ?></th>
                         <?php endforeach; ?>
                     </tr>
                 </thead>
@@ -106,7 +117,7 @@ echo view('layouts/modern_header', ['title' => $page_title]);
                     <?php foreach ($details as $row): ?>
                         <tr>
                             <?php foreach ($row as $cell): ?>
-                                <td><?= esc($cell) ?></td>
+                                <td><?= is_array($cell) ? esc(reset($cell) ?: '') : esc($cell) ?></td>
                             <?php endforeach; ?>
                         </tr>
                     <?php endforeach; ?>
@@ -117,7 +128,7 @@ echo view('layouts/modern_header', ['title' => $page_title]);
 </div>
 <?php endif; ?>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="<?= base_url('js/chart.umd.min.js') ?>"></script>
 
 <script>
 // Prepare chart data

@@ -165,7 +165,10 @@ function deleteGiftcard() {
                         'Content-Type': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify({ ids: [<?= $giftcard_id ?? 0 ?>] })
+                    body: JSON.stringify({ 
+                        ids: [<?= $giftcard_id ?? 0 ?>],
+                        <?= csrf_token() ?>: '<?= csrf_hash() ?>'
+                    })
                 })
                 .then(response => response.json())
                 .then(data => {

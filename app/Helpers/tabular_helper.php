@@ -470,7 +470,7 @@ function get_item_data_row(object $item): array
             : glob("./uploads/item_pics/$item->pic_filename");
 
         if (sizeof($images) > 0) {
-            $image .= '<a class="rollover" href="' . base_url($images[0]) . '"><img alt="Image thumbnail" src="' . site_url('items/PicThumb/' . pathinfo($images[0], PATHINFO_BASENAME)) . '"></a>';
+            $image .= '<a class="rollover" href="' . base_url($images[0]) . '"><img alt="Image thumbnail" src="' . base_url('items/PicThumb/' . pathinfo($images[0], PATHINFO_BASENAME)) . '"></a>';
         }
     }
 

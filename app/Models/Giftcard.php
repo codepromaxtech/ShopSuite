@@ -32,7 +32,7 @@ class Giftcard extends Model
         $builder->where('giftcard_id', $giftcard_id);
         $builder->where('deleted', 0);
 
-        return ($builder->get()->getNumRows() == 1);    // TODO: ===
+        return ($builder->get()->getNumRows() === 1);
     }
 
     /**
@@ -41,9 +41,9 @@ class Giftcard extends Model
     public function get_max_number(): ?object
     {
         $builder = $this->db->table('giftcards');
-        $builder->select('CAST(giftcard_number AS UNSIGNED) AS giftcard_number');
+        $builder->select('CAST(giftcard_number AS UNSIGNED) AS giftcard_number', false);
         $builder->where('giftcard_number REGEXP \'^[0-9]+$\'');
-        $builder->orderBy("giftcard_number", "desc");
+        $builder->orderBy('CAST(giftcard_number AS UNSIGNED)', 'DESC', false);
         $builder->limit(1);
 
         return $builder->get()->getRow();
@@ -72,11 +72,11 @@ class Giftcard extends Model
 
         $query = $builder->get();
 
-        if ($query->getNumRows() == 1) {    // TODO: ===
+        if ($query->getNumRows() === 1) {
             return $query->getRow();
-        } else {    // TODO: No need for this else statement.  Just put it's contents outside of the else since the if has a return in it.
-            return $this->getEmptyObject('giftcards');
         }
+        
+        return $this->getEmptyObject('giftcards');
     }
 
     /**
@@ -106,7 +106,7 @@ class Giftcard extends Model
     /**
      * Gets a giftcard id given a giftcard number
      */
-    public function get_giftcard_id(string $giftcard_number): bool
+    public function get_giftcard_id(string $giftcard_number): int
     {
         $builder = $this->db->table('giftcards');
         $builder->where('giftcard_number', $giftcard_number);
@@ -114,11 +114,11 @@ class Giftcard extends Model
 
         $query = $builder->get();
 
-        if ($query->getNumRows() == 1) {    // TODO: ===
-            return $query->getRow()->giftcard_id;
+        if ($query->getNumRows() === 1) {
+            return (int) $query->getRow()->giftcard_id;
         }
 
-        return false;
+        return 0;
     }
 
     /**
@@ -248,17 +248,10 @@ class Giftcard extends Model
         if ($order == null) $order = 'asc';
         if ($count_only == null) $count_only = false;
 
-        // Set default values
-        if ($rows == null) $rows = 0;
-        if ($limit_from == null) $limit_from = 0;
-        if ($sort == null) $sort = 'giftcard_number';
-        if ($order == null) $order = 'asc';
-        if ($count_only == null) $count_only = false;
-
         $builder = $this->db->table('giftcards');
 
         // get_found_rows case
-        if ($count_only) {    // TODO: replace this with `if ($count_only)`
+        if ($count_only) {
             $builder->select('COUNT(giftcard_id) as count');
         }
 
@@ -322,7 +315,7 @@ class Giftcard extends Model
         $builder->where('giftcard_number', $giftcard_name);
         $builder->where('deleted', 0);
 
-        return ($builder->get()->getNumRows() == 1);    // TODO: ===
+        return ($builder->get()->getNumRows() === 1);
     }
 
     /**

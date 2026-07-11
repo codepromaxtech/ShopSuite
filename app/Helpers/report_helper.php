@@ -24,7 +24,7 @@ function get_report_link(string $report_name, string $report_prefix = '', string
     }
 
     return [
-        'path'  => site_url($path),
+        'path'  => base_url($path),
         'label' => lang($lang_key),
     ];
 }

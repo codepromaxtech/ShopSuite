@@ -25,8 +25,7 @@
     <link rel="stylesheet" type="text/css" href="<?= base_url('css/modern-pages.css') ?>">
     <title>Receiving #<?= $receiving_id ?> - Complete</title>
     <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= base_url('css/roboto-mono.css') ?>">
 </head>
 <body class="u-margin-0_padding-0_font-family--apple">
 

@@ -28,8 +28,8 @@ class Tax_codes extends Secure_Controller
     {
         $person_id = $this->employee->get_logged_in_employee_info()->person_id;
         if ($this->employee->has_grant('taxes', $person_id)) {
-            redirect()->to(site_url('taxes?tab=codes'))->send();
-            exit;
+            header("Location:" . base_url('taxes?tab=codes'));
+            exit();
         }
 
         echo view('taxes/submodule_list_modern', [

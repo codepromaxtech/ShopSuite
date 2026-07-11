@@ -115,8 +115,8 @@ class Giftcards extends Secure_Controller
             $data['giftcard_number'] = $giftcard_id > 0 ? $giftcard_info->giftcard_number : '';
         } else {
             $max_number_obj = $this->giftcard->get_max_number();
-            $max_giftnumber = isset($max_number_obj) ? $this->giftcard->get_max_number()->giftcard_number : 0;    // TODO: variable does not follow naming standard.
-            $data['giftcard_number'] = $giftcard_id > 0 ? $giftcard_info->giftcard_number : $max_giftnumber + 1;
+            $max_giftcard_number = isset($max_number_obj) ? $max_number_obj->giftcard_number : 0;
+            $data['giftcard_number'] = $giftcard_id > 0 ? $giftcard_info->giftcard_number : $max_giftcard_number + 1;
         }
         $data['giftcard_id'] = $giftcard_id;
         $data['giftcard_value'] = $giftcard_info->value;
@@ -140,7 +140,8 @@ class Giftcards extends Secure_Controller
         $giftcard_number = $this->request->getPost('giftcard_number', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         if ($giftcard_id == NEW_ENTRY && trim($giftcard_number) == '') {
-            $giftcard_number = $this->giftcard->generate_unique_giftcard_name($giftcard_number);
+            $giftcard_amount = (string)$this->request->getPost('giftcard_amount');
+            $giftcard_number = $this->giftcard->generate_unique_giftcard_name($giftcard_amount);
         }
 
         $giftcard_data = [

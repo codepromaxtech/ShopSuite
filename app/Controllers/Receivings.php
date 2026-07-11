@@ -315,8 +315,8 @@ class Receivings extends Secure_Controller
      */
     public function getDeleteItem($item_number): void
     {
-        redirect()->to(site_url('receivings'))->send();
-        exit;
+        header("Location:" . base_url('receivings'));
+        exit();
     }
 
     /**
@@ -364,8 +364,8 @@ class Receivings extends Secure_Controller
      */
     public function getRemoveSupplier(): void
     {
-        redirect()->to(site_url('receivings'))->send();
-        exit;
+        header("Location:" . base_url('receivings'));
+        exit();
     }
 
     /**

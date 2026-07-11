@@ -79,12 +79,12 @@
         $("#logout").click(function(event) {
             event.preventDefault();
             $.ajax({
-                url: "<?= site_url('home/logout'); ?>",
+                url: "<?= base_url('home/logout'); ?>",
                 data: {
                     "<?= esc(config('Security')->tokenName, 'js'); ?>": csrf_token()
                 },
                 success: function() {
-                    window.location.href = '<?= site_url(); ?>';
+                    window.location.href = '<?= base_url(); ?>';
                 },
                 method: "POST"
             });

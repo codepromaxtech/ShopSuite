@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Attribute;
 use App\Models\Customer;
+use App\Models\Item;
 use App\Models\Stock_location;
 use App\Models\Supplier;
 use App\Models\Reports\Detailed_receivings;
@@ -49,15 +50,16 @@ class Reports extends Secure_Controller
     private Supplier $supplier;
     private Detailed_receivings $detailed_receivings;
     private Inventory_summary $inventory_summary;
+    private Item $item;
 
     public function __construct()
     {
         parent::__construct('reports');
         $request = Services::request();
-        $method_name = $request->getUri()->getSegment(2);
+        $method_name = $request->getUri()->getSegment(2, '');
         $exploder = explode('_', $method_name);
 
-        $this->attribute = config(Attribute::class);
+        $this->attribute = model(Attribute::class);
         $this->config = config(ShopSuite::class)->settings;
         $this->customer = model(Customer::class);
         $this->stock_location = model(Stock_location::class);
@@ -76,6 +78,7 @@ class Reports extends Secure_Controller
         $this->supplier = model(Supplier::class);
         $this->detailed_receivings = model(Detailed_receivings::class);
         $this->inventory_summary = model(Inventory_summary::class);
+        $this->item = model(Item::class);
 
         if (sizeof($exploder) > 1) {
             preg_match('/(?:inventory)|([^_.]*)(?:_graph|_row)?$/', $method_name, $matches);
@@ -84,7 +87,8 @@ class Reports extends Secure_Controller
 
             // Check access to report submodule
             if (!$this->employee->has_grant('reports_' . $submodule_id, $this->employee->get_logged_in_employee_info()->person_id)) {
-                redirect('no_access/reports/reports_' . $submodule_id);
+                header("Location:" . base_url('no_access/reports/reports_' . $submodule_id));
+                exit();
             }
         }
 
@@ -163,7 +167,7 @@ class Reports extends Secure_Controller
         $categoryConfig = $reportsConfig->categories[$category] ?? null;
         
         if (!$categoryConfig) {
-            show_404();
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
             return;
         }
 
@@ -175,7 +179,7 @@ class Reports extends Secure_Controller
         $this->checkUnifiedReportGrant($category, $typeConfig['model'] ?? null);
         
         if (!$typeConfig) {
-            show_404();
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
             return;
         }
         
@@ -326,7 +330,8 @@ class Reports extends Secure_Controller
         $personId = $this->employee->get_logged_in_employee_info()->person_id;
 
         if (!$this->employee->has_grant($permissionId, $personId)) {
-            redirect('no_access/reports/' . $permissionId);
+            header("Location:" . base_url('no_access/reports/' . $permissionId));
+            exit();
         }
     }
     
@@ -343,8 +348,7 @@ class Reports extends Secure_Controller
         $typeConfig = $categoryConfig['types'][$reportType] ?? null;
         
         if (!$typeConfig) {
-            show_404();
-            return;
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
         $this->checkUnifiedReportGrant($category, $typeConfig['model']);
@@ -354,8 +358,7 @@ class Reports extends Secure_Controller
         $modelName = 'App\\Models\\Reports\\' . $typeConfig['model'];
         
         if (!class_exists($modelName)) {
-            show_404();
-            return;
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
         
         $model = model($modelName);

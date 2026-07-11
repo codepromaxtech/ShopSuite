@@ -76,7 +76,7 @@ $request = Services::request();
                         <span class="icon-bar"></span>
                     </button>
 
-                    <a class="navbar-brand hidden-sm" href="<?= site_url() ?>">ShopSuite</a>
+                    <a class="navbar-brand hidden-sm" href="<?= base_url() ?>">ShopSuite</a>
                 </div>
 
                 <div class="navbar-collapse collapse">

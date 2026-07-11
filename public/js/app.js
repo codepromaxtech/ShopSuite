@@ -284,19 +284,24 @@ class ShopSuiteApp {
 
     async fetchNotifications() {
         try {
-            // Assume CI4 base URL relative path /notifications/get_unread
             const baseUrl = typeof window.shopsuiteConfig !== 'undefined' ? window.shopsuiteConfig.baseUrl : '';
             const response = await fetch(baseUrl + '/notifications/get_unread', {
                 headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
             });
+
+            // Bail silently on any non-OK response (server error, redirect, etc.)
             if (!response.ok) return;
+
+            // Guard against HTML error pages — verify content-type before parsing
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) return;
 
             const data = await response.json();
             if (data.success) {
                 this.updateNotificationUI(data.notifications, data.count);
             }
         } catch (error) {
-            console.error('Error fetching notifications:', error);
+            // Silent fail — this runs on a 60s poll, no need to spam console
         }
     }
 
@@ -308,10 +313,10 @@ class ShopSuiteApp {
 
         if (count > 0) {
             badge.textContent = count;
-            badge.classList.remove('d-none');
+            badge.classList.remove('hidden');
         } else {
             badge.textContent = '0';
-            badge.classList.add('d-none');
+            badge.classList.add('hidden');
         }
 
         if (notifications.length === 0) {
@@ -323,7 +328,7 @@ class ShopSuiteApp {
         notifications.forEach(notif => {
             let dateStr = new Date(notif.created_at).toLocaleString();
             html += `
-                <div class="notification-item" style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); cursor: pointer;" onclick="window.location.href='${notif.link || '#'}'">
+                <div class="notification-item" style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); cursor: pointer;" onclick="shopsuiteApp.markNotificationReadAndNavigate(${notif.id}, '${notif.link || '#'}')">
                     <div style="font-weight: 600; font-size: 13px; color: var(--text-primary); margin-bottom: 4px;">${notif.title}</div>
                     <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 6px;">${notif.message}</div>
                     <div style="font-size: 11px; color: var(--text-tertiary);">${dateStr}</div>
@@ -341,15 +346,33 @@ class ShopSuiteApp {
         });
     }
 
+    async markNotificationReadAndNavigate(id, link) {
+        try {
+            const baseUrl = typeof window.shopsuiteConfig !== 'undefined' ? window.shopsuiteConfig.baseUrl : '';
+            const response = await this.postAction(baseUrl + '/notifications/mark_read', { id: id });
+
+            // Navigate regardless of success — don't block the user
+            if (link && link !== '#') {
+                window.location.href = link;
+            } else if (response.ok) {
+                this.fetchNotifications();
+            }
+        } catch (error) {
+            // Still navigate on error
+            if (link && link !== '#') window.location.href = link;
+        }
+    }
+
     async markAllNotificationsRead() {
         try {
-            const formData = new FormData();
             const baseUrl = typeof window.shopsuiteConfig !== 'undefined' ? window.shopsuiteConfig.baseUrl : '';
-            const response = await fetch(baseUrl + '/notifications/mark_all_read', {
-                method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                body: formData
-            });
+            const response = await this.postAction(baseUrl + '/notifications/mark_all_read');
+
+            if (!response.ok) return;
+
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) return;
+
             const data = await response.json();
             if (data.success) {
                 this.fetchNotifications();

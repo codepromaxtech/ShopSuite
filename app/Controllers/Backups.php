@@ -42,14 +42,14 @@ class Backups extends Secure_Controller
                 (int) $created_by,
                 'Backup Created',
                 $result['message'] ?? 'Database backup completed successfully.',
-                site_url('backups')
+                base_url('backups')
             );
         } else {
             $notification_lib->notify_by_permission(
                 'backups',
                 'Backup Failed',
                 $result['message'] ?? 'Database backup failed.',
-                site_url('backups')
+                base_url('backups')
             );
         }
         

@@ -165,8 +165,8 @@ class Home extends Secure_Controller
     public function getDebugSidebar(): void
     {
         if (ENVIRONMENT !== 'development') {
-            redirect()->to('home')->send();
-            exit;
+            header("Location:" . base_url('home'));
+            exit();
         }
 
         echo view('debug_sidebar', $this->global_view_data);
@@ -197,8 +197,8 @@ class Home extends Secure_Controller
         }
 
         if ((int) $logged_in->person_id !== (int) $employee_id && !$this->employee->has_grant('employees', $logged_in->person_id)) {
-            redirect()->to('home')->send();
-            exit;
+            header("Location:" . base_url('home'));
+            exit();
         }
 
         $person_info = $this->employee->get_info($employee_id);

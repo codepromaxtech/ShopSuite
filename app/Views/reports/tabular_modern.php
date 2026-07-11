@@ -41,6 +41,7 @@ echo view('layouts/modern_header', ['title' => $page_title]);
 <div class="stats-grid u-margin-bottom-space-6">
     <?php $colors = ['primary', 'success', 'warning', 'info']; $index = 0; ?>
     <?php foreach ($summary_data as $key => $value): ?>
+        <?php $display_value = is_array($value) ? (reset($value) ?: '') : $value; ?>
         <div class="stat-card" >
             <div class="stat-card-icon u-background-rgba255-255-255-02">
                 <i class="bi bi-<?= $index === 0 ? 'calculator' : ($index === 1 ? 'graph-up' : ($index === 2 ? 'currency-dollar' : 'bar-chart')) ?>" ></i>
@@ -50,7 +51,7 @@ echo view('layouts/modern_header', ['title' => $page_title]);
                     <?= esc(str_replace('_', ' ', $key)) ?>
                 </div>
                 <div class="stat-card-value" >
-                    <?= esc($value) ?>
+                    <?= esc($display_value) ?>
                 </div>
             </div>
         </div>
@@ -79,8 +80,19 @@ echo view('layouts/modern_header', ['title' => $page_title]);
                 <thead>
                     <tr>
                         <?php foreach ($headers as $index => $header): ?>
+                            <?php
+                                // Headers from getDataColumns() are arrays like ['sale_date' => 'Date', 'sortable' => false]
+                                if (is_array($header)) {
+                                    $header_label = '';
+                                    foreach ($header as $k => $v) {
+                                        if (is_string($v)) { $header_label = $v; break; }
+                                    }
+                                } else {
+                                    $header_label = (string) $header;
+                                }
+                            ?>
                             <th onclick="sortTable(<?= $index ?>)" style="cursor: pointer;">
-                                <?= esc($header) ?>
+                                <?= esc($header_label) ?>
                                 <i class="bi bi-arrow-down-up u-font-size-12px_opacity-05"></i>
                             </th>
                         <?php endforeach; ?>
@@ -91,7 +103,7 @@ echo view('layouts/modern_header', ['title' => $page_title]);
                         <?php foreach ($data as $row): ?>
                             <tr>
                                 <?php foreach ($row as $cell): ?>
-                                    <td><?= esc($cell) ?></td>
+                                    <td><?= is_array($cell) ? esc(reset($cell) ?: '') : esc($cell) ?></td>
                                 <?php endforeach; ?>
                             </tr>
                         <?php endforeach; ?>
@@ -118,58 +130,64 @@ echo view('layouts/modern_header', ['title' => $page_title]);
 
 
 
+
 <script>
 // Export functionality
 function exportReport(format) {
     const table = document.getElementById('report_table');
     const rows = Array.from(table.querySelectorAll('tbody tr:not(:has(.empty-state))'));
-    
+
     if (rows.length === 0) {
         alert('No data to export');
         return;
     }
-    
+
     if (window.shopsuiteApp) {
         window.shopsuiteApp.showToast('Info', `Preparing ${format.toUpperCase()} export...`, 'info');
     }
-    
+
     if (format === 'excel') {
         exportToCSV();
     } else if (format === 'pdf') {
-        exportToPDF();
+        window.print();
     }
 }
 
 function exportToCSV() {
     const table = document.getElementById('report_table');
-    let csv = '';
-    
-    // Headers
+    // Start with UTF-8 BOM so Excel correctly renders unicode currency symbols (৳, €, ¥, etc.)
+    let csv = '\uFEFF';
+
+    // Headers — strip the sort icon text
     const headers = Array.from(table.querySelectorAll('thead th'));
-    csv += headers.map(h => `"${h.textContent.trim().replace(/\s+/g, ' ')}"`).join(',') + '\n';
-    
-    // Data
+    csv += headers.map(h => {
+        // Get only the text, not the icon element text
+        const clone = h.cloneNode(true);
+        const icons = clone.querySelectorAll('i');
+        icons.forEach(i => i.remove());
+        return `"${clone.textContent.trim().replace(/"/g, '""')}"`;
+    }).join(',') + '\n';
+
+    // Data rows
     const rows = Array.from(table.querySelectorAll('tbody tr:not(:has(.empty-state))'));
     rows.forEach(row => {
         const cells = Array.from(row.querySelectorAll('td'));
-        csv += cells.map(c => `"${c.textContent.trim()}"`).join(',') + '\n';
+        csv += cells.map(c => `"${c.textContent.trim().replace(/"/g, '""')}"`).join(',') + '\n';
     });
-    
-    // Download
+
+    // Download with proper encoding
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `report_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
-    
+
     if (window.shopsuiteApp) {
         window.shopsuiteApp.showToast('Success', 'CSV exported successfully', 'success');
     }
-}
-
-function exportToPDF() {
-    window.print();
 }
 
 // Search/Filter
@@ -178,18 +196,18 @@ function filterReportTable() {
     const filter = input.value.toUpperCase();
     const table = document.getElementById('report_table');
     const tr = table.getElementsByTagName('tr');
-    
+
     for (let i = 1; i < tr.length; i++) {
         const td = tr[i].getElementsByTagName('td');
         let found = false;
-        
+
         for (let j = 0; j < td.length; j++) {
             if (td[j].textContent.toUpperCase().indexOf(filter) > -1) {
                 found = true;
                 break;
             }
         }
-        
+
         tr[i].style.display = found ? '' : 'none';
     }
 }
@@ -200,33 +218,33 @@ function sortTable(columnIndex) {
     const table = document.getElementById('report_table');
     const tbody = table.querySelector('tbody');
     const rows = Array.from(tbody.querySelectorAll('tr:not(:has(.empty-state))'));
-    
+
     if (rows.length === 0) return;
-    
+
     // Toggle direction
     sortDirection[columnIndex] = sortDirection[columnIndex] === 'asc' ? 'desc' : 'asc';
     const direction = sortDirection[columnIndex];
-    
+
     rows.sort((a, b) => {
         const aText = a.cells[columnIndex].textContent.trim();
         const bText = b.cells[columnIndex].textContent.trim();
-        
+
         // Try to parse as numbers
         const aNum = parseFloat(aText.replace(/[^0-9.-]/g, ''));
         const bNum = parseFloat(bText.replace(/[^0-9.-]/g, ''));
-        
+
         if (!isNaN(aNum) && !isNaN(bNum)) {
             return direction === 'asc' ? aNum - bNum : bNum - aNum;
         }
-        
-        return direction === 'asc' ? 
-            aText.localeCompare(bText) : 
+
+        return direction === 'asc' ?
+            aText.localeCompare(bText) :
             bText.localeCompare(aText);
     });
-    
+
     // Re-append sorted rows
     rows.forEach(row => tbody.appendChild(row));
-    
+
     // Update sort icons
     const headers = table.querySelectorAll('thead th');
     headers.forEach((h, i) => {

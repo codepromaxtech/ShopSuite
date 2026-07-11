@@ -62,7 +62,7 @@
 
             // After a delay, return to sales view
             setTimeout(function() {
-                window.location.href = "<?= site_url('sales') ?>";
+                window.location.href = "<?= base_url('sales') ?>";
             }, <?= $config['print_delay_autoreturn'] * 1000 ?>);
         }));
 

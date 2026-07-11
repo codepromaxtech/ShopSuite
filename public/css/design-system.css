@@ -2608,3 +2608,69 @@ a:hover {
 .d-block {
     display: block !important;
 }
+/* ============================================
+   PRINT STYLES — Report-only printing
+   ============================================ */
+@media print {
+    .app-sidebar,
+    .sidebar-toggle,
+    .top-nav,
+    .global-header,
+    .page-header-actions,
+    .search-box,
+    .card-header .search-box,
+    nav,
+    footer,
+    .app-footer,
+    .notification-dropdown,
+    #globalNotificationBadge {
+        display: none !important;
+    }
+
+    .app-main,
+    .main-content,
+    .content-wrapper,
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+    }
+
+    .card-body {
+        padding: 0 !important;
+    }
+
+    .data-table {
+        font-size: 11px !important;
+        width: 100% !important;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 4px 8px !important;
+        border: 1px solid #ddd !important;
+    }
+
+    .stats-grid {
+        display: flex !important;
+        gap: 8px !important;
+    }
+
+    .stat-card {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    @page {
+        margin: 15mm;
+        size: landscape;
+    }
+}

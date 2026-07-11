@@ -34,8 +34,7 @@ if (isset($error_message)) {
     <link rel="stylesheet" type="text/css" href="<?= base_url('css/modern-pages.css') ?>">
     <title><?= lang('Sales.tax_invoice') ?> #<?= esc($invoice_number) ?> - Complete</title>
     <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= base_url('css/roboto-mono.css') ?>">
     <!-- Scripts for sending email -->
     <?= view('sales/partials/document_csrf') ?>
 </head>

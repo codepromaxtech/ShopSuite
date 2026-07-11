@@ -632,6 +632,23 @@ class Sale extends Model
             $builder = $this->db->table('sales_items');
             $builder->insert($sales_items_data);
 
+            // Auto-create/reload Gift Cards upon completed sale
+            if ($sale_status == COMPLETED && $cur_item_info->name == lang('Sales.giftcard')) {
+                $giftcard_data = [
+                    'record_time' => date('Y-m-d H:i:s'),
+                    'giftcard_number' => $item_data['description'],
+                    'value' => $item_data['price'],
+                    'person_id' => $customer_id > 0 ? $customer_id : null
+                ];
+                
+                if (!$giftcard->exists_giftcard_name($item_data['description'])) {
+                    $giftcard->save_value($giftcard_data);
+                } else {
+                    $current_value = $giftcard->get_giftcard_value($item_data['description']);
+                    $giftcard->update_giftcard_value($item_data['description'], $current_value + $item_data['price']);
+                }
+            }
+
             if ($cur_item_info->stock_type == HAS_STOCK && $sale_status == COMPLETED) {    // TODO: === ?
                 if (!$item_quantity->adjust_quantity_for_sale(
                     $item_data['item_id'],
@@ -672,7 +689,7 @@ class Sale extends Model
                         'items',
                         'Low Stock Alert',
                         $cur_item_info->name . ' is at or below reorder level.',
-                        site_url('products/view/' . $item_data['item_id'])
+                        base_url('products/view/' . $item_data['item_id'])
                     );
                 }
             }
@@ -808,6 +825,7 @@ class Sale extends Model
             }
 
             $this->update_sale_status($sale_id, SUSPENDED);
+            $this->charge_sale_payments_and_giftcards($sale_id);
         }
 
         $this->db->transComplete();
@@ -860,6 +878,7 @@ class Sale extends Model
         }
 
         $this->update_sale_status($sale_id, CANCELED);
+        $this->refund_sale_payments_and_giftcards($sale_id);
 
         // Execute transaction
         $this->db->transComplete();
@@ -1408,6 +1427,72 @@ class Sale extends Model
     }
 
     /**
+     * Refunds payments and deletes generated gift cards during a void or edit
+     */
+    public function refund_sale_payments_and_giftcards(int $sale_id): void
+    {
+        $giftcard = model(Giftcard::class);
+        $customer = model(Customer::class);
+        $item = model(Item::class);
+        $sale_status = $this->get_sale_status($sale_id);
+
+        $payments = $this->get_sale_payments($sale_id)->getResultArray();
+        foreach ($payments as $payment) {
+            if (!empty(strstr($payment['payment_type'], lang('Sales.giftcard')))) {
+                $splitpayment = explode(':', $payment['payment_type']);
+                if (isset($splitpayment[1])) {
+                    $cur_giftcard_value = $giftcard->get_giftcard_value($splitpayment[1]);
+                    $giftcard->update_giftcard_value($splitpayment[1], $cur_giftcard_value + $payment['payment_amount']);
+                }
+            } elseif (!empty(strstr($payment['payment_type'], lang('Sales.rewards')))) {
+                $sale_customer_id = $this->get_customer($sale_id)->person_id ?? null;
+                if ($sale_customer_id) {
+                    $cur_rewards_value = $customer->get_info($sale_customer_id)->points;
+                    $customer->update_reward_points_value($sale_customer_id, $cur_rewards_value + $payment['payment_amount']);
+                }
+            }
+        }
+
+        if ($sale_status == COMPLETED) {
+            $items = $this->get_sale_items($sale_id)->getResultArray();
+            foreach ($items as $item_data) {
+                $cur_item_info = $item->get_info($item_data['item_id']);
+                if ($cur_item_info->name == lang('Sales.giftcard')) {
+                    $card_num = $item_data['description'];
+                    $cur_giftcard_value = $giftcard->get_giftcard_value($card_num);
+                    $giftcard->update_giftcard_value($card_num, $cur_giftcard_value - $item_data['item_unit_price']);
+                }
+            }
+        }
+    }
+
+    /**
+     * Re-applies payments and generated gift cards during an un-void (restore)
+     */
+    public function charge_sale_payments_and_giftcards(int $sale_id): void
+    {
+        $giftcard = model(Giftcard::class);
+        $customer = model(Customer::class);
+
+        $payments = $this->get_sale_payments($sale_id)->getResultArray();
+        foreach ($payments as $payment) {
+            if (!empty(strstr($payment['payment_type'], lang('Sales.giftcard')))) {
+                $splitpayment = explode(':', $payment['payment_type']);
+                if (isset($splitpayment[1])) {
+                    $cur_giftcard_value = $giftcard->get_giftcard_value($splitpayment[1]);
+                    $giftcard->update_giftcard_value($splitpayment[1], $cur_giftcard_value - $payment['payment_amount']);
+                }
+            } elseif (!empty(strstr($payment['payment_type'], lang('Sales.rewards')))) {
+                $sale_customer_id = $this->get_customer($sale_id)->person_id ?? null;
+                if ($sale_customer_id) {
+                    $cur_rewards_value = $customer->get_info($sale_customer_id)->points;
+                    $customer->update_reward_points_value($sale_customer_id, $cur_rewards_value - $payment['payment_amount']);
+                }
+            }
+        }
+    }
+
+    /**
      * This clears the sales detail for a given sale_id before the detail is re-saved.
      * This allows us to reuse the same sale_id
      */
@@ -1421,6 +1506,8 @@ class Sale extends Model
             $dinner_table_id = $this->get_dinner_table($sale_id);
             $dinner_table->release($dinner_table_id);
         }
+
+        $this->refund_sale_payments_and_giftcards($sale_id);
 
         $builder = $this->db->table('sales_payments');
         $builder->delete(['sale_id' => $sale_id]);

@@ -86,7 +86,8 @@ class Sales extends Secure_Controller
         $person_id = $this->session->get('person_id');
 
         if (!$this->employee->has_grant('reports_sales', $person_id)) {
-            redirect('no_access/sales/reports_sales');
+            header("Location:" . base_url('no_access/sales/reports_sales'));
+            exit();
         } else {
             $data['table_headers'] = get_sales_manage_table_headers();
 
@@ -529,8 +530,8 @@ class Sales extends Secure_Controller
      */
     public function getDeletePayment(string $payment_id): void
     {
-        redirect()->to(site_url('sales'))->send();
-        exit;
+        header("Location:" . base_url('sales'));
+        exit();
     }
 
     /**
@@ -547,6 +548,62 @@ class Sales extends Secure_Controller
         $this->sale_lib->delete_payment(base64url_decode($payment_id));
 
         $this->_reload();
+    }
+
+    /**
+     * Creates a new gift card on the fly and adds it to the sale.
+     * Used in app/Views/sales/register_modern.php quick action.
+     *
+     * @return void
+     * @noinspection PhpUnused
+     */
+    public function postAddGiftcard(): void
+    {
+        $value = parse_decimals($this->request->getPost('value'));
+        $giftcard_number = (string)$this->request->getPost('giftcard_number', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+        $giftcard = model(Giftcard::class);
+
+        if (trim($giftcard_number) == '') {
+            $giftcard_number = $giftcard->generate_unique_giftcard_name((string)$value);
+        }
+
+        // Ensure "Gift Card" item exists
+        $db = \Config\Database::connect();
+        $item_query = $db->table('items')->where('name', lang('Sales.giftcard'))->where('deleted', 0)->get();
+        if ($item_query->getNumRows() > 0) {
+            $item_id = $item_query->getRow()->item_id;
+        } else {
+            $item_data = [
+                'name' => lang('Sales.giftcard'),
+                'item_type' => ITEM,
+                'category' => 'Gift Cards',
+                'supplier_id' => null,
+                'item_number' => null,
+                'description' => lang('Sales.giftcard'),
+                'cost_price' => 0,
+                'unit_price' => 0,
+                'reorder_level' => 0,
+                'receiving_quantity' => 1,
+                'pic_filename' => null,
+                'allow_alt_description' => 1,
+                'is_serialized' => 0,
+                'stock_type' => HAS_NO_STOCK,
+                'deleted' => 0,
+            ];
+            $db->table('items')->insert($item_data);
+            $item_id = $db->insertID();
+        }
+
+        $item_location = $this->sale_lib->get_sale_location();
+        // The gift card is purely added as a line item. The actual gift card row is created inside Sale::save_value() at checkout.
+        if ($this->sale_lib->add_item((string)$item_id, $item_location, '1', '0.0', 0, PRICE_MODE_STANDARD, null, null, (string)$value, $giftcard_number)) {
+            $data['success'] = true;
+        } else {
+            $data['error'] = lang('Sales.unable_to_add_item');
+        }
+
+        $this->_reload($data);
     }
 
     /**
@@ -684,8 +741,8 @@ class Sales extends Secure_Controller
      */
     public function getDeleteItem(int $item_id): void
     {
-        redirect()->to(site_url('sales'))->send();
-        exit;
+        header("Location:" . base_url('sales'));
+        exit();
     }
 
     /**
@@ -712,8 +769,8 @@ class Sales extends Secure_Controller
      */
     public function getCancel(): void
     {
-        redirect()->to(site_url('sales'))->send();
-        exit;
+        header("Location:" . base_url('sales'));
+        exit();
     }
 
     /**
@@ -780,8 +837,8 @@ class Sales extends Secure_Controller
      */
     public function getRemoveCustomer(): void
     {
-        redirect()->to(site_url('sales'))->send();
-        exit;
+        header("Location:" . base_url('sales'));
+        exit();
     }
 
     /**
@@ -1074,8 +1131,8 @@ class Sales extends Secure_Controller
      */
     public function getSendPdf(int $sale_id, string $type = 'invoice'): void
     {
-        redirect()->to(site_url('sales/manage'))->send();
-        exit;
+        header("Location:" . base_url('sales/manage'));
+        exit();
     }
 
     /**
@@ -1142,8 +1199,8 @@ class Sales extends Secure_Controller
      */
     public function getSendReceipt(int $sale_id): void
     {
-        redirect()->to(site_url('sales/manage'))->send();
-        exit;
+        header("Location:" . base_url('sales/manage'));
+        exit();
     }
 
     /**
