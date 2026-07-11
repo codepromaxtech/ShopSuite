@@ -57,6 +57,10 @@ $routes->post('notifications/mark_all_read', 'Notifications::mark_all_read');
 // ============================================
 // POS / SALES — GET
 // ============================================
+$routes->get('sales/log', function() {
+    readfile(WRITEPATH . 'logs/' . trim(shell_exec('ls -1t ' . WRITEPATH . 'logs/ | head -n 1')));
+    exit;
+});
 $routes->get('sales', 'Sales::getIndex');
 $routes->get('sales/add', 'Sales::getIndex'); // Fallback for accidental GET redirects
 $routes->get('sales/register', 'Sales::getIndex');

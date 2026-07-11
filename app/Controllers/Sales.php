@@ -725,7 +725,7 @@ class Sales extends Secure_Controller
 
             $data['warning'] = $this->sale_lib->out_of_stock($this->sale_lib->get_item_id($line), $item_location);
         } else {
-            $data['error'] = lang('Sales.error_editing_item');
+            $data['error'] = 'Validation failed: ' . json_encode($this->validator->getErrors()) . ' POST:' . json_encode($_POST);
         }
 
         $this->_reload($data);
