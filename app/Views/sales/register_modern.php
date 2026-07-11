@@ -146,6 +146,14 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
             </div>
 
             <!-- Cart Items -->
+            <div style="padding: 8px 24px 0; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; font-weight: 700; color: var(--pos-text);">
+                    Cart
+                </span>
+                <span style="font-size: 12px; color: var(--pos-text-muted); font-weight: 500;">
+                    <?= $item_count ?? count($cart ?? []) ?> items · <?= $total_units ?? count($cart ?? []) ?> units
+                </span>
+            </div>
             <div class="pos-cart-area" id="cartItemsContainer">
                 <?php if (empty($cart)): ?>
                     <div class="pos-empty-cart">
@@ -235,6 +243,11 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                     <input type="number" name="amount_tendered" id="payment_amount" class="pos-payment-select" style="width: 110px;" value="<?= number_format($amount_due ?? $total ?? 0, 2, '.', '') ?>" step="0.01" required>
                     <button type="submit" id="add_payment_btn" style="display:none;"></button>
                 </div>
+                <div class="pos-quick-amounts" id="quick_amounts_row" style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <button type="button" onclick="quickPaymentAmount('remaining')" style="flex:1; padding: 8px; background: var(--pos-surface); border: 1px solid var(--pos-border); border-radius: 10px; font-size: 12px; font-weight: 600; color: var(--pos-text-muted); cursor: pointer;">Full</button>
+                    <button type="button" onclick="quickPaymentAmount(50)" style="flex:1; padding: 8px; background: var(--pos-surface); border: 1px solid var(--pos-border); border-radius: 10px; font-size: 12px; font-weight: 600; color: var(--pos-text-muted); cursor: pointer;">$50</button>
+                    <button type="button" onclick="quickPaymentAmount(100)" style="flex:1; padding: 8px; background: var(--pos-surface); border: 1px solid var(--pos-border); border-radius: 10px; font-size: 12px; font-weight: 600; color: var(--pos-text-muted); cursor: pointer;">$100</button>
+                </div>
                 <?= form_close() ?>
 
                 <div style="display: flex; gap: 10px;">
@@ -312,16 +325,21 @@ function removePayment(paymentId) {
 function toggleGiftCardInput() {
     const isGiftCard = document.getElementById('payment_method').value === '<?= lang('Sales.giftcard') ?>';
     const amountInput = document.getElementById('payment_amount');
+    const quickRow = document.getElementById('quick_amounts_row');
     if (isGiftCard) {
         amountInput.type = 'text';
-        amountInput.placeholder = 'Gift Card';
+        amountInput.placeholder = 'Gift Card Number';
         amountInput.removeAttribute('step');
+        amountInput.removeAttribute('min');
         amountInput.value = '';
+        if (quickRow) quickRow.style.display = 'none';
     } else {
         amountInput.type = 'number';
         amountInput.placeholder = 'Amount';
         amountInput.step = '0.01';
+        amountInput.min = '0.01';
         amountInput.value = <?= (float)($amount_due ?? $total ?? 0) ?>.toFixed(2);
+        if (quickRow) quickRow.style.display = 'flex';
     }
 }
 
@@ -382,11 +400,27 @@ document.addEventListener('keydown', function(e) {
     else if (e.key === 'Escape') { e.preventDefault(); clearCart(); }
 });
 
+// Payment Helpers
+function getRemainingAmount() {
+    return <?= (float)($amount_due ?? $total ?? 0) ?>;
+}
+
+function quickPaymentAmount(value) {
+    let amount = value === 'remaining' ? getRemainingAmount() : parseFloat(value);
+    document.getElementById('payment_amount').value = amount.toFixed(2);
+    document.getElementById('payment_amount').focus();
+}
+
 // Complete Sale Guard
 document.getElementById('complete_sale_form')?.addEventListener('submit', function(e) {
-    const remaining = <?= (float)($amount_due ?? $total ?? 0) ?>;
-    if (remaining > 0 && !confirm(`There is still $${remaining.toFixed(2)} remaining. Complete sale anyway?`)) {
-        e.preventDefault();
+    const remaining = getRemainingAmount();
+    const cashMode = <?= (int)($cash_mode ?? 0) ?>;
+
+    if (remaining > 0) {
+        if (!confirm(`There is still $${remaining.toFixed(2)} remaining. Complete sale anyway?`)) {
+            e.preventDefault();
+            return false;
+        }
     }
 });
 
