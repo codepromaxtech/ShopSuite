@@ -386,7 +386,15 @@ function suspendSale() {
 }
 
 function removeCustomer() {
-    window.shopsuiteApp.postAction('<?= base_url("sales/removeCustomer") ?>').then(() => window.location.reload());
+    window.shopsuiteApp.postAction('<?= base_url("sales/removeCustomer") ?>')
+        .then(r => {
+            if (!r.ok) alert("Server rejected the request (Code " + r.status + ").");
+            window.location.href = '<?= base_url("sales") ?>';
+        })
+        .catch(err => {
+            alert("Error removing customer: " + err.message);
+            window.location.href = '<?= base_url("sales") ?>';
+        });
 }
 
 function removePayment(paymentId) {
@@ -435,7 +443,7 @@ document.getElementById('add_payment_form')?.addEventListener('submit', function
             const text = await r.text();
             const doc = (new DOMParser()).parseFromString(text, "text/html");
             const errBox = doc.getElementById('error_message_box');
-            if (errBox) alert(errBox.innerText.trim() || 'Failed to add payment.');
+            if (errBox && errBox.innerText.trim().length > 0) alert(errBox.innerText.trim());
             window.location.reload();
         }).catch(err => { console.error(err); window.location.reload(); });
 });
