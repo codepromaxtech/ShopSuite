@@ -704,8 +704,8 @@ class Sales extends Secure_Controller
         ];
 
         if ($this->validate($rules)) {
-            $description = $this->request->getPost('description', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $serialnumber = $this->request->getPost('serialnumber', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $description = $this->request->getPost('description', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+            $serialnumber = $this->request->getPost('serialnumber', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
             $price = parse_decimals($this->request->getPost('price'));
             $quantity = parse_decimals($this->request->getPost('quantity'));
             $discount_type = $this->request->getPost('discount_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -713,7 +713,7 @@ class Sales extends Secure_Controller
                 ? parse_quantity($this->request->getPost('discount'))
                 : parse_decimals($this->request->getPost('discount'));
 
-            $item_location = $this->request->getPost('location', FILTER_SANITIZE_NUMBER_INT);
+            $item_location = $this->request->getPost('location', FILTER_SANITIZE_NUMBER_INT) ?? $this->sale_lib->get_sale_location();
             $discounted_total = $this->request->getPost('discounted_total') != ''
                 ? parse_decimals($this->request->getPost('discounted_total') ?? '')
                 : null;
