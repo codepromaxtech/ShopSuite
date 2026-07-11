@@ -437,7 +437,7 @@ class Receivings extends Secure_Controller
 
         $data['print_after_sale'] = $this->receiving_lib->is_print_after_sale();
 
-        echo view("receivings/receipt", $data);
+        echo view("receivings/receipt_modern", $data);
 
         $this->receiving_lib->clear_all();
     }
@@ -505,7 +505,7 @@ class Receivings extends Secure_Controller
 
         $data['print_after_sale'] = false;
 
-        echo view("receivings/receipt", $data);
+        echo view("receivings/receipt_modern", $data);
 
         $this->receiving_lib->clear_all();
     }

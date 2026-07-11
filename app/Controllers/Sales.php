@@ -1129,7 +1129,7 @@ class Sales extends Secure_Controller
                 $data['error_message'] = lang('Sales.transaction_failed');
             } else {
                 $data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
-                echo view('sales/receipt', $data);
+                echo view('sales/receipt_modern', $data);
                 $this->sale_lib->clear_all();
             }
         }
@@ -1549,7 +1549,7 @@ class Sales extends Secure_Controller
     public function getReceipt(int $sale_id): void
     {
         $data = $this->_load_sale_data($sale_id);
-        echo view('sales/receipt', $data);
+        echo view('sales/receipt_modern', $data);
         $this->sale_lib->clear_all();
     }
 
