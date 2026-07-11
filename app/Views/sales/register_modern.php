@@ -166,6 +166,48 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                 </div>
                 <?php endif; ?>
 
+                <!-- ===== MODE-SPECIFIC PANELS ===== -->
+
+                <?php if (($mode ?? 'sale') === 'return'): ?>
+                <!-- Return Mode: Sale Lookup -->
+                <div class="pos-mode-panel" style="padding: 10px 12px; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; margin-bottom: 12px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #ef4444; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">🔄 Return Mode</div>
+                    <div style="font-size: 12px; color: var(--pos-text-muted); margin-bottom: 8px;">Search for a previous sale to load items for return.</div>
+                    <input type="text" id="return_sale_search" class="pos-search-input" style="padding: 10px 12px; font-size: 13px; width: 100%; box-sizing: border-box;" placeholder="Search by receipt #, customer, or item...">
+                    <div id="return_sale_autocomplete" class="pos-autocomplete"></div>
+                </div>
+                <?php endif; ?>
+
+                <?php if (($mode ?? 'sale') === 'sale_invoice' && !empty($config['invoice_enable'])): ?>
+                <!-- Invoice Mode: Invoice Number Input -->
+                <div class="pos-mode-panel" style="padding: 10px 12px; background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.2); border-radius: 10px; margin-bottom: 12px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">📋 Invoice Mode</div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label for="sales_invoice_number" style="font-size: 12px; font-weight: 600; color: var(--pos-text); white-space: nowrap;">Invoice #</label>
+                        <input type="text" id="sales_invoice_number" name="sales_invoice_number" class="pos-form-input" style="padding: 8px 10px; font-size: 13px; flex: 1;" value="<?= esc($invoice_number ?? '') ?>" placeholder="Auto or enter manually">
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <?php if (($mode ?? 'sale') === 'sale_quote'): ?>
+                <!-- Quote Mode: Info Banner -->
+                <div class="pos-mode-panel" style="padding: 10px 12px; background: rgba(168,85,247,0.06); border: 1px solid rgba(168,85,247,0.2); border-radius: 10px; margin-bottom: 12px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #a855f7; text-transform: uppercase; letter-spacing: 0.5px;">📝 Quote Mode</div>
+                    <div style="font-size: 12px; color: var(--pos-text-muted); margin-top: 4px;">Items will be saved as a quote. No payment is required.</div>
+                </div>
+                <?php endif; ?>
+
+                <?php if (($mode ?? 'sale') === 'sale_work_order'): ?>
+                <!-- Work Order Mode: Price Toggle -->
+                <div class="pos-mode-panel" style="padding: 10px 12px; background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); border-radius: 10px; margin-bottom: 12px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">🔧 Work Order Mode</div>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--pos-text);">
+                        <input type="checkbox" id="price_work_orders" name="price_work_orders" value="1" <?= !empty($price_work_orders) ? 'checked' : '' ?> style="width: 16px; height: 16px; accent-color: #f59e0b;">
+                        Include Prices on Work Order
+                    </label>
+                </div>
+                <?php endif; ?>
+
                 <?php if (isset($customer_id) && $customer_id > 0): ?>
                     <div class="pos-customer-card">
                         <div class="pos-customer-info">
@@ -451,6 +493,81 @@ document.getElementById('add_payment_form')?.addEventListener('submit', function
 // Auto focus & init
 document.getElementById('item')?.focus();
 toggleGiftCardInput();
+
+// ============================
+// MODE-SPECIFIC JS HANDLERS
+// ============================
+
+// Invoice Mode: Save invoice number on keyup
+<?php if (($mode ?? 'sale') === 'sale_invoice' && !empty($config['invoice_enable'])): ?>
+(function() {
+    let invoiceTimer = null;
+    const invoiceInput = document.getElementById('sales_invoice_number');
+    if (invoiceInput) {
+        invoiceInput.addEventListener('keyup', function() {
+            clearTimeout(invoiceTimer);
+            invoiceTimer = setTimeout(() => {
+                window.shopsuiteApp.postAction('<?= base_url("sales/setInvoiceNumber") ?>', {
+                    sales_invoice_number: invoiceInput.value
+                });
+            }, 400);
+        });
+    }
+})();
+<?php endif; ?>
+
+// Work Order Mode: Toggle price inclusion
+<?php if (($mode ?? 'sale') === 'sale_work_order'): ?>
+(function() {
+    const priceCheckbox = document.getElementById('price_work_orders');
+    if (priceCheckbox) {
+        priceCheckbox.addEventListener('change', function() {
+            window.shopsuiteApp.postAction('<?= base_url("sales/setPriceWorkOrders") ?>', {
+                price_work_orders: priceCheckbox.checked ? '1' : '0'
+            });
+        });
+    }
+})();
+<?php endif; ?>
+
+// Return Mode: Sale search autocomplete
+<?php if (($mode ?? 'sale') === 'return'): ?>
+(function() {
+    const searchInput = document.getElementById('return_sale_search');
+    const dropdown = document.getElementById('return_sale_autocomplete');
+    if (!searchInput || !dropdown) return;
+
+    let debounce = null;
+    searchInput.addEventListener('keyup', function() {
+        clearTimeout(debounce);
+        const q = searchInput.value.trim();
+        if (q.length < 2) { dropdown.innerHTML = ''; return; }
+        debounce = setTimeout(() => {
+            fetch('<?= base_url("sales/searchForReturn") ?>?q=' + encodeURIComponent(q), { credentials: 'same-origin' })
+                .then(r => r.json())
+                .then(results => {
+                    dropdown.innerHTML = '';
+                    if (!results || results.length === 0) {
+                        dropdown.innerHTML = '<div style="padding:10px;font-size:12px;color:var(--pos-text-muted);">No sales found</div>';
+                        return;
+                    }
+                    results.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'pos-autocomplete-item';
+                        div.innerHTML = `<strong>${item.label || item.value}</strong>`;
+                        div.addEventListener('click', () => {
+                            window.location.href = '<?= base_url("sales/loadSaleForReturn") ?>/' + item.value;
+                        });
+                        dropdown.appendChild(div);
+                    });
+                })
+                .catch(() => { dropdown.innerHTML = ''; });
+        }, 300);
+    });
+
+    document.addEventListener('click', e => { if (e.target !== searchInput) dropdown.innerHTML = ''; });
+})();
+<?php endif; ?>
 
 // Mode Switching
 function changeMode(mode) {
