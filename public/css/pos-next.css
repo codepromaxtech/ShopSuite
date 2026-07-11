@@ -698,7 +698,7 @@
 /* ============================================
    TOTALS CARD (GLASSMORPHISM)
    ============================================ */
-.pos-totals-card {
+.pos-totals-card { flex-shrink: 0;
     background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
     border-radius: 16px;
     padding: 18px;
@@ -845,7 +845,7 @@
 }
 
 /* Add Payment Card */
-.pos-add-payment {
+.pos-add-payment { flex-shrink: 0;
     padding: 12px;
     background: var(--bg-secondary);
     border-radius: 14px;
@@ -955,7 +955,7 @@
 /* ============================================
    ACTION BUTTONS
    ============================================ */
-.pos-actions {
+.pos-actions { flex-shrink: 0;
     margin-top: auto;
     padding-top: 12px;
     display: flex;
@@ -1345,7 +1345,7 @@
         display: none;
     }
 
-    .pos-totals-card {
+    .pos-totals-card { flex-shrink: 0;
         padding: 14px;
     }
 
@@ -1451,7 +1451,7 @@
 /* ============================================
    DOCUMENT NUMBER BADGE (Invoice/Quote/WO)
    ============================================ */
-.pos-doc-number {
+.pos-doc-number { flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
