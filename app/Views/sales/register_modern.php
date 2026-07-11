@@ -171,7 +171,7 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
         <!-- ===== RIGHT PANE: Customer + Totals + Payment + Actions ===== -->
         <div class="pos-right-pane">
             <!-- Customer Section -->
-            <div>
+            <div class="pos-customer-wrapper">
                 <div class="pos-section-label">Customer
                     <?php if (!empty($customer_required)): ?>
                         <span class="pos-customer-warning">⚠ <?= esc($customer_required) ?></span>
@@ -281,7 +281,7 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
             </div>
 
             <!-- Payment Section -->
-            <div>
+            <div class="pos-payments-wrapper">
                 <div class="pos-payment-header">
                     <div class="pos-section-label-flush">Payments</div>
                     <div id="remaining_amount" class="pos-payment-due">Due: $<?= number_format($amount_due ?? $total ?? 0, 2) ?></div>

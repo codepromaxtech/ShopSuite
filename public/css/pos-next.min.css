@@ -446,7 +446,7 @@
 
 .pos-cart-items {
     flex: 1;
-    overflow-y: auto;
+    overflow: hidden;
     overflow-x: hidden;
     padding: 8px 12px;
     scroll-behavior: smooth;
@@ -568,7 +568,7 @@
     display: flex;
     flex-direction: column;
     background: var(--bg-primary);
-    overflow-y: auto;
+    overflow: hidden;
     overflow-x: hidden;
     padding: 16px;
     gap: 14px;
@@ -666,7 +666,7 @@
     border: 1px solid var(--border-color);
     border-radius: 12px;
     max-height: 240px;
-    overflow-y: auto;
+    overflow: hidden;
     z-index: 100;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
     margin-top: 4px;
@@ -800,7 +800,7 @@
 /* Payment List */
 .pos-payment-list {
     max-height: 100px;
-    overflow-y: auto;
+    overflow: hidden;
     margin-bottom: 8px;
 }
 
@@ -1057,7 +1057,7 @@
     border: 1px solid var(--border-color);
     border-radius: 14px;
     max-height: 300px;
-    overflow-y: auto;
+    overflow: hidden;
     z-index: 200;
     display: none;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
@@ -1554,3 +1554,6 @@
 .pos-autocomplete-name {
     font-weight: 600;
 }
+.pos-payments-wrapper { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-right: 4px; }
+
+.pos-customer-wrapper { flex-shrink: 0; }
