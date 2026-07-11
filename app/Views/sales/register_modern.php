@@ -286,6 +286,19 @@ echo view('layouts/modern_header', ['title' => $title, 'extra_css' => ['css/pos-
                 </div>
                 <?= form_close() ?>
 
+                <div style="display: flex; gap: 16px; margin-bottom: 16px; font-size: 12px; font-weight: 600; color: var(--pos-text-muted);">
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="checkbox" id="sales_print_after_sale" name="sales_print_after_sale" value="1" <?= !empty($print_after_sale) ? 'checked' : '' ?> style="width: 14px; height: 14px;">
+                        Print Receipt
+                    </label>
+                    <?php if (!empty($customer_email)): ?>
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="checkbox" id="email_receipt" name="email_receipt" value="1" <?= !empty($email_receipt) ? 'checked' : '' ?> style="width: 14px; height: 14px;">
+                        Email Receipt
+                    </label>
+                    <?php endif; ?>
+                </div>
+
                 <div style="display: flex; gap: 10px;">
                     <div style="display:none;">
                         <?= form_open("sales/complete", ['id' => 'complete_sale_form']) ?>
@@ -568,6 +581,15 @@ toggleGiftCardInput();
     document.addEventListener('click', e => { if (e.target !== searchInput) dropdown.innerHTML = ''; });
 })();
 <?php endif; ?>
+
+// Output Preference Toggles (Print / Email)
+(function() {
+    const p = document.getElementById('sales_print_after_sale');
+    if (p) p.addEventListener('change', () => window.shopsuiteApp.postAction('<?= base_url("sales/setPrintAfterSale") ?>', { sales_print_after_sale: p.checked ? '1' : '0' }));
+    
+    const e = document.getElementById('email_receipt');
+    if (e) e.addEventListener('change', () => window.shopsuiteApp.postAction('<?= base_url("sales/setEmailReceipt") ?>', { email_receipt: e.checked ? '1' : '0' }));
+})();
 
 // Mode Switching
 function changeMode(mode) {
